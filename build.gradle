@@ -52,5 +52,8 @@ project(":libgdx-gemp-lib") {
 
     dependencies {
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
+        testImplementation 'junit:junit:4.13'
+        testImplementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+        testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
     }
 }

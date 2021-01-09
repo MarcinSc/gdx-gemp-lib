@@ -47,7 +47,7 @@ public class FitAllCameraConstraint implements CameraConstraint {
 
         float requiredAspectRatio;
         if (tmpRectangle.height == 0)
-            requiredAspectRatio = 1;
+            requiredAspectRatio = Float.MAX_VALUE;
         else
             requiredAspectRatio = tmpRectangle.width / tmpRectangle.height;
 

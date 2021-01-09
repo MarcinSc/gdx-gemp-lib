@@ -8,6 +8,8 @@ public class PixelPerfectCameraConstraint implements CameraConstraint {
     public void applyConstraint(Camera camera, float delta) {
         camera.position.x = MathUtils.round(camera.position.x);
         camera.position.y = MathUtils.round(camera.position.y);
+        camera.viewportWidth = MathUtils.round(camera.viewportWidth);
+        camera.viewportHeight = MathUtils.round(camera.viewportHeight);
         camera.update();
     }
 }

@@ -7,6 +7,10 @@ public class WeightBasedFocus implements CameraFocus {
     private ObjectSet<WeightedCameraFocus> focuses = new ObjectSet<>();
     private Vector2 tmpVector = new Vector2();
 
+    public WeightBasedFocus(WeightedCameraFocus... cameraFoci) {
+        focuses.addAll(cameraFoci);
+    }
+
     public void addFocus(WeightedCameraFocus focus) {
         focuses.add(focus);
     }

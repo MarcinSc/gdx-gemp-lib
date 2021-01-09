@@ -2,12 +2,12 @@ package com.gempukku.libgdx.lib.camera2d.focus;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectSet;
 
 public class FitAllCameraFocus implements CameraFocus {
     private Rectangle tmpRectangle = new Rectangle();
 
-    public Array<CameraFocus> cameraFocusArray = new Array<>();
+    public ObjectSet<CameraFocus> cameraFocusArray = new ObjectSet<>();
 
     public FitAllCameraFocus(CameraFocus... cameraFoci) {
         cameraFocusArray.addAll(cameraFoci);
@@ -18,7 +18,7 @@ public class FitAllCameraFocus implements CameraFocus {
     }
 
     public void removeCameraFocus(CameraFocus cameraFocus) {
-        cameraFocusArray.removeValue(cameraFocus, true);
+        cameraFocusArray.remove(cameraFocus);
     }
 
     @Override

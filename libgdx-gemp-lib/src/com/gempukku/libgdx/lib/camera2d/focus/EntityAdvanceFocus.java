@@ -6,23 +6,15 @@ public class EntityAdvanceFocus implements WeightedCameraFocus {
     private FacingPositionProvider entity;
     private float advanceDistance;
     private float weight;
-    private float x;
-    private float y;
 
     public EntityAdvanceFocus(FacingPositionProvider entity, float advanceDistance) {
         this(entity, advanceDistance, 1f);
     }
 
     public EntityAdvanceFocus(FacingPositionProvider entity, float advanceDistance, float weight) {
-        this(entity, advanceDistance, weight, 0, 0);
-    }
-
-    public EntityAdvanceFocus(FacingPositionProvider entity, float advanceDistance, float weight, float x, float y) {
         this.entity = entity;
         this.advanceDistance = advanceDistance;
         this.weight = weight;
-        this.x = x;
-        this.y = y;
     }
 
     @Override
