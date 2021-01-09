@@ -1,0 +1,56 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "https://plugins.gradle.org/m2/" }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        jcenter()
+        google()
+    }
+    dependencies {
+
+    }
+}
+
+allprojects {
+    apply plugin: "maven"
+    apply plugin: "eclipse"
+    apply plugin: "maven-publish"
+
+    group = "com.gempukku.libgdx.lib"
+    version = '0.1.0-SNAPSHOT'
+    ext {
+        appName = "Libgdx Graph"
+        gdxVersion = '1.9.12'
+        roboVMVersion = '2.3.8'
+        box2DLightsVersion = '1.4'
+        ashleyVersion = '1.7.0'
+        aiVersion = '1.8.0'
+    }
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+        google()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+        maven { url 'https://jitpack.io' }
+    }
+}
+
+configure(subprojects) {
+    apply plugin: 'java-library'
+    sourceCompatibility = 8.0
+    compileJava {
+        options.incremental = true
+    }
+}
+
+project(":libgdx-gemp-lib") {
+    apply plugin: "java-library"
+
+    dependencies {
+        api "com.badlogicgames.gdx:gdx:$gdxVersion"
+    }
+}
