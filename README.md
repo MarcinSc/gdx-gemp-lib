@@ -8,11 +8,11 @@ gdxGempLibVersion=[version]
 ```
 Then add dependency:
 ```
-api "com.gempukku.libgdx.lib:libgdx-gemp-lib:gdxGempLibVersion"
+api "com.gempukku.libgdx.lib:libgdx-gemp-lib:$gdxGempLibVersion"
 ```
 If you want to use the Ashley integration, also add:
 ```
-api "com.gempukku.libgdx.lib:libgdx-gemp-lib-ashley:gdxGempLibVersion"
+api "com.gempukku.libgdx.lib:libgdx-gemp-lib-ashley:$gdxGempLibVersion"
 ```
 
 ## Camera 2D
