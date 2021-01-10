@@ -4,7 +4,6 @@ import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
-import com.badlogic.gdx.utils.JsonWriter;
 import com.gempukku.libgdx.lib.template.JsonTemplateLoader;
 
 public class AshleyTemplateEntityLoader {
@@ -20,7 +19,6 @@ public class AshleyTemplateEntityLoader {
 
     public static EntityDef convertToAshley(JsonValue jsonValue, Json json) {
         JsonValue ashleyJson = convertToAshleyEntityJson(jsonValue);
-        System.out.println(ashleyJson.toJson(JsonWriter.OutputType.json));
         return json.readValue(EntityDef.class, ashleyJson);
     }
 

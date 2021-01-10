@@ -36,9 +36,18 @@ public class JsonTemplateLoader {
             return resolveValueForObject(json, resolver);
         } else if (json.type() == JsonValue.ValueType.array) {
             return resolveValueForArray(json, resolver);
-        } else {
-            return json;
+        } else if (json.type() == JsonValue.ValueType.booleanValue) {
+            return new JsonValue(json.asBoolean());
+        } else if (json.type() == JsonValue.ValueType.doubleValue) {
+            return new JsonValue(json.asDouble());
+        } else if (json.type() == JsonValue.ValueType.longValue) {
+            return new JsonValue(json.asLong());
+        } else if (json.type() == JsonValue.ValueType.stringValue) {
+            return new JsonValue(json.asString());
+        } else if (json.type() == JsonValue.ValueType.nullValue) {
+            return new JsonValue(JsonValue.ValueType.nullValue);
         }
+        throw new GdxRuntimeException("Unknown type of Json type");
     }
 
     private static JsonValue resolveValueForObject(JsonValue json, FileHandleResolver resolver) {
