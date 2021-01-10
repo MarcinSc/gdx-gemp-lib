@@ -1,0 +1,6 @@
+{
+  "tpl:extends": "entity/simple.json",
+  "com.gempukku.libgdx.lib.template.ashley.Test2Component": {
+    "b": "c"
+  }
+}

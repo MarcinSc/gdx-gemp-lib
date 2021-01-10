@@ -1,0 +1,4 @@
+{
+  "tpl:extends": "template/simple.json",
+  "a": "c"
+}

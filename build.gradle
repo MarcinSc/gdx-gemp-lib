@@ -25,7 +25,7 @@ allprojects {
         roboVMVersion = '2.3.8'
         box2DLightsVersion = '1.4'
         gdxGraphVersion = '0.5.1'
-        ashleyVersion = '1.7.0'
+        ashleyVersion = '1.7.3'
         aiVersion = '1.8.0'
     }
 
@@ -59,17 +59,29 @@ project(":libgdx-gemp-lib") {
     }
 }
 
-project(":libgdx-gemp-lib-test") {
+project(":libgdx-gemp-lib-ashley") {
     apply plugin: "java-library"
 
     dependencies {
         implementation project(":libgdx-gemp-lib")
+        api "com.badlogicgames.ashley:ashley:$ashleyVersion"
+
+        testImplementation 'junit:junit:4.13'
+        testImplementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+        testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    }
+}
+
+project(":libgdx-gemp-lib-test") {
+    apply plugin: "java-library"
+
+    dependencies {
+        implementation project(":libgdx-gemp-lib-ashley")
         api "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
         api "com.gempukku.libgdx.graph:libgdx-graph:$gdxGraphVersion"
-        api "com.badlogicgames.ashley:ashley:1.7.3"
     }
 }
 

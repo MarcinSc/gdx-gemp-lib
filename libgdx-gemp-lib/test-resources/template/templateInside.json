@@ -1,0 +1,5 @@
+{
+  "c": {
+    "tpl:extends": "template/simple.json"
+  }
+}

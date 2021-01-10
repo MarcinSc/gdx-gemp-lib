@@ -1,0 +1,6 @@
+{
+  "tpl:extends": [
+    "template/simple.json",
+    "template/array.json"
+  ]
+}
