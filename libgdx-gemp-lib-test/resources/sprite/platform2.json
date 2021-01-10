@@ -1,0 +1,53 @@
+{
+  "components": [
+    {
+      "class": "com.gempukku.libgdx.lib.test.component.PositionComponent",
+      "x": 400,
+      "y": 250
+    },
+    {
+      "class": "com.gempukku.libgdx.lib.test.component.SizeComponent",
+      "x": 537,
+      "y": 229
+    },
+    {
+      "class": "com.gempukku.libgdx.lib.test.component.AnchorComponent",
+      "x": 0.5,
+      "y": 0.5
+    },
+    {
+      "class": "com.gempukku.libgdx.lib.test.component.SpriteComponent",
+      "layer": 9,
+      "tags": [
+        "Animated"
+      ],
+      "spriteType": "simple",
+      "simpleSprite": {
+        "texture": "image/Mossy - FloatingPlatforms.png",
+        "u": 0.224609375,
+        "v": 0.015625,
+        "u2": 0.7490234375,
+        "v2": 0.2392578125
+      }
+    },
+    {
+      "class": "com.gempukku.libgdx.lib.test.component.PhysicsComponent",
+      "type": "static",
+      "colliderAnchor": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "colliderScale": {
+        "x": 0.85,
+        "y": 0.65
+      },
+      "category": [
+        "Environment"
+      ],
+      "mask": [
+        "Character",
+        "Sensor"
+      ]
+    }
+  ]
+}

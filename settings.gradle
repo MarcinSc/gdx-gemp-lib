@@ -1,1 +1,1 @@
-include 'libgdx-gemp-lib'
+include 'libgdx-gemp-lib', 'libgdx-gemp-lib-test'
