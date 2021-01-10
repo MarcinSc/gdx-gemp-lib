@@ -17,7 +17,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
 import com.gempukku.libgdx.graph.util.SimpleNumberFormatter;
+import com.gempukku.libgdx.lib.test.scene.FacingLockedSceneCameraScene;
 import com.gempukku.libgdx.lib.test.scene.LockedCameraScene;
+import com.gempukku.libgdx.lib.test.scene.LockedSceneCameraScene;
+import com.gempukku.libgdx.lib.test.scene.SnapCameraScene;
+import com.gempukku.libgdx.lib.test.scene.SnapLimitCameraScene;
 
 public class ReloadableLibTestApplication extends ApplicationAdapter {
     private LibgdxLibTestScene[] scenes;
@@ -34,7 +38,11 @@ public class ReloadableLibTestApplication extends ApplicationAdapter {
 
     public ReloadableLibTestApplication() {
         scenes = new LibgdxLibTestScene[]{
-                new LockedCameraScene()
+                new LockedCameraScene(),
+                new LockedSceneCameraScene(),
+                new FacingLockedSceneCameraScene(),
+                new SnapCameraScene(),
+                new SnapLimitCameraScene()
         };
         loadedIndex = 0;
     }

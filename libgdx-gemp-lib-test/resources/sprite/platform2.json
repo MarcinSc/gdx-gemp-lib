@@ -3,7 +3,7 @@
     {
       "class": "com.gempukku.libgdx.lib.test.component.PositionComponent",
       "x": 400,
-      "y": 250
+      "y": 350
     },
     {
       "class": "com.gempukku.libgdx.lib.test.component.SizeComponent",

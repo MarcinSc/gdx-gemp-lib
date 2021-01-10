@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -29,15 +30,18 @@ import com.gempukku.libgdx.graph.shader.particles.generator.ParallelogramParticl
 import com.gempukku.libgdx.graph.time.DefaultTimeKeeper;
 import com.gempukku.libgdx.graph.time.TimeKeeper;
 import com.gempukku.libgdx.lib.camera2d.FocusCameraController;
+import com.gempukku.libgdx.lib.camera2d.constraint.SceneCameraConstraint;
 import com.gempukku.libgdx.lib.camera2d.constraint.focus.CameraFocusConstraint;
 import com.gempukku.libgdx.lib.camera2d.constraint.focus.LockedToCameraConstraint;
 import com.gempukku.libgdx.lib.camera2d.focus.EntityFocus;
 import com.gempukku.libgdx.lib.camera2d.focus.PositionProvider;
 import com.gempukku.libgdx.lib.test.LibgdxLibTestScene;
 import com.gempukku.libgdx.lib.test.component.AnchorComponent;
+import com.gempukku.libgdx.lib.test.component.FacingComponent;
 import com.gempukku.libgdx.lib.test.component.PositionComponent;
 import com.gempukku.libgdx.lib.test.component.SizeComponent;
 import com.gempukku.libgdx.lib.test.entity.EntityLoader;
+import com.gempukku.libgdx.lib.test.sprite.SpriteFaceDirection;
 import com.gempukku.libgdx.lib.test.system.CameraSystem;
 import com.gempukku.libgdx.lib.test.system.OutlineSystem;
 import com.gempukku.libgdx.lib.test.system.PhysicsSystem;
@@ -50,7 +54,7 @@ import com.gempukku.libgdx.lib.test.system.sensor.InteractSensorContactListener;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class LockedCameraScene implements LibgdxLibTestScene {
+public class FacingLockedSceneCameraScene implements LibgdxLibTestScene {
     private Array<Disposable> resources = new Array<>();
     private PipelineRenderer pipelineRenderer;
     private OrthographicCamera camera;
@@ -104,6 +108,8 @@ public class LockedCameraScene implements LibgdxLibTestScene {
                 PositionComponent positionComponent = playerEntity.getComponent(PositionComponent.class);
                 SizeComponent sizeComponent = playerEntity.getComponent(SizeComponent.class);
                 AnchorComponent anchorComponent = playerEntity.getComponent(AnchorComponent.class);
+                FacingComponent facingComponent = playerEntity.getComponent(FacingComponent.class);
+                SpriteFaceDirection faceDirection = facingComponent.getFaceDirection();
 
                 Vector2 anchorPos = positionComponent.getPosition(position);
                 float x = anchorPos.x;
@@ -112,7 +118,7 @@ public class LockedCameraScene implements LibgdxLibTestScene {
                 float anchorX = anchor.x;
                 float anchorY = anchor.y;
                 Vector2 size = sizeComponent.getSize(position);
-                return position.set(x + (anchorX - 0.5f) * size.x, y + (anchorY - 0.5f) * size.y);
+                return position.set(x + (anchorX - 0.5f) * size.x + faceDirection.getX() * 200, y + (anchorY - 0.5f) * size.y + faceDirection.getY() * 200);
             }
         };
 
@@ -120,9 +126,10 @@ public class LockedCameraScene implements LibgdxLibTestScene {
                 // Try to focus on the point provided by position provider
                 new EntityFocus(positionProvider),
                 new CameraFocusConstraint[]{
-                        // Lock the camera to the focus (player)
                         new LockedToCameraConstraint(new Vector2(0.5f, 0.5f))
-                });
+                },
+                // Move the camera to make sure that pixels outside of the scene bounds are not shown
+                new SceneCameraConstraint(new Rectangle(-2560, -414, 5120, 2000)));
 
         engine.getSystem(CameraSystem.class).setConstraintCameraController(cameraController);
 

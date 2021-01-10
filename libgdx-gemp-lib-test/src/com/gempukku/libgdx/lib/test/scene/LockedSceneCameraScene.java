@@ -1,10 +1,12 @@
-package com.gempukku.libgdx.lib.test;
+package com.gempukku.libgdx.lib.test.scene;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -30,16 +32,14 @@ import com.gempukku.libgdx.graph.time.TimeKeeper;
 import com.gempukku.libgdx.lib.camera2d.FocusCameraController;
 import com.gempukku.libgdx.lib.camera2d.constraint.SceneCameraConstraint;
 import com.gempukku.libgdx.lib.camera2d.constraint.focus.CameraFocusConstraint;
-import com.gempukku.libgdx.lib.camera2d.constraint.focus.FixedToWindowCameraConstraint;
-import com.gempukku.libgdx.lib.camera2d.constraint.focus.SnapToWindowCameraConstraint;
-import com.gempukku.libgdx.lib.camera2d.focus.EntityAdvanceFocus;
-import com.gempukku.libgdx.lib.camera2d.focus.FacingPositionProvider;
+import com.gempukku.libgdx.lib.camera2d.constraint.focus.LockedToCameraConstraint;
+import com.gempukku.libgdx.lib.camera2d.focus.EntityFocus;
+import com.gempukku.libgdx.lib.camera2d.focus.PositionProvider;
+import com.gempukku.libgdx.lib.test.LibgdxLibTestScene;
 import com.gempukku.libgdx.lib.test.component.AnchorComponent;
-import com.gempukku.libgdx.lib.test.component.FacingComponent;
 import com.gempukku.libgdx.lib.test.component.PositionComponent;
 import com.gempukku.libgdx.lib.test.component.SizeComponent;
 import com.gempukku.libgdx.lib.test.entity.EntityLoader;
-import com.gempukku.libgdx.lib.test.sprite.SpriteFaceDirection;
 import com.gempukku.libgdx.lib.test.system.CameraSystem;
 import com.gempukku.libgdx.lib.test.system.OutlineSystem;
 import com.gempukku.libgdx.lib.test.system.PhysicsSystem;
@@ -52,7 +52,7 @@ import com.gempukku.libgdx.lib.test.system.sensor.InteractSensorContactListener;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class TestScene implements LibgdxLibTestScene {
+public class LockedSceneCameraScene implements LibgdxLibTestScene {
     private Array<Disposable> resources = new Array<>();
     private PipelineRenderer pipelineRenderer;
     private OrthographicCamera camera;
@@ -63,11 +63,13 @@ public class TestScene implements LibgdxLibTestScene {
 
     private Engine engine;
     private TextureHolder textureHolder;
+    private ShapeRenderer shapeRenderer;
 
-    private boolean debugRender = true;
+    private boolean debugRender = false;
     private Box2DDebugRenderer debugRenderer;
     private Matrix4 tmpMatrix;
     private int cameraScale = 3;
+    private PositionProvider positionProvider;
 
     @Override
     public void initializeScene() {
@@ -86,6 +88,9 @@ public class TestScene implements LibgdxLibTestScene {
 
         textureHolder = new TextureHolder();
 
+        shapeRenderer = new ShapeRenderer();
+        resources.add(shapeRenderer);
+
         createSystems();
 
         Json json = new Json();
@@ -95,13 +100,7 @@ public class TestScene implements LibgdxLibTestScene {
         final Entity playerEntity = EntityLoader.readEntity(engine, json, "sprite/playerBlueWizard.json");
         engine.getSystem(PlayerControlSystem.class).setPlayerEntity(playerEntity);
 
-        FacingPositionProvider facingPositionProvider = new FacingPositionProvider() {
-            @Override
-            public Vector2 getFacingMultiplier(Vector2 facingMultiplier) {
-                SpriteFaceDirection faceDirection = playerEntity.getComponent(FacingComponent.class).getFaceDirection();
-                return facingMultiplier.set(faceDirection.getX(), faceDirection.getY());
-            }
-
+        positionProvider = new PositionProvider() {
             @Override
             public Vector2 getPosition(Vector2 position) {
                 PositionComponent positionComponent = playerEntity.getComponent(PositionComponent.class);
@@ -120,16 +119,14 @@ public class TestScene implements LibgdxLibTestScene {
         };
 
         FocusCameraController cameraController = new FocusCameraController(camera,
-                // Try to focus on the point 200 pixels in front of player entity,
-                new EntityAdvanceFocus(facingPositionProvider, 200f),
+                // Try to focus on the point provided by position provider
+                new EntityFocus(positionProvider),
                 new CameraFocusConstraint[]{
-                        // Move the camera to try to keep the focus point within the middle 10% of the screen, camera movement speed is 20% of screen/second
-                        new SnapToWindowCameraConstraint(new Rectangle(0.45f, 0.45f, 0.1f, 0.1f), new Vector2(0.2f, 0.2f)),
-                        // Move the camera to make sure the focused point is in the middle 50% of the screen
-                        new FixedToWindowCameraConstraint(new Rectangle(0.25f, 0.25f, 0.5f, 0.5f))
+                        new LockedToCameraConstraint(new Vector2(0.5f, 0.5f))
                 },
                 // Move the camera to make sure that pixels outside of the scene bounds are not shown
                 new SceneCameraConstraint(new Rectangle(-2560, -414, 5120, 2000)));
+
         engine.getSystem(CameraSystem.class).setConstraintCameraController(cameraController);
 
         Gdx.input.setInputProcessor(stage);
@@ -219,10 +216,28 @@ public class TestScene implements LibgdxLibTestScene {
 
         pipelineRenderer.render(RenderOutputs.drawToScreen);
 
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        drawCrosshair(Color.WHITE, shapeRenderer, positionProvider);
+        shapeRenderer.end();
+
         if (debugRender) {
             tmpMatrix.set(camera.combined).scale(PhysicsSystem.PIXELS_TO_METERS, PhysicsSystem.PIXELS_TO_METERS, 0);
             debugRenderer.render(engine.getSystem(PhysicsSystem.class).getWorld(), tmpMatrix);
         }
+    }
+
+    private void drawCrosshair(Color color, ShapeRenderer shapeRenderer, PositionProvider position) {
+        shapeRenderer.setColor(color);
+        Vector2 crosshair = position.getPosition(new Vector2());
+
+        float width = Gdx.graphics.getWidth();
+        float height = Gdx.graphics.getHeight();
+
+        float x = width / 2 + (crosshair.x - camera.position.x) / cameraScale;
+        float y = height / 2 + (crosshair.y - camera.position.y) / cameraScale;
+
+        shapeRenderer.line(x - 5, y, x + 5, y);
+        shapeRenderer.line(x, y - 5, x, y + 5);
     }
 
     @Override

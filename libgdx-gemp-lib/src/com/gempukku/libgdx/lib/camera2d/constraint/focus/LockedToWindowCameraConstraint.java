@@ -4,12 +4,12 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
-public class FixedToWindowCameraConstraint implements CameraFocusConstraint {
+public class LockedToWindowCameraConstraint implements CameraFocusConstraint {
     private Rectangle windowRectangle;
 
     private Vector2 tmpVector = new Vector2();
 
-    public FixedToWindowCameraConstraint(Rectangle windowRectangle) {
+    public LockedToWindowCameraConstraint(Rectangle windowRectangle) {
         this.windowRectangle = windowRectangle;
     }
 

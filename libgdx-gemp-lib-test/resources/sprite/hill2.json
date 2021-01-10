@@ -3,7 +3,7 @@
     {
       "class": "com.gempukku.libgdx.lib.test.component.PositionComponent",
       "x": 0,
-      "y": -550
+      "y": -650
     },
     {
       "class": "com.gempukku.libgdx.lib.test.component.SizeComponent",
@@ -17,7 +17,7 @@
     },
     {
       "class": "com.gempukku.libgdx.lib.test.component.SpriteComponent",
-      "layer": 90,
+      "layer": 95,
       "tags": [
         "Background"
       ],

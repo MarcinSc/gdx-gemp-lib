@@ -8,10 +8,10 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class FixedToWindowCameraConstraintTest extends LibGDXTest {
+public class LockedToWindowCameraConstraintTest extends LibGDXTest {
     @Test
     public void noChanges() {
-        FixedToWindowCameraConstraint cameraConstraint = new FixedToWindowCameraConstraint(new Rectangle(0.25f, 0.25f, 0.5f, 0.5f));
+        LockedToWindowCameraConstraint cameraConstraint = new LockedToWindowCameraConstraint(new Rectangle(0.25f, 0.25f, 0.5f, 0.5f));
 
         OrthographicCamera camera = new OrthographicCamera(4, 3);
 
@@ -23,7 +23,7 @@ public class FixedToWindowCameraConstraintTest extends LibGDXTest {
 
     @Test
     public void adjustRight() {
-        FixedToWindowCameraConstraint cameraConstraint = new FixedToWindowCameraConstraint(new Rectangle(0.25f, 0.25f, 0.5f, 0.5f));
+        LockedToWindowCameraConstraint cameraConstraint = new LockedToWindowCameraConstraint(new Rectangle(0.25f, 0.25f, 0.5f, 0.5f));
 
         OrthographicCamera camera = new OrthographicCamera(4, 3);
 
@@ -35,7 +35,7 @@ public class FixedToWindowCameraConstraintTest extends LibGDXTest {
 
     @Test
     public void adjustLeft() {
-        FixedToWindowCameraConstraint cameraConstraint = new FixedToWindowCameraConstraint(new Rectangle(0.25f, 0.25f, 0.5f, 0.5f));
+        LockedToWindowCameraConstraint cameraConstraint = new LockedToWindowCameraConstraint(new Rectangle(0.25f, 0.25f, 0.5f, 0.5f));
 
         OrthographicCamera camera = new OrthographicCamera(4, 3);
 
@@ -47,7 +47,7 @@ public class FixedToWindowCameraConstraintTest extends LibGDXTest {
 
     @Test
     public void adjustUp() {
-        FixedToWindowCameraConstraint cameraConstraint = new FixedToWindowCameraConstraint(new Rectangle(0.25f, 0.25f, 0.5f, 0.5f));
+        LockedToWindowCameraConstraint cameraConstraint = new LockedToWindowCameraConstraint(new Rectangle(0.25f, 0.25f, 0.5f, 0.5f));
 
         OrthographicCamera camera = new OrthographicCamera(4, 3);
 
@@ -59,7 +59,7 @@ public class FixedToWindowCameraConstraintTest extends LibGDXTest {
 
     @Test
     public void adjustDown() {
-        FixedToWindowCameraConstraint cameraConstraint = new FixedToWindowCameraConstraint(new Rectangle(0.25f, 0.25f, 0.5f, 0.5f));
+        LockedToWindowCameraConstraint cameraConstraint = new LockedToWindowCameraConstraint(new Rectangle(0.25f, 0.25f, 0.5f, 0.5f));
 
         OrthographicCamera camera = new OrthographicCamera(4, 3);
 
