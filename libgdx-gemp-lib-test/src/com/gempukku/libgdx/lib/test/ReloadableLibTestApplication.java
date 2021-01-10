@@ -20,6 +20,7 @@ import com.gempukku.libgdx.graph.util.SimpleNumberFormatter;
 import com.gempukku.libgdx.lib.test.scene.FacingLockedSceneCameraScene;
 import com.gempukku.libgdx.lib.test.scene.LockedCameraScene;
 import com.gempukku.libgdx.lib.test.scene.LockedSceneCameraScene;
+import com.gempukku.libgdx.lib.test.scene.MultiplayerCameraScene;
 import com.gempukku.libgdx.lib.test.scene.SnapCameraScene;
 import com.gempukku.libgdx.lib.test.scene.SnapLimitCameraScene;
 
@@ -42,9 +43,10 @@ public class ReloadableLibTestApplication extends ApplicationAdapter {
                 new LockedSceneCameraScene(),
                 new FacingLockedSceneCameraScene(),
                 new SnapCameraScene(),
-                new SnapLimitCameraScene()
+                new SnapLimitCameraScene(),
+                new MultiplayerCameraScene()
         };
-        loadedIndex = 0;
+        loadedIndex = 5;
     }
 
     @Override

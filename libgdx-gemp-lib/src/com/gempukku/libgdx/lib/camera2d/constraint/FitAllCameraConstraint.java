@@ -13,8 +13,9 @@ public class FitAllCameraConstraint implements CameraConstraint {
     private Rectangle tmpRectangle = new Rectangle();
     private Vector2 tmpVector = new Vector2();
 
-    public FitAllCameraConstraint(Rectangle window) {
+    public FitAllCameraConstraint(Rectangle window, CameraFocus... cameraFoci) {
         this.window = window;
+        cameraFocusArray.addAll(cameraFoci);
     }
 
     public void addCameraFocus(CameraFocus cameraFocus) {

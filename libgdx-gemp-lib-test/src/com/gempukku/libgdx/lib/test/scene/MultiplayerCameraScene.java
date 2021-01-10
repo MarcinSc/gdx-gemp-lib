@@ -30,10 +30,13 @@ import com.gempukku.libgdx.graph.shader.particles.generator.ParallelogramParticl
 import com.gempukku.libgdx.graph.time.DefaultTimeKeeper;
 import com.gempukku.libgdx.graph.time.TimeKeeper;
 import com.gempukku.libgdx.lib.camera2d.FocusCameraController;
+import com.gempukku.libgdx.lib.camera2d.constraint.FitAllCameraConstraint;
+import com.gempukku.libgdx.lib.camera2d.constraint.MinimumViewportCameraConstraint;
 import com.gempukku.libgdx.lib.camera2d.constraint.SceneCameraConstraint;
 import com.gempukku.libgdx.lib.camera2d.constraint.focus.CameraFocusConstraint;
 import com.gempukku.libgdx.lib.camera2d.constraint.focus.LockedToCameraConstraint;
 import com.gempukku.libgdx.lib.camera2d.focus.EntityFocus;
+import com.gempukku.libgdx.lib.camera2d.focus.FitAllCameraFocus;
 import com.gempukku.libgdx.lib.camera2d.focus.PositionProvider;
 import com.gempukku.libgdx.lib.test.LibgdxLibTestScene;
 import com.gempukku.libgdx.lib.test.component.AnchorComponent;
@@ -52,7 +55,7 @@ import com.gempukku.libgdx.lib.test.system.sensor.InteractSensorContactListener;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class LockedSceneCameraScene implements LibgdxLibTestScene {
+public class MultiplayerCameraScene implements LibgdxLibTestScene {
     private Array<Disposable> resources = new Array<>();
     private PipelineRenderer pipelineRenderer;
     private OrthographicCamera camera;
@@ -69,7 +72,9 @@ public class LockedSceneCameraScene implements LibgdxLibTestScene {
     private Box2DDebugRenderer debugRenderer;
     private Matrix4 tmpMatrix;
     private int cameraScale = 3;
-    private PositionProvider positionProvider;
+    private PositionProvider positionProvider1;
+    private PositionProvider positionProvider2;
+    private Rectangle gameAreaRectangle;
 
     @Override
     public void initializeScene() {
@@ -97,15 +102,16 @@ public class LockedSceneCameraScene implements LibgdxLibTestScene {
 
         loadEnvironment(json);
 
-        final Entity playerEntity = EntityLoader.readEntity(engine, json, "sprite/playerBlueWizard.json");
-        engine.getSystem(PlayerControlSystem.class).setPlayerEntity(playerEntity);
+        final Entity playerEntity1 = EntityLoader.readEntity(engine, json, "sprite/playerBlueWizard.json");
+        final Entity playerEntity2 = EntityLoader.readEntity(engine, json, "sprite/player2BlueWizard.json");
+        engine.getSystem(PlayerControlSystem.class).setPlayerEntity(playerEntity1);
 
-        positionProvider = new PositionProvider() {
+        positionProvider1 = new PositionProvider() {
             @Override
             public Vector2 getPosition(Vector2 position) {
-                PositionComponent positionComponent = playerEntity.getComponent(PositionComponent.class);
-                SizeComponent sizeComponent = playerEntity.getComponent(SizeComponent.class);
-                AnchorComponent anchorComponent = playerEntity.getComponent(AnchorComponent.class);
+                PositionComponent positionComponent = playerEntity1.getComponent(PositionComponent.class);
+                SizeComponent sizeComponent = playerEntity1.getComponent(SizeComponent.class);
+                AnchorComponent anchorComponent = playerEntity1.getComponent(AnchorComponent.class);
 
                 Vector2 anchorPos = positionComponent.getPosition(position);
                 float x = anchorPos.x;
@@ -118,14 +124,42 @@ public class LockedSceneCameraScene implements LibgdxLibTestScene {
             }
         };
 
+        positionProvider2 = new PositionProvider() {
+            @Override
+            public Vector2 getPosition(Vector2 position) {
+                PositionComponent positionComponent = playerEntity2.getComponent(PositionComponent.class);
+                SizeComponent sizeComponent = playerEntity2.getComponent(SizeComponent.class);
+                AnchorComponent anchorComponent = playerEntity2.getComponent(AnchorComponent.class);
+
+                Vector2 anchorPos = positionComponent.getPosition(position);
+                float x = anchorPos.x;
+                float y = anchorPos.y;
+                Vector2 anchor = anchorComponent.getAnchor(position);
+                float anchorX = anchor.x;
+                float anchorY = anchor.y;
+                Vector2 size = sizeComponent.getSize(position);
+                return position.set(x + (anchorX - 0.5f) * size.x, y + (anchorY - 0.5f) * size.y);
+            }
+        };
+
+        gameAreaRectangle = new Rectangle(0.2f, 0.2f, 0.6f, 0.6f);
+
         FocusCameraController cameraController = new FocusCameraController(camera,
                 // Try to focus on the point provided by position provider
-                new EntityFocus(positionProvider),
+                new FitAllCameraFocus(
+                        new EntityFocus(positionProvider1),
+                        new EntityFocus(positionProvider2)),
                 new CameraFocusConstraint[]{
                         new LockedToCameraConstraint(new Vector2(0.5f, 0.5f))
                 },
-                // Move the camera to make sure that pixels outside of the scene bounds are not shown
+                new FitAllCameraConstraint(gameAreaRectangle,
+                        new EntityFocus(positionProvider1),
+                        new EntityFocus(positionProvider2)),
+                new MinimumViewportCameraConstraint(1280, 720),
                 new SceneCameraConstraint(new Rectangle(-2560, -414, 5120, 2000)));
+
+        // Move the camera to make sure that pixels outside of the scene bounds are not shown
+        //,
 
         engine.getSystem(CameraSystem.class).setConstraintCameraController(cameraController);
 
@@ -217,7 +251,9 @@ public class LockedSceneCameraScene implements LibgdxLibTestScene {
         pipelineRenderer.render(RenderOutputs.drawToScreen);
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        drawCrosshair(Color.WHITE, shapeRenderer, positionProvider);
+        drawCrosshair(Color.WHITE, shapeRenderer, positionProvider1);
+        drawCrosshair(Color.WHITE, shapeRenderer, positionProvider2);
+        drawRect(Color.WHITE, shapeRenderer, gameAreaRectangle);
         shapeRenderer.end();
 
         if (debugRender) {
@@ -238,6 +274,14 @@ public class LockedSceneCameraScene implements LibgdxLibTestScene {
 
         shapeRenderer.line(x - 5, y, x + 5, y);
         shapeRenderer.line(x, y - 5, x, y + 5);
+    }
+
+    private void drawRect(Color color, ShapeRenderer shapeRenderer, Rectangle rectangle) {
+        float width = Gdx.graphics.getWidth();
+        float height = Gdx.graphics.getHeight();
+
+        shapeRenderer.setColor(color);
+        shapeRenderer.rect(rectangle.x * width, rectangle.y * height, rectangle.width * width, rectangle.height * height);
     }
 
     @Override

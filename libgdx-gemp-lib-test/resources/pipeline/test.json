@@ -338,6 +338,12 @@
                   }
                 },
                 {
+                  "id": "2da67ffa21e34187a6ae0e294eadcdb5",
+                  "type": "Multiply",
+                  "x": 1231.0,
+                  "y": 500.0
+                },
+                {
                   "id": "1140308b879e4cd7a4c96752e0708839",
                   "type": "SpriteUV",
                   "x": 618.0,
@@ -350,6 +356,32 @@
                   "y": 115.0,
                   "data": {
                     "multiplier": 1.0
+                  }
+                },
+                {
+                  "id": "3a83146b38634b1e812b8396fd2dfcc4",
+                  "type": "Property",
+                  "x": 50.0,
+                  "y": 50.0,
+                  "data": {
+                    "name": "Animation Start",
+                    "type": "Float"
+                  }
+                },
+                {
+                  "id": "2affc280f9074df4bcd62e7fcd2513c9",
+                  "type": "Sampler2D",
+                  "x": 1024.0,
+                  "y": 365.0
+                },
+                {
+                  "id": "a085b0923c604a9bb35c80b8cd602b0a",
+                  "type": "Property",
+                  "x": 621.0,
+                  "y": 158.0,
+                  "data": {
+                    "name": "Animation Looping",
+                    "type": "Float"
                   }
                 },
                 {
@@ -379,36 +411,10 @@
                   "y": 216.0
                 },
                 {
-                  "id": "3a83146b38634b1e812b8396fd2dfcc4",
-                  "type": "Property",
-                  "x": 50.0,
-                  "y": 50.0,
-                  "data": {
-                    "name": "Animation Start",
-                    "type": "Float"
-                  }
-                },
-                {
-                  "id": "2affc280f9074df4bcd62e7fcd2513c9",
-                  "type": "Sampler2D",
-                  "x": 1024.0,
-                  "y": 365.0
-                },
-                {
-                  "id": "a085b0923c604a9bb35c80b8cd602b0a",
-                  "type": "Property",
-                  "x": 621.0,
-                  "y": 158.0,
-                  "data": {
-                    "name": "Animation Looping",
-                    "type": "Float"
-                  }
-                },
-                {
                   "id": "end",
                   "type": "SpriteShaderEnd",
-                  "x": 1248.0,
-                  "y": 98.0,
+                  "x": 1477.0,
+                  "y": 96.0,
                   "data": {
                     "blending": "opaque",
                     "depthTest": "less"
@@ -422,6 +428,16 @@
                   "data": {
                     "invertX": false,
                     "invertY": false
+                  }
+                },
+                {
+                  "id": "4012208a499e4fe8a965e5f8cb0b6321",
+                  "type": "Property",
+                  "x": 1024.0,
+                  "y": 524.0,
+                  "data": {
+                    "name": "Color",
+                    "type": "Vector4"
                   }
                 }
               ],
@@ -443,12 +459,6 @@
                   "fromField": "output",
                   "toNode": "2affc280f9074df4bcd62e7fcd2513c9",
                   "toField": "uv"
-                },
-                {
-                  "fromNode": "2affc280f9074df4bcd62e7fcd2513c9",
-                  "fromField": "color",
-                  "toNode": "end",
-                  "toField": "color"
                 },
                 {
                   "fromNode": "17061776ddbe4018b09cfe3a3574b454",
@@ -497,6 +507,24 @@
                   "fromField": "value",
                   "toNode": "656d45cb9eed4e4ebf7d010f93f67fb7",
                   "toField": "tileCount"
+                },
+                {
+                  "fromNode": "2affc280f9074df4bcd62e7fcd2513c9",
+                  "fromField": "color",
+                  "toNode": "2da67ffa21e34187a6ae0e294eadcdb5",
+                  "toField": "inputs"
+                },
+                {
+                  "fromNode": "4012208a499e4fe8a965e5f8cb0b6321",
+                  "fromField": "value",
+                  "toNode": "2da67ffa21e34187a6ae0e294eadcdb5",
+                  "toField": "inputs"
+                },
+                {
+                  "fromNode": "2da67ffa21e34187a6ae0e294eadcdb5",
+                  "fromField": "output",
+                  "toNode": "end",
+                  "toField": "color"
                 }
               ],
               "properties": [
@@ -531,6 +559,13 @@
                   "data": {
                     "x": 1.0,
                     "y": 1.0
+                  }
+                },
+                {
+                  "name": "Color",
+                  "type": "Vector4",
+                  "data": {
+                    "color": "ffffffff"
                   }
                 }
               ],

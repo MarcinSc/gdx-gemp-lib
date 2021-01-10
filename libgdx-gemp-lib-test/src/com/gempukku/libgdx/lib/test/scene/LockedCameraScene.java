@@ -230,8 +230,8 @@ public class LockedCameraScene implements LibgdxLibTestScene {
         float width = Gdx.graphics.getWidth();
         float height = Gdx.graphics.getHeight();
 
-        float x = width / 2 + (crosshair.x - camera.position.x) / cameraScale;
-        float y = height / 2 + (crosshair.y - camera.position.y) / cameraScale;
+        float x = width / 2 + (crosshair.x - camera.position.x) / (camera.viewportWidth / width);
+        float y = height / 2 + (crosshair.y - camera.position.y) / (camera.viewportHeight / height);
 
         shapeRenderer.line(x - 5, y, x + 5, y);
         shapeRenderer.line(x, y - 5, x, y + 5);
