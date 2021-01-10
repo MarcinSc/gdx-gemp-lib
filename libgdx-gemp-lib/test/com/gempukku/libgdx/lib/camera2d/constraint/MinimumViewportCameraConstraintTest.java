@@ -13,7 +13,7 @@ public class MinimumViewportCameraConstraintTest extends LibGDXTest {
 
         OrthographicCamera camera = new OrthographicCamera(4, 3);
 
-        cameraConstraint.applyConstraint(camera, 0);
+        cameraConstraint.applyConstraint(camera, null, 0);
 
         assertEquals(4, camera.viewportWidth, 0.0001f);
         assertEquals(3, camera.viewportHeight, 0.0001f);
@@ -25,7 +25,7 @@ public class MinimumViewportCameraConstraintTest extends LibGDXTest {
 
         OrthographicCamera camera = new OrthographicCamera(4, 3);
 
-        cameraConstraint.applyConstraint(camera, 0);
+        cameraConstraint.applyConstraint(camera, null, 0);
 
         assertEquals(8, camera.viewportWidth, 0.0001f);
         assertEquals(6, camera.viewportHeight, 0.0001f);
@@ -37,7 +37,7 @@ public class MinimumViewportCameraConstraintTest extends LibGDXTest {
 
         OrthographicCamera camera = new OrthographicCamera(4, 3);
 
-        cameraConstraint.applyConstraint(camera, 0);
+        cameraConstraint.applyConstraint(camera, null, 0);
 
         assertEquals(8, camera.viewportWidth, 0.0001f);
         assertEquals(6, camera.viewportHeight, 0.0001f);
@@ -49,7 +49,7 @@ public class MinimumViewportCameraConstraintTest extends LibGDXTest {
 
         OrthographicCamera camera = new OrthographicCamera(4, 3);
 
-        cameraConstraint.applyConstraint(camera, 0);
+        cameraConstraint.applyConstraint(camera, null, 0);
 
         assertEquals(8, camera.viewportWidth, 0.0001f);
         assertEquals(6, camera.viewportHeight, 0.0001f);

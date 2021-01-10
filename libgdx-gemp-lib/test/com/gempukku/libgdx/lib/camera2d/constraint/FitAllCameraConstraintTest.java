@@ -18,7 +18,7 @@ public class FitAllCameraConstraintTest extends LibGDXTest {
 
         OrthographicCamera camera = new OrthographicCamera(4, 3);
 
-        cameraConstraint.applyConstraint(camera, 0);
+        cameraConstraint.applyConstraint(camera, null, 0);
 
         assertEquals(0, camera.viewportWidth, 0.0001f);
         assertEquals(0, camera.viewportHeight, 0.0001f);
@@ -34,7 +34,7 @@ public class FitAllCameraConstraintTest extends LibGDXTest {
 
         OrthographicCamera camera = new OrthographicCamera(4, 3);
 
-        cameraConstraint.applyConstraint(camera, 0);
+        cameraConstraint.applyConstraint(camera, null, 0);
 
         assertEquals(2f, camera.viewportWidth, 0.0001f);
         assertEquals(1.5f, camera.viewportHeight, 0.0001f);
@@ -50,7 +50,7 @@ public class FitAllCameraConstraintTest extends LibGDXTest {
 
         OrthographicCamera camera = new OrthographicCamera(4, 3);
 
-        cameraConstraint.applyConstraint(camera, 0);
+        cameraConstraint.applyConstraint(camera, null, 0);
 
         assertEquals(2.6666f, camera.viewportWidth, 0.0001f);
         assertEquals(2f, camera.viewportHeight, 0.0001f);
@@ -66,7 +66,7 @@ public class FitAllCameraConstraintTest extends LibGDXTest {
 
         OrthographicCamera camera = new OrthographicCamera(4, 3);
 
-        cameraConstraint.applyConstraint(camera, 0);
+        cameraConstraint.applyConstraint(camera, null, 0);
 
         assertEquals(8, camera.viewportWidth, 0.0001f);
         assertEquals(6, camera.viewportHeight, 0.0001f);

@@ -1,4 +1,4 @@
-package com.gempukku.libgdx.lib.camera2d.constraint.focus;
+package com.gempukku.libgdx.lib.camera2d.constraint;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Rectangle;

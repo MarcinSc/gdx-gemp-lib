@@ -30,9 +30,8 @@ import com.gempukku.libgdx.graph.shader.particles.generator.ParallelogramParticl
 import com.gempukku.libgdx.graph.time.DefaultTimeKeeper;
 import com.gempukku.libgdx.graph.time.TimeKeeper;
 import com.gempukku.libgdx.lib.camera2d.FocusCameraController;
+import com.gempukku.libgdx.lib.camera2d.constraint.LockedToCameraConstraint;
 import com.gempukku.libgdx.lib.camera2d.constraint.SceneCameraConstraint;
-import com.gempukku.libgdx.lib.camera2d.constraint.focus.CameraFocusConstraint;
-import com.gempukku.libgdx.lib.camera2d.constraint.focus.LockedToCameraConstraint;
 import com.gempukku.libgdx.lib.camera2d.focus.EntityFocus;
 import com.gempukku.libgdx.lib.camera2d.focus.PositionProvider;
 import com.gempukku.libgdx.lib.test.LibgdxLibTestScene;
@@ -125,9 +124,7 @@ public class FacingLockedSceneCameraScene implements LibgdxLibTestScene {
         FocusCameraController cameraController = new FocusCameraController(camera,
                 // Try to focus on the point provided by position provider
                 new EntityFocus(positionProvider),
-                new CameraFocusConstraint[]{
-                        new LockedToCameraConstraint(new Vector2(0.5f, 0.5f))
-                },
+                new LockedToCameraConstraint(new Vector2(0.5f, 0.5f)),
                 // Move the camera to make sure that pixels outside of the scene bounds are not shown
                 new SceneCameraConstraint(new Rectangle(-2560, -414, 5120, 2000)));
 

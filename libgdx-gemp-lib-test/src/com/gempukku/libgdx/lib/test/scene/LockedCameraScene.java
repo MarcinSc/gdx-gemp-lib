@@ -29,8 +29,7 @@ import com.gempukku.libgdx.graph.shader.particles.generator.ParallelogramParticl
 import com.gempukku.libgdx.graph.time.DefaultTimeKeeper;
 import com.gempukku.libgdx.graph.time.TimeKeeper;
 import com.gempukku.libgdx.lib.camera2d.FocusCameraController;
-import com.gempukku.libgdx.lib.camera2d.constraint.focus.CameraFocusConstraint;
-import com.gempukku.libgdx.lib.camera2d.constraint.focus.LockedToCameraConstraint;
+import com.gempukku.libgdx.lib.camera2d.constraint.LockedToCameraConstraint;
 import com.gempukku.libgdx.lib.camera2d.focus.EntityFocus;
 import com.gempukku.libgdx.lib.camera2d.focus.PositionProvider;
 import com.gempukku.libgdx.lib.test.LibgdxLibTestScene;
@@ -119,10 +118,8 @@ public class LockedCameraScene implements LibgdxLibTestScene {
         FocusCameraController cameraController = new FocusCameraController(camera,
                 // Try to focus on the point provided by position provider
                 new EntityFocus(positionProvider),
-                new CameraFocusConstraint[]{
-                        // Lock the camera to the focus (player)
-                        new LockedToCameraConstraint(new Vector2(0.5f, 0.5f))
-                });
+                // Lock the camera to the focus (player)
+                new LockedToCameraConstraint(new Vector2(0.5f, 0.5f)));
 
         engine.getSystem(CameraSystem.class).setConstraintCameraController(cameraController);
 

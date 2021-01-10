@@ -31,10 +31,9 @@ import com.gempukku.libgdx.graph.time.DefaultTimeKeeper;
 import com.gempukku.libgdx.graph.time.TimeKeeper;
 import com.gempukku.libgdx.lib.camera2d.FocusCameraController;
 import com.gempukku.libgdx.lib.camera2d.constraint.FitAllCameraConstraint;
+import com.gempukku.libgdx.lib.camera2d.constraint.LockedToCameraConstraint;
 import com.gempukku.libgdx.lib.camera2d.constraint.MinimumViewportCameraConstraint;
 import com.gempukku.libgdx.lib.camera2d.constraint.SceneCameraConstraint;
-import com.gempukku.libgdx.lib.camera2d.constraint.focus.CameraFocusConstraint;
-import com.gempukku.libgdx.lib.camera2d.constraint.focus.LockedToCameraConstraint;
 import com.gempukku.libgdx.lib.camera2d.focus.EntityFocus;
 import com.gempukku.libgdx.lib.camera2d.focus.FitAllCameraFocus;
 import com.gempukku.libgdx.lib.camera2d.focus.PositionProvider;
@@ -170,9 +169,7 @@ public class MultiplayerCameraScene implements LibgdxLibTestScene {
                         new EntityFocus(positionProvider1),
                         new EntityFocus(positionProvider2),
                         new EntityFocus(positionProvider3)),
-                new CameraFocusConstraint[]{
-                        new LockedToCameraConstraint(new Vector2(0.5f, 0.5f))
-                },
+                new LockedToCameraConstraint(new Vector2(0.5f, 0.5f)),
                 new FitAllCameraConstraint(gameAreaRectangle,
                         new EntityFocus(positionProvider1),
                         new EntityFocus(positionProvider2),

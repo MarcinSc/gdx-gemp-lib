@@ -16,7 +16,7 @@ public class SceneCameraConstraintTest extends LibGDXTest {
         camera.position.set(10, 10f, 0);
         camera.update();
 
-        cameraConstraint.applyConstraint(camera, 0);
+        cameraConstraint.applyConstraint(camera, null, 0);
 
         assertEquals(10, camera.position.x, 0.0001f);
         assertEquals(10, camera.position.y, 0.0001f);
@@ -30,7 +30,7 @@ public class SceneCameraConstraintTest extends LibGDXTest {
         camera.position.set(0, 10f, 0);
         camera.update();
 
-        cameraConstraint.applyConstraint(camera, 0);
+        cameraConstraint.applyConstraint(camera, null, 0);
 
         assertEquals(2, camera.position.x, 0.0001f);
         assertEquals(10, camera.position.y, 0.0001f);
@@ -44,7 +44,7 @@ public class SceneCameraConstraintTest extends LibGDXTest {
         camera.position.set(200, 10f, 0);
         camera.update();
 
-        cameraConstraint.applyConstraint(camera, 0);
+        cameraConstraint.applyConstraint(camera, null, 0);
 
         assertEquals(198, camera.position.x, 0.0001f);
         assertEquals(10, camera.position.y, 0.0001f);
@@ -58,7 +58,7 @@ public class SceneCameraConstraintTest extends LibGDXTest {
         camera.position.set(10, 0f, 0);
         camera.update();
 
-        cameraConstraint.applyConstraint(camera, 0);
+        cameraConstraint.applyConstraint(camera, null, 0);
 
         assertEquals(10, camera.position.x, 0.0001f);
         assertEquals(1.5f, camera.position.y, 0.0001f);
@@ -72,7 +72,7 @@ public class SceneCameraConstraintTest extends LibGDXTest {
         camera.position.set(10, 100f, 0);
         camera.update();
 
-        cameraConstraint.applyConstraint(camera, 0);
+        cameraConstraint.applyConstraint(camera, null, 0);
 
         assertEquals(10, camera.position.x, 0.0001f);
         assertEquals(98.5f, camera.position.y, 0.0001f);

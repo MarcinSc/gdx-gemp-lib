@@ -1,20 +1,18 @@
-package com.gempukku.libgdx.lib.camera2d.constraint.focus;
+package com.gempukku.libgdx.lib.camera2d.constraint;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
-public class LerpToWindowCameraConstraint implements CameraFocusConstraint {
+public class SnapToWindowCameraConstraint implements CameraConstraint {
     private Rectangle snapRectangle;
-    private Vector2 partPerSecond;
-    private Vector2 maxSpeed;
+    private Vector2 snapSpeed;
 
     private Vector2 tmpVector = new Vector2();
 
-    public LerpToWindowCameraConstraint(Rectangle snapRectangle, Vector2 partPerSecond, Vector2 maxSpeed) {
+    public SnapToWindowCameraConstraint(Rectangle snapRectangle, Vector2 snapSpeed) {
         this.snapRectangle = snapRectangle;
-        this.partPerSecond = partPerSecond;
-        this.maxSpeed = maxSpeed;
+        this.snapSpeed = snapSpeed;
     }
 
     @Override
@@ -23,8 +21,8 @@ public class LerpToWindowCameraConstraint implements CameraFocusConstraint {
         float currentAnchorY = 0.5f + (focus.y - camera.position.y) / camera.viewportHeight;
 
         Vector2 snapChange = getRequiredChangeToRectangle(snapRectangle, tmpVector, currentAnchorX, currentAnchorY);
-        snapChange.x = Math.signum(snapChange.x) * Math.min(maxSpeed.x * delta, Math.abs(snapChange.x * partPerSecond.x * delta));
-        snapChange.y = Math.signum(snapChange.y) * Math.min(maxSpeed.y * delta, Math.abs(snapChange.y * partPerSecond.y * delta));
+        snapChange.x = Math.signum(snapChange.x) * Math.min(snapSpeed.x * delta, Math.abs(snapChange.x));
+        snapChange.y = Math.signum(snapChange.y) * Math.min(snapSpeed.y * delta, Math.abs(snapChange.y));
 
         float moveX = camera.viewportWidth * snapChange.x;
         float moveY = camera.viewportHeight * snapChange.y;

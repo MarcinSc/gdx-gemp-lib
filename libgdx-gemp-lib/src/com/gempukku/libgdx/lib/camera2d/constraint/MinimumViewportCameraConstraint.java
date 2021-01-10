@@ -1,6 +1,7 @@
 package com.gempukku.libgdx.lib.camera2d.constraint;
 
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.math.Vector2;
 
 public class MinimumViewportCameraConstraint implements CameraConstraint {
     private float width;
@@ -24,7 +25,7 @@ public class MinimumViewportCameraConstraint implements CameraConstraint {
     }
 
     @Override
-    public void applyConstraint(Camera camera, float delta) {
+    public void applyConstraint(Camera camera, Vector2 focus, float delta) {
         float cameraAspectRatio = camera.viewportWidth / camera.viewportHeight;
 
         float resultWidth = Math.max(width, camera.viewportWidth);

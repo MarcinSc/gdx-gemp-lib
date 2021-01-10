@@ -1,9 +1,9 @@
-package com.gempukku.libgdx.lib.camera2d.constraint.focus;
+package com.gempukku.libgdx.lib.camera2d.constraint;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 
-public class LockedToCameraConstraint implements CameraFocusConstraint {
+public class LockedToCameraConstraint implements CameraConstraint {
     private Vector2 anchor = new Vector2();
 
     public LockedToCameraConstraint(Vector2 anchor) {

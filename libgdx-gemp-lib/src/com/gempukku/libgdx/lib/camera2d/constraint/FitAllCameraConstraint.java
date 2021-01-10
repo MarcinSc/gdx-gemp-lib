@@ -27,7 +27,7 @@ public class FitAllCameraConstraint implements CameraConstraint {
     }
 
     @Override
-    public void applyConstraint(Camera camera, float delta) {
+    public void applyConstraint(Camera camera, Vector2 focus, float delta) {
         boolean first = true;
         for (CameraFocus cameraFocus : cameraFocusArray) {
             tmpVector = cameraFocus.getFocus(tmpVector);

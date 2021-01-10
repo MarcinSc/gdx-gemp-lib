@@ -15,7 +15,7 @@ public class SceneCameraConstraint implements CameraConstraint {
     }
 
     @Override
-    public void applyConstraint(Camera camera, float delta) {
+    public void applyConstraint(Camera camera, Vector2 focus, float delta) {
         Vector2 visibleMin = tmpVector1.set(camera.position.x, camera.position.y).add(-camera.viewportWidth / 2f, -camera.viewportHeight / 2f);
         Vector2 visibleMax = tmpVector2.set(camera.position.x, camera.position.y).add(+camera.viewportWidth / 2f, +camera.viewportHeight / 2f);
 
