@@ -18,7 +18,7 @@ public class AshleyTemplateEntityLoader {
         return convertToAshley(jsonValue, json);
     }
 
-    private static EntityDef convertToAshley(JsonValue jsonValue, Json json) {
+    public static EntityDef convertToAshley(JsonValue jsonValue, Json json) {
         JsonValue ashleyJson = convertToAshleyEntityJson(jsonValue);
         System.out.println(ashleyJson.toJson(JsonWriter.OutputType.json));
         return json.readValue(EntityDef.class, ashleyJson);
