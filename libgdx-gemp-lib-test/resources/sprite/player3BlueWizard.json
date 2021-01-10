@@ -2,8 +2,8 @@
   "components": [
     {
       "class": "com.gempukku.libgdx.lib.test.component.PositionComponent",
-      "x": -270,
-      "y": -310
+      "x": 0,
+      "y": 0
     },
     {
       "class": "com.gempukku.libgdx.lib.test.component.SizeComponent",

@@ -24,7 +24,7 @@ allprojects {
         gdxVersion = '1.9.12'
         roboVMVersion = '2.3.8'
         box2DLightsVersion = '1.4'
-        gdxGraphVersion = '0.5.1-SNAPSHOT'
+        gdxGraphVersion = '0.5.1'
         ashleyVersion = '1.7.0'
         aiVersion = '1.8.0'
     }

@@ -74,6 +74,7 @@ public class MultiplayerCameraScene implements LibgdxLibTestScene {
     private int cameraScale = 3;
     private PositionProvider positionProvider1;
     private PositionProvider positionProvider2;
+    private PositionProvider positionProvider3;
     private Rectangle gameAreaRectangle;
 
     @Override
@@ -104,6 +105,7 @@ public class MultiplayerCameraScene implements LibgdxLibTestScene {
 
         final Entity playerEntity1 = EntityLoader.readEntity(engine, json, "sprite/playerBlueWizard.json");
         final Entity playerEntity2 = EntityLoader.readEntity(engine, json, "sprite/player2BlueWizard.json");
+        final Entity playerEntity3 = EntityLoader.readEntity(engine, json, "sprite/player3BlueWizard.json");
         engine.getSystem(PlayerControlSystem.class).setPlayerEntity(playerEntity1);
 
         positionProvider1 = new PositionProvider() {
@@ -142,19 +144,39 @@ public class MultiplayerCameraScene implements LibgdxLibTestScene {
             }
         };
 
+        positionProvider3 = new PositionProvider() {
+            @Override
+            public Vector2 getPosition(Vector2 position) {
+                PositionComponent positionComponent = playerEntity3.getComponent(PositionComponent.class);
+                SizeComponent sizeComponent = playerEntity3.getComponent(SizeComponent.class);
+                AnchorComponent anchorComponent = playerEntity3.getComponent(AnchorComponent.class);
+
+                Vector2 anchorPos = positionComponent.getPosition(position);
+                float x = anchorPos.x;
+                float y = anchorPos.y;
+                Vector2 anchor = anchorComponent.getAnchor(position);
+                float anchorX = anchor.x;
+                float anchorY = anchor.y;
+                Vector2 size = sizeComponent.getSize(position);
+                return position.set(x + (anchorX - 0.5f) * size.x, y + (anchorY - 0.5f) * size.y);
+            }
+        };
+
         gameAreaRectangle = new Rectangle(0.2f, 0.2f, 0.6f, 0.6f);
 
         FocusCameraController cameraController = new FocusCameraController(camera,
                 // Try to focus on the point provided by position provider
                 new FitAllCameraFocus(
                         new EntityFocus(positionProvider1),
-                        new EntityFocus(positionProvider2)),
+                        new EntityFocus(positionProvider2),
+                        new EntityFocus(positionProvider3)),
                 new CameraFocusConstraint[]{
                         new LockedToCameraConstraint(new Vector2(0.5f, 0.5f))
                 },
                 new FitAllCameraConstraint(gameAreaRectangle,
                         new EntityFocus(positionProvider1),
-                        new EntityFocus(positionProvider2)),
+                        new EntityFocus(positionProvider2),
+                        new EntityFocus(positionProvider3)),
                 new MinimumViewportCameraConstraint(1280, 720),
                 new SceneCameraConstraint(new Rectangle(-2560, -414, 5120, 2000)));
 
@@ -253,6 +275,7 @@ public class MultiplayerCameraScene implements LibgdxLibTestScene {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         drawCrosshair(Color.WHITE, shapeRenderer, positionProvider1);
         drawCrosshair(Color.WHITE, shapeRenderer, positionProvider2);
+        drawCrosshair(Color.WHITE, shapeRenderer, positionProvider3);
         drawRect(Color.WHITE, shapeRenderer, gameAreaRectangle);
         shapeRenderer.end();
 
