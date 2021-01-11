@@ -2,7 +2,6 @@ package com.gempukku.libgdx.lib.template;
 
 import com.badlogic.gdx.assets.loaders.resolvers.ClasspathFileHandleResolver;
 import com.badlogic.gdx.utils.JsonValue;
-import com.badlogic.gdx.utils.JsonWriter;
 import com.gempukku.libgdx.lib.LibGDXTest;
 import org.junit.Test;
 
@@ -40,7 +39,6 @@ public class JsonTemplateLoaderTest extends LibGDXTest {
     @Test
     public void testOverrideInFile() {
         JsonValue result = JsonTemplateLoader.loadTemplateFromFile("template/overrideInFile.json", new ClasspathFileHandleResolver());
-        System.out.println(result.toJson(JsonWriter.OutputType.json));
         assertTrue(result.isObject());
         assertEquals(1, result.size);
         assertEquals("c", result.getString("a"));
@@ -96,5 +94,29 @@ public class JsonTemplateLoaderTest extends LibGDXTest {
         assertTrue(objectInArray.isObject());
         JsonValue a = objectInArray.get("a");
         assertEquals("b", a.asString());
+    }
+
+    @Test
+    public void testOverrideMergesObject() {
+        JsonValue result = JsonTemplateLoader.loadTemplateFromFile("template/overrideMerge.json", new ClasspathFileHandleResolver());
+        assertTrue(result.isObject());
+        assertEquals(1, result.size);
+        JsonValue c = result.get("c");
+        assertTrue(c.isObject());
+        assertEquals(2, c.size);
+        JsonValue a = c.get("a");
+        assertEquals("b", a.asString());
+        JsonValue b = c.get("b");
+        assertEquals("c", b.asString());
+    }
+
+    @Test
+    public void testMergeTemplates() {
+        JsonValue result = JsonTemplateLoader.loadTemplateFromFile("template/mergeTemplates.json", new ClasspathFileHandleResolver());
+        assertTrue(result.isObject());
+        assertEquals(3, result.size);
+        assertEquals("b", result.getString("a"));
+        assertEquals("c", result.getString("b"));
+        assertEquals("d", result.getString("c"));
     }
 }

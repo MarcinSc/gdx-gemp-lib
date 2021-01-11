@@ -98,9 +98,34 @@ public class JsonTemplateLoader {
     private static void appendField(JsonValue field, JsonValue result, ObjectSet<String> removeFields, FileHandleResolver resolver) {
         String fieldName = field.name();
         if (!fieldName.startsWith("tpl:") && (removeFields == null || !removeFields.contains(fieldName))) {
-            if (result.has(fieldName))
-                result.remove(fieldName);
-            result.addChild(field.name(), resolveJson(field, resolver));
+            if (result.has(fieldName)) {
+                JsonValue existingChild = result.get(fieldName);
+                if (existingChild.isObject() && field.isObject()) {
+                    mergeIn(field, existingChild);
+                } else {
+                    result.remove(fieldName);
+                    result.addChild(fieldName, resolveJson(field, resolver));
+                }
+            } else {
+                result.addChild(fieldName, resolveJson(field, resolver));
+            }
+        }
+    }
+
+    private static void mergeIn(JsonValue merge, JsonValue into) {
+        for (JsonValue fieldInObject : merge) {
+            String fieldName = fieldInObject.name();
+            if (into.has(fieldName)) {
+                JsonValue existingChild = into.get(fieldName);
+                if (existingChild.isObject() && fieldInObject.isObject()) {
+                    mergeIn(fieldInObject, into);
+                } else {
+                    into.remove(fieldName);
+                    into.addChild(fieldName, resolveJson(fieldInObject, null));
+                }
+            } else {
+                into.addChild(fieldName, resolveJson(fieldInObject, null));
+            }
         }
     }
 
