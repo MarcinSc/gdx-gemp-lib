@@ -7,6 +7,10 @@ public class LockedToCameraConstraint implements CameraConstraint {
     private Vector2 anchor = new Vector2();
 
     public LockedToCameraConstraint(Vector2 anchor) {
+        setAnchor(anchor);
+    }
+
+    public void setAnchor(Vector2 anchor) {
         this.anchor.set(anchor);
     }
 

@@ -5,14 +5,22 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 public class SnapToWindowCameraConstraint implements CameraConstraint {
-    private Rectangle snapRectangle;
-    private Vector2 snapSpeed;
+    private Rectangle window = new Rectangle();
+    private Vector2 speed = new Vector2();
 
     private Vector2 tmpVector = new Vector2();
 
-    public SnapToWindowCameraConstraint(Rectangle snapRectangle, Vector2 snapSpeed) {
-        this.snapRectangle = snapRectangle;
-        this.snapSpeed = snapSpeed;
+    public SnapToWindowCameraConstraint(Rectangle window, Vector2 speed) {
+        setWindow(window);
+        setSpeed(speed);
+    }
+
+    public void setWindow(Rectangle window) {
+        this.window.set(window);
+    }
+
+    public void setSpeed(Vector2 speed) {
+        this.speed.set(speed);
     }
 
     @Override
@@ -20,9 +28,9 @@ public class SnapToWindowCameraConstraint implements CameraConstraint {
         float currentAnchorX = 0.5f + (focus.x - camera.position.x) / camera.viewportWidth;
         float currentAnchorY = 0.5f + (focus.y - camera.position.y) / camera.viewportHeight;
 
-        Vector2 snapChange = getRequiredChangeToRectangle(snapRectangle, tmpVector, currentAnchorX, currentAnchorY);
-        snapChange.x = Math.signum(snapChange.x) * Math.min(snapSpeed.x * delta, Math.abs(snapChange.x));
-        snapChange.y = Math.signum(snapChange.y) * Math.min(snapSpeed.y * delta, Math.abs(snapChange.y));
+        Vector2 snapChange = getRequiredChangeToRectangle(window, tmpVector, currentAnchorX, currentAnchorY);
+        snapChange.x = Math.signum(snapChange.x) * Math.min(speed.x * delta, Math.abs(snapChange.x));
+        snapChange.y = Math.signum(snapChange.y) * Math.min(speed.y * delta, Math.abs(snapChange.y));
 
         float moveX = camera.viewportWidth * snapChange.x;
         float moveY = camera.viewportHeight * snapChange.y;

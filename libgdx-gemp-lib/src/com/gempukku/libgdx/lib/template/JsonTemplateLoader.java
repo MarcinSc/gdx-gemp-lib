@@ -1,17 +1,20 @@
 package com.gempukku.libgdx.lib.template;
 
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.JsonWriter;
 import com.badlogic.gdx.utils.ObjectSet;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class JsonTemplateLoader {
-    private static final List<String> ACCEPTED_TPL_FIELDS = Arrays.asList("tpl:extends", "tpl:removeFields");
+    private static final List<String> ACCEPTED_TPL_FIELDS = Arrays.asList("tpl:extends", "tpl:removeFields", "tpl:comment");
 
     public static JsonValue loadTemplateFromString(String jsonString, FileHandleResolver resolver) {
         JsonValue originalJson = new JsonReader().parse(jsonString);
@@ -28,7 +31,10 @@ public class JsonTemplateLoader {
     }
 
     private static JsonValue resolveTemplate(JsonValue originalJson, FileHandleResolver resolver) {
-        return resolveJson(originalJson, resolver);
+        JsonValue jsonValue = resolveJson(originalJson, resolver);
+        if (Gdx.app.getLogLevel() >= Application.LOG_DEBUG)
+            Gdx.app.debug("JsonTemplate", jsonValue.toJson(JsonWriter.OutputType.json));
+        return jsonValue;
     }
 
     private static JsonValue resolveJson(JsonValue json, FileHandleResolver resolver) {
@@ -118,7 +124,7 @@ public class JsonTemplateLoader {
             if (into.has(fieldName)) {
                 JsonValue existingChild = into.get(fieldName);
                 if (existingChild.isObject() && fieldInObject.isObject()) {
-                    mergeIn(fieldInObject, into);
+                    mergeIn(fieldInObject, existingChild);
                 } else {
                     into.remove(fieldName);
                     into.addChild(fieldName, resolveJson(fieldInObject, null));

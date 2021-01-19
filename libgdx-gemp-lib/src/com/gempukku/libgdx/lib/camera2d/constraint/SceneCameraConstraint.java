@@ -5,13 +5,17 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 public class SceneCameraConstraint implements CameraConstraint {
-    private Rectangle scene;
+    private Rectangle bounds = new Rectangle();
 
     private Vector2 tmpVector1 = new Vector2();
     private Vector2 tmpVector2 = new Vector2();
 
-    public SceneCameraConstraint(Rectangle scene) {
-        this.scene = scene;
+    public SceneCameraConstraint(Rectangle bounds) {
+        setBounds(bounds);
+    }
+
+    public void setBounds(Rectangle bounds) {
+        this.bounds.set(bounds);
     }
 
     @Override
@@ -19,8 +23,8 @@ public class SceneCameraConstraint implements CameraConstraint {
         Vector2 visibleMin = tmpVector1.set(camera.position.x, camera.position.y).add(-camera.viewportWidth / 2f, -camera.viewportHeight / 2f);
         Vector2 visibleMax = tmpVector2.set(camera.position.x, camera.position.y).add(+camera.viewportWidth / 2f, +camera.viewportHeight / 2f);
 
-        float moveX = Math.min(Math.max(0, scene.x - visibleMin.x), scene.x + scene.width - visibleMax.x);
-        float moveY = Math.min(Math.max(0, scene.y - visibleMin.y), scene.y + scene.height - visibleMax.y);
+        float moveX = Math.min(Math.max(0, bounds.x - visibleMin.x), bounds.x + bounds.width - visibleMax.x);
+        float moveY = Math.min(Math.max(0, bounds.y - visibleMin.y), bounds.y + bounds.height - visibleMax.y);
 
         camera.position.x += moveX;
         camera.position.y += moveY;

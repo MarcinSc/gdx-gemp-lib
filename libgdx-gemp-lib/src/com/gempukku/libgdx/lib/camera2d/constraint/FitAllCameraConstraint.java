@@ -3,19 +3,23 @@ package com.gempukku.libgdx.lib.camera2d.constraint;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectSet;
 import com.gempukku.libgdx.lib.camera2d.focus.CameraFocus;
 
 public class FitAllCameraConstraint implements CameraConstraint {
-    private Rectangle window;
-    private Array<CameraFocus> cameraFocusArray = new Array<>();
+    private Rectangle window = new Rectangle();
+    private ObjectSet<CameraFocus> cameraFocusArray = new ObjectSet<>();
 
     private Rectangle tmpRectangle = new Rectangle();
     private Vector2 tmpVector = new Vector2();
 
     public FitAllCameraConstraint(Rectangle window, CameraFocus... cameraFoci) {
-        this.window = window;
+        setWindow(window);
         cameraFocusArray.addAll(cameraFoci);
+    }
+
+    public void setWindow(Rectangle window) {
+        this.window.set(window);
     }
 
     public void addCameraFocus(CameraFocus cameraFocus) {
@@ -23,7 +27,7 @@ public class FitAllCameraConstraint implements CameraConstraint {
     }
 
     public void removeCameraFocus(CameraFocus cameraFocus) {
-        cameraFocusArray.removeValue(cameraFocus, true);
+        cameraFocusArray.remove(cameraFocus);
     }
 
     @Override

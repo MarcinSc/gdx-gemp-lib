@@ -5,16 +5,28 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 public class LerpToWindowCameraConstraint implements CameraConstraint {
-    private Rectangle snapRectangle;
-    private Vector2 partPerSecond;
-    private Vector2 maxSpeed;
+    private Rectangle window = new Rectangle();
+    private Vector2 partPerSecond = new Vector2();
+    private Vector2 maxSpeed = new Vector2();
 
     private Vector2 tmpVector = new Vector2();
 
-    public LerpToWindowCameraConstraint(Rectangle snapRectangle, Vector2 partPerSecond, Vector2 maxSpeed) {
-        this.snapRectangle = snapRectangle;
-        this.partPerSecond = partPerSecond;
-        this.maxSpeed = maxSpeed;
+    public LerpToWindowCameraConstraint(Rectangle window, Vector2 partPerSecond, Vector2 maxSpeed) {
+        setWindow(window);
+        setPartPerSecond(partPerSecond);
+        setMaxSpeed(maxSpeed);
+    }
+
+    public void setWindow(Rectangle window) {
+        this.window.set(window);
+    }
+
+    public void setPartPerSecond(Vector2 partPerSecond) {
+        this.partPerSecond.set(partPerSecond);
+    }
+
+    public void setMaxSpeed(Vector2 maxSpeed) {
+        this.maxSpeed.set(maxSpeed);
     }
 
     @Override
@@ -22,7 +34,7 @@ public class LerpToWindowCameraConstraint implements CameraConstraint {
         float currentAnchorX = 0.5f + (focus.x - camera.position.x) / camera.viewportWidth;
         float currentAnchorY = 0.5f + (focus.y - camera.position.y) / camera.viewportHeight;
 
-        Vector2 snapChange = getRequiredChangeToRectangle(snapRectangle, tmpVector, currentAnchorX, currentAnchorY);
+        Vector2 snapChange = getRequiredChangeToRectangle(window, tmpVector, currentAnchorX, currentAnchorY);
         snapChange.x = Math.signum(snapChange.x) * Math.min(maxSpeed.x * delta, Math.abs(snapChange.x * partPerSecond.x * delta));
         snapChange.y = Math.signum(snapChange.y) * Math.min(maxSpeed.y * delta, Math.abs(snapChange.y * partPerSecond.y * delta));
 

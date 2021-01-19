@@ -5,19 +5,23 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 public class LockedToWindowCameraConstraint implements CameraConstraint {
-    private Rectangle windowRectangle;
+    private Rectangle window = new Rectangle();
 
     private Vector2 tmpVector = new Vector2();
 
-    public LockedToWindowCameraConstraint(Rectangle windowRectangle) {
-        this.windowRectangle = windowRectangle;
+    public LockedToWindowCameraConstraint(Rectangle window) {
+        setWindow(window);
+    }
+
+    public void setWindow(Rectangle window) {
+        this.window.set(window);
     }
 
     @Override
     public void applyConstraint(Camera camera, Vector2 focus, float delta) {
         float currentAnchorX = 0.5f + (focus.x - camera.position.x) / camera.viewportWidth;
         float currentAnchorY = 0.5f + (focus.y - camera.position.y) / camera.viewportHeight;
-        Vector2 snapChange = getRequiredChangeToRectangle(windowRectangle, tmpVector, currentAnchorX, currentAnchorY);
+        Vector2 snapChange = getRequiredChangeToRectangle(window, tmpVector, currentAnchorX, currentAnchorY);
         float moveX = camera.viewportWidth * snapChange.x;
         float moveY = camera.viewportHeight * snapChange.y;
         camera.position.x += moveX;

@@ -2,13 +2,14 @@ package com.gempukku.libgdx.lib.camera2d;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.gempukku.libgdx.lib.camera2d.constraint.CameraConstraint;
 import com.gempukku.libgdx.lib.camera2d.focus.CameraFocus;
 
 public class FocusCameraController {
     private Camera camera;
     private CameraFocus cameraFocus;
-    private CameraConstraint[] constraints;
+    private Array<CameraConstraint> constraints = new Array<>();
 
     private Vector2 tmpVector = new Vector2();
 
@@ -16,7 +17,7 @@ public class FocusCameraController {
                                  CameraConstraint... constraints) {
         this.camera = camera;
         this.cameraFocus = cameraFocus;
-        this.constraints = constraints;
+        this.constraints.addAll(constraints);
     }
 
     public void setCameraFocus(CameraFocus cameraFocus) {
@@ -25,6 +26,14 @@ public class FocusCameraController {
 
     public void setCamera(Camera camera) {
         this.camera = camera;
+    }
+
+    public void addCameraConstraint(CameraConstraint cameraConstraint) {
+        constraints.add(cameraConstraint);
+    }
+
+    public void removeCameraConstraint(CameraConstraint cameraConstraint) {
+        constraints.removeValue(cameraConstraint, true);
     }
 
     public void update(float delta) {
