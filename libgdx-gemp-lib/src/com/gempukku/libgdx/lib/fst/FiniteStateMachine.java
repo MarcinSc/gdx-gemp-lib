@@ -2,10 +2,12 @@ package com.gempukku.libgdx.lib.fst;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectSet;
 
 public class FiniteStateMachine {
     private String currentState;
     private ObjectMap<String, FiniteMachineState> states = new ObjectMap<>();
+    private ObjectSet<String> tmpSet = new ObjectSet<>();
 
     public FiniteStateMachine(String initialState, MachineState machineState) {
         this.currentState = initialState;
@@ -30,10 +32,13 @@ public class FiniteStateMachine {
     }
 
     public void update(float delta) {
+        tmpSet.clear();
         FiniteMachineState finiteMachineState = states.get(currentState);
         while (true) {
+            tmpSet.add(currentState);
             String newStateName = finiteMachineState.checkTransitions();
-            if (newStateName == null)
+            // Can't transition to a state the machine has been in, this frame already
+            if (newStateName == null || tmpSet.contains(newStateName))
                 break;
             finiteMachineState.getMachineState().transitioningTo(newStateName);
             finiteMachineState = states.get(newStateName);
