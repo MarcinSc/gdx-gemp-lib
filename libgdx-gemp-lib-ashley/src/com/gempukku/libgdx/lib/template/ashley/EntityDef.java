@@ -1,15 +1,12 @@
 package com.gempukku.libgdx.lib.template.ashley;
 
 import com.badlogic.ashley.core.Component;
+import com.badlogic.gdx.utils.Array;
 
 public class EntityDef {
-    private Component[] components;
+    private Array<Component> components;
 
-    public Component[] getComponents() {
+    public Array<Component> getComponents() {
         return components;
-    }
-
-    public void setComponents(Component[] components) {
-        this.components = components;
     }
 }
