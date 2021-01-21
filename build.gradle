@@ -18,7 +18,7 @@ allprojects {
     apply plugin: "maven-publish"
 
     group = "com.gempukku.libgdx.lib"
-    version = '0.1.9'
+    version = '0.1.10'
     ext {
         appName = "Libgdx Graph"
         gdxVersion = '1.9.12'
@@ -64,7 +64,7 @@ project(":libgdx-gemp-lib-ashley") {
 
     dependencies {
         implementation project(":libgdx-gemp-lib")
-        api "com.badlogicgames.ashley:ashley:$ashleyVersion"
+        api 'com.github.libgdx:ashley:d4dc6d4f9c'
 
         testImplementation 'junit:junit:4.13'
         testImplementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
