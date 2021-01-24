@@ -202,6 +202,8 @@ public class FacingLockedSceneCameraScene implements LibgdxLibTestScene {
     @Override
     public void resizeScene(int width, int height) {
         stage.getViewport().update(width, height, true);
+        shapeRenderer.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
+        shapeRenderer.updateMatrices();
         camera.viewportWidth = width * cameraScale;
         camera.viewportHeight = height * cameraScale;
         camera.update();
