@@ -67,6 +67,9 @@ public class JsonTemplateLoader {
         }
 
         if (json.has("tpl:removeFields")) {
+            if (!json.has("tpl:extends"))
+                throw new GdxRuntimeException("tmp:removeFields can only be used in combination with tpl:extends");
+
             JsonValue jsonValue = json.get("tpl:removeFields");
             if (jsonValue.isString()) {
                 removeFields = new ObjectSet<>();
@@ -89,7 +92,10 @@ public class JsonTemplateLoader {
             }
         }
         for (JsonValue jsonValue : json) {
-            appendField(jsonValue, result, removeFields, resolver);
+            String fieldName = jsonValue.name();
+            if (!fieldName.startsWith("tpl:")) {
+                appendField(jsonValue, result, removeFields, resolver);
+            }
         }
 
         return result;
@@ -103,7 +109,7 @@ public class JsonTemplateLoader {
 
     private static void appendField(JsonValue field, JsonValue result, ObjectSet<String> removeFields, FileHandleResolver resolver) {
         String fieldName = field.name();
-        if (!fieldName.startsWith("tpl:") && (removeFields == null || !removeFields.contains(fieldName))) {
+        if (removeFields == null || !removeFields.contains(fieldName)) {
             if (result.has(fieldName)) {
                 JsonValue existingChild = result.get(fieldName);
                 if (existingChild.isObject() && field.isObject()) {

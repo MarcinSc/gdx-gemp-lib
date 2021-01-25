@@ -13,16 +13,16 @@ public class AshleyTemplateEntityLoaderTest extends LibGDXTest {
     @Test
     public void testSimple() {
         EntityDef entityDef = AshleyTemplateEntityLoader.loadTemplate("entity/simple.json", new Json(), new ClasspathFileHandleResolver());
-        assertEquals(1, entityDef.getComponents().length);
-        assertTrue(entityDef.getComponents()[0] instanceof TestComponent);
-        TestComponent test = (TestComponent) entityDef.getComponents()[0];
+        assertEquals(1, entityDef.getComponents().size);
+        assertTrue(entityDef.getComponents().get(0) instanceof TestComponent);
+        TestComponent test = (TestComponent) entityDef.getComponents().get(0);
         assertEquals("b", test.getA());
     }
 
     @Test
     public void testMultiple() {
         EntityDef entityDef = AshleyTemplateEntityLoader.loadTemplate("entity/multiple.json", new Json(), new ClasspathFileHandleResolver());
-        assertEquals(2, entityDef.getComponents().length);
+        assertEquals(2, entityDef.getComponents().size);
         for (Component component : entityDef.getComponents()) {
             if (component instanceof TestComponent) {
                 assertEquals("b", ((TestComponent) component).getA());
@@ -35,7 +35,7 @@ public class AshleyTemplateEntityLoaderTest extends LibGDXTest {
     @Test
     public void testExtends() {
         EntityDef entityDef = AshleyTemplateEntityLoader.loadTemplate("entity/extend.json", new Json(), new ClasspathFileHandleResolver());
-        assertEquals(2, entityDef.getComponents().length);
+        assertEquals(2, entityDef.getComponents().size);
         for (Component component : entityDef.getComponents()) {
             if (component instanceof TestComponent) {
                 assertEquals("b", ((TestComponent) component).getA());

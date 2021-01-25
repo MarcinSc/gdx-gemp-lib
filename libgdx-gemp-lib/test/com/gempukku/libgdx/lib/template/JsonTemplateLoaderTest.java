@@ -2,7 +2,6 @@ package com.gempukku.libgdx.lib.template;
 
 import com.badlogic.gdx.assets.loaders.resolvers.ClasspathFileHandleResolver;
 import com.badlogic.gdx.utils.JsonValue;
-import com.badlogic.gdx.utils.JsonWriter;
 import com.gempukku.libgdx.lib.LibGDXTest;
 import org.junit.Test;
 
@@ -124,7 +123,6 @@ public class JsonTemplateLoaderTest extends LibGDXTest {
     @Test
     public void testDeepMerge() {
         JsonValue result = JsonTemplateLoader.loadTemplateFromFile("template/deepMerge.json", new ClasspathFileHandleResolver());
-        System.out.println(result.toJson(JsonWriter.OutputType.json));
         assertTrue(result.isObject());
         assertEquals(1, result.size);
         JsonValue a = result.get("a");
