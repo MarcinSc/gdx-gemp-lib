@@ -68,7 +68,7 @@ public class JsonTemplateLoader {
 
         if (json.has("tpl:removeFields")) {
             if (!json.has("tpl:extends"))
-                throw new GdxRuntimeException("tmp:removeFields can only be used in combination with tpl:extends");
+                throw new GdxRuntimeException("tpl:removeFields can only be used in combination with tpl:extends");
 
             JsonValue jsonValue = json.get("tpl:removeFields");
             if (jsonValue.isString()) {
