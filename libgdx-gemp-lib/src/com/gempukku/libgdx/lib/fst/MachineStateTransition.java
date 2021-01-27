@@ -1,7 +1,7 @@
 package com.gempukku.libgdx.lib.fst;
 
 public interface MachineStateTransition {
-    String getState();
+    void reset();
 
     boolean isTriggered();
 }

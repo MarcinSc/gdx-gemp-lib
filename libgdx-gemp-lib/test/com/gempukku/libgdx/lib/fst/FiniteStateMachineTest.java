@@ -10,7 +10,8 @@ public class FiniteStateMachineTest extends LibGDXTest {
     @Test
     public void machineWithOneState() {
         MachineStateImpl state = new MachineStateImpl();
-        FiniteStateMachine fsm = new FiniteStateMachine("initial", state);
+        TriggerMachineState triggerState = new TriggerMachineState(state);
+        FiniteStateMachine fsm = new FiniteStateMachine("initial", triggerState);
         fsm.update(0f);
 
         assertEquals("initial", fsm.getCurrentState());
@@ -22,10 +23,14 @@ public class FiniteStateMachineTest extends LibGDXTest {
     @Test
     public void machineTransition() {
         MachineStateImpl initialState = new MachineStateImpl();
+        TriggerMachineState initialTriggerState = new TriggerMachineState(initialState);
+        initialTriggerState.addTransition("second", new GoTransition());
+
         MachineStateImpl secondState = new MachineStateImpl();
-        FiniteStateMachine fsm = new FiniteStateMachine("initial", initialState);
-        fsm.addState("second", secondState);
-        fsm.addStateTransition("initial", new GoTransition("second"));
+        TriggerMachineState secondTriggerState = new TriggerMachineState(secondState);
+
+        FiniteStateMachine fsm = new FiniteStateMachine("initial", initialTriggerState);
+        fsm.addState("second", secondTriggerState);
         fsm.update(0f);
 
         assertEquals("second", fsm.getCurrentState());
@@ -42,10 +47,14 @@ public class FiniteStateMachineTest extends LibGDXTest {
     @Test
     public void noTransition() {
         MachineStateImpl initialState = new MachineStateImpl();
+        TriggerMachineState initialTriggerState = new TriggerMachineState(initialState);
+        initialTriggerState.addTransition("second", new NoTransition());
+
         MachineStateImpl secondState = new MachineStateImpl();
-        FiniteStateMachine fsm = new FiniteStateMachine("initial", initialState);
-        fsm.addState("second", secondState);
-        fsm.addStateTransition("initial", new NoTransition("second"));
+        TriggerMachineState secondTriggerState = new TriggerMachineState(secondState);
+
+        FiniteStateMachine fsm = new FiniteStateMachine("initial", initialTriggerState);
+        fsm.addState("second", secondTriggerState);
         fsm.update(0f);
 
         assertEquals("initial", fsm.getCurrentState());
@@ -60,15 +69,21 @@ public class FiniteStateMachineTest extends LibGDXTest {
     }
 
     @Test
-    public void machineTwoTransitionS() {
+    public void machineTwoTransitions() {
         MachineStateImpl initialState = new MachineStateImpl();
+        TriggerMachineState initialTriggerState = new TriggerMachineState(initialState);
+        initialTriggerState.addTransition("second", new GoTransition());
+
         MachineStateImpl secondState = new MachineStateImpl();
+        TriggerMachineState secondTriggerState = new TriggerMachineState(secondState);
+        secondTriggerState.addTransition("third", new GoTransition());
+
         MachineStateImpl thirdState = new MachineStateImpl();
-        FiniteStateMachine fsm = new FiniteStateMachine("initial", initialState);
-        fsm.addState("second", secondState);
-        fsm.addState("third", thirdState);
-        fsm.addStateTransition("initial", new GoTransition("second"));
-        fsm.addStateTransition("second", new GoTransition("third"));
+        TriggerMachineState thirdTriggerState = new TriggerMachineState(thirdState);
+
+        FiniteStateMachine fsm = new FiniteStateMachine("initial", initialTriggerState);
+        fsm.addState("second", secondTriggerState);
+        fsm.addState("third", thirdTriggerState);
         fsm.update(0f);
 
         assertEquals("third", fsm.getCurrentState());
@@ -87,15 +102,9 @@ public class FiniteStateMachineTest extends LibGDXTest {
     }
 
     private static class NoTransition implements MachineStateTransition {
-        private String state;
-
-        public NoTransition(String state) {
-            this.state = state;
-        }
-
         @Override
-        public String getState() {
-            return state;
+        public void reset() {
+
         }
 
         @Override
@@ -105,15 +114,9 @@ public class FiniteStateMachineTest extends LibGDXTest {
     }
 
     private static class GoTransition implements MachineStateTransition {
-        private String state;
-
-        public GoTransition(String state) {
-            this.state = state;
-        }
-
         @Override
-        public String getState() {
-            return state;
+        public void reset() {
+
         }
 
         @Override
@@ -122,7 +125,7 @@ public class FiniteStateMachineTest extends LibGDXTest {
         }
     }
 
-    private static class MachineStateImpl implements MachineState {
+    private static class MachineStateImpl implements TriggerState {
         private String transitionedTo;
         private String transitionedFrom;
         private int updateCount;
