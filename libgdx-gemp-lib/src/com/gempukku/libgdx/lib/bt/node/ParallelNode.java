@@ -2,15 +2,15 @@ package com.gempukku.libgdx.lib.bt.node;
 
 import com.badlogic.gdx.utils.Array;
 import com.gempukku.libgdx.lib.bt.BehaviorNode;
+import com.gempukku.libgdx.lib.bt.ContainerBehaviorNode;
 import com.gempukku.libgdx.lib.bt.ProcessResult;
 
 import java.util.BitSet;
 
-public class ParallelNode implements BehaviorNode {
+public class ParallelNode extends AbstractBehaviorNode implements ContainerBehaviorNode {
     private Array<BehaviorNode> nodes = new Array<>();
     private Policy policy;
     private BitSet statusBitSet;
-    private boolean running;
 
     public ParallelNode(Policy policy) {
         this.policy = policy;
@@ -21,13 +21,12 @@ public class ParallelNode implements BehaviorNode {
     }
 
     @Override
-    public void start() {
+    public void nodeStart() {
         statusBitSet = new BitSet(nodes.size);
         for (int i = 0; i < nodes.size; i++) {
             nodes.get(i).start();
             statusBitSet.set(i);
         }
-        running = true;
     }
 
     @Override
@@ -50,21 +49,14 @@ public class ParallelNode implements BehaviorNode {
     }
 
     @Override
-    public void cancel() {
+    public void nodeCancel() {
         cancelRemainingNodes();
         statusBitSet = null;
-        running = false;
     }
 
     @Override
-    public void finish() {
+    public void nodeFinish() {
         statusBitSet = null;
-        running = false;
-    }
-
-    @Override
-    public boolean isRunning() {
-        return running;
     }
 
     @Override

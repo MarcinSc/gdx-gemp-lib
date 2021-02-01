@@ -10,6 +10,4 @@ public interface BehaviorNode {
     void finish();
 
     boolean isRunning();
-
-    Iterable<BehaviorNode> getChildren();
 }

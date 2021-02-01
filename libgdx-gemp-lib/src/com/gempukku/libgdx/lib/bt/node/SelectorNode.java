@@ -2,60 +2,47 @@ package com.gempukku.libgdx.lib.bt.node;
 
 import com.badlogic.gdx.utils.Array;
 import com.gempukku.libgdx.lib.bt.BehaviorNode;
+import com.gempukku.libgdx.lib.bt.ContainerBehaviorNode;
 import com.gempukku.libgdx.lib.bt.ProcessResult;
 
-public class SelectorNode implements BehaviorNode {
+public class SelectorNode extends AbstractBehaviorNode implements ContainerBehaviorNode {
     private Array<BehaviorNode> nodes = new Array<>();
     private int index;
-    private boolean nodeStarted;
-    private boolean running;
 
     public void addNode(BehaviorNode behaviorNode) {
         nodes.add(behaviorNode);
     }
 
     @Override
-    public void start() {
+    public void nodeStart() {
         index = 0;
-        running = true;
+        nodes.get(index).start();
     }
 
     @Override
     public ProcessResult process(float delta) {
-        if (!nodeStarted) {
-            nodes.get(index).start();
-            nodeStarted = true;
-        }
         ProcessResult result = nodes.get(index).process(delta);
         if (result == ProcessResult.Failure) {
             if (index + 1 < nodes.size) {
+                nodes.get(index).finish();
                 index++;
+                nodes.get(index).start();
                 result = ProcessResult.Continue;
             } else {
                 result = ProcessResult.Failure;
             }
         }
-        if (result != ProcessResult.Continue) {
-            nodes.get(index).finish();
-            nodeStarted = false;
-        }
         return result;
     }
 
     @Override
-    public void cancel() {
+    public void nodeCancel() {
         nodes.get(index).cancel();
-        running = false;
     }
 
     @Override
-    public void finish() {
-        running = false;
-    }
-
-    @Override
-    public boolean isRunning() {
-        return running;
+    public void nodeFinish() {
+        nodes.get(index).finish();
     }
 
     @Override

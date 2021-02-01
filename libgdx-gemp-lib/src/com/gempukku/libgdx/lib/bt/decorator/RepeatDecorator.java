@@ -1,10 +1,9 @@
 package com.gempukku.libgdx.lib.bt.decorator;
 
 import com.gempukku.libgdx.lib.bt.BehaviorNode;
-import com.gempukku.libgdx.lib.bt.BehaviorNodeDecorator;
 import com.gempukku.libgdx.lib.bt.ProcessResult;
 
-public class RepeatDecorator implements BehaviorNodeDecorator {
+public class RepeatDecorator extends AbstractBehaviorNodeDecorator {
     private final int count;
     private int runIndex;
 
@@ -28,16 +27,6 @@ public class RepeatDecorator implements BehaviorNodeDecorator {
             }
         }
         return result;
-    }
-
-    @Override
-    public void beforeNodeCancelled(BehaviorNode node) {
-
-    }
-
-    @Override
-    public void afterNodeFinished(BehaviorNode node) {
-
     }
 
     @Override
