@@ -18,7 +18,7 @@ allprojects {
     apply plugin: "maven-publish"
 
     group = "com.gempukku.libgdx.lib"
-    version = '0.1.12-SNAPSHOT'
+    version = '0.1.12'
     ext {
         appName = "Libgdx Graph"
         gdxVersion = '1.9.12'
