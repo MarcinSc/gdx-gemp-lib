@@ -1,1 +1,1 @@
-include 'libgdx-gemp-lib', 'libgdx-gemp-lib-ashley', 'libgdx-gemp-lib-test'
+include 'libgdx-gemp-lib', 'libgdx-gemp-lib-ashley', 'libgdx-gemp-lib-artemis', 'libgdx-gemp-lib-test'

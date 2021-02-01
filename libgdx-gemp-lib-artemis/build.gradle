@@ -1,0 +1,82 @@
+apply plugin: "java"
+apply plugin: "maven"
+apply plugin: "signing"
+apply plugin: "maven-publish"
+
+sourceCompatibility = 1.7
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+sourceSets.main.java.srcDirs = ["src/"]
+sourceSets.main.resources.srcDirs = ["resources/"]
+sourceSets.test.java.srcDirs = ["test/"]
+sourceSets.test.resources.srcDirs = ["test-resources/"]
+
+
+sourceSets.main.java.srcDirs = ["src/"]
+
+archivesBaseName = "libgdx-gemp-lib-artemis"
+
+eclipse.project.name = "libgdx-gemp-lib-artemis"
+
+task javadocJar(type: Jar) {
+    classifier 'javadoc'
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    classifier 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            pom {
+                name = "libgdx-graph"
+                description = "libGDX utility library"
+                url = "https://github.com/MarcinSc/libgdx-gemp-lib"
+                licenses {
+                    license {
+                        name = "The MIT License (MIT)"
+                        url = "https://mit-license.org/"
+                    }
+                }
+                developers {
+                    developer {
+                        id = "MarcinSc"
+                        name = "Marcin Sciesinski"
+                        email = "marcins78@gmail.com"
+                    }
+                }
+                scm {
+                    connection = "git@github.com:MarcinSc/libgdx-gemp-lib.git"
+                    developerConnection = "git@github.com:MarcinSc/libgdx-gemp-lib.git"
+                    url = "https://github.com/MarcinSc/libgdx-gemp-lib"
+                }
+            }
+
+            from components.java
+            artifact javadocJar
+            artifact sourcesJar
+        }
+    }
+
+    repositories {
+        maven {
+            name = "OSSRH"
+            url = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+            credentials {
+                username = System.getenv("MAVEN_USERNAME")
+                password = System.getenv("MAVEN_PASSWORD")
+            }
+        }
+    }
+}
+
+signing {
+    sign publishing.publications
+}
