@@ -1,5 +1,7 @@
 package com.gempukku.libgdx.lib.fst;
 
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
 
@@ -8,9 +10,8 @@ public class FiniteStateMachine {
     private ObjectMap<String, MachineState> states = new ObjectMap<>();
     private ObjectSet<String> tmpSet = new ObjectSet<>();
 
-    public FiniteStateMachine(String initialState, MachineState machineState) {
+    public FiniteStateMachine(String initialState) {
         this.currentState = initialState;
-        addState(initialState, machineState);
     }
 
     public String getCurrentState() {
@@ -32,6 +33,8 @@ public class FiniteStateMachine {
             // Can't transition to a state the machine has been in, this frame already
             if (newStateName == null || tmpSet.contains(newStateName))
                 break;
+            if (Gdx.app.getLogLevel() >= Application.LOG_DEBUG)
+                Gdx.app.debug("FSM", "Transitioning to: " + newStateName);
             finiteMachineState.transitioningTo(newStateName);
             finiteMachineState = states.get(newStateName);
             finiteMachineState.transitioningFrom(currentState);

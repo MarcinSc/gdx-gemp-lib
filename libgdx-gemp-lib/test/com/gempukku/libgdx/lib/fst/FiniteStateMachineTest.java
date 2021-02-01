@@ -11,7 +11,8 @@ public class FiniteStateMachineTest extends LibGDXTest {
     public void machineWithOneState() {
         MachineStateImpl state = new MachineStateImpl();
         TriggerMachineState triggerState = new TriggerMachineState(state);
-        FiniteStateMachine fsm = new FiniteStateMachine("initial", triggerState);
+        FiniteStateMachine fsm = new FiniteStateMachine("initial");
+        fsm.addState("initial", triggerState);
         fsm.update(0f);
 
         assertEquals("initial", fsm.getCurrentState());
@@ -24,12 +25,13 @@ public class FiniteStateMachineTest extends LibGDXTest {
     public void machineTransition() {
         MachineStateImpl initialState = new MachineStateImpl();
         TriggerMachineState initialTriggerState = new TriggerMachineState(initialState);
-        initialTriggerState.addTransition("second", new GoTransition());
+        initialTriggerState.addTransition("second", new GoTriggerCondition());
 
         MachineStateImpl secondState = new MachineStateImpl();
         TriggerMachineState secondTriggerState = new TriggerMachineState(secondState);
 
-        FiniteStateMachine fsm = new FiniteStateMachine("initial", initialTriggerState);
+        FiniteStateMachine fsm = new FiniteStateMachine("initial");
+        fsm.addState("initial", initialTriggerState);
         fsm.addState("second", secondTriggerState);
         fsm.update(0f);
 
@@ -48,12 +50,13 @@ public class FiniteStateMachineTest extends LibGDXTest {
     public void noTransition() {
         MachineStateImpl initialState = new MachineStateImpl();
         TriggerMachineState initialTriggerState = new TriggerMachineState(initialState);
-        initialTriggerState.addTransition("second", new NoTransition());
+        initialTriggerState.addTransition("second", new NoTriggerCondition());
 
         MachineStateImpl secondState = new MachineStateImpl();
         TriggerMachineState secondTriggerState = new TriggerMachineState(secondState);
 
-        FiniteStateMachine fsm = new FiniteStateMachine("initial", initialTriggerState);
+        FiniteStateMachine fsm = new FiniteStateMachine("initial");
+        fsm.addState("initial", initialTriggerState);
         fsm.addState("second", secondTriggerState);
         fsm.update(0f);
 
@@ -72,16 +75,17 @@ public class FiniteStateMachineTest extends LibGDXTest {
     public void machineTwoTransitions() {
         MachineStateImpl initialState = new MachineStateImpl();
         TriggerMachineState initialTriggerState = new TriggerMachineState(initialState);
-        initialTriggerState.addTransition("second", new GoTransition());
+        initialTriggerState.addTransition("second", new GoTriggerCondition());
 
         MachineStateImpl secondState = new MachineStateImpl();
         TriggerMachineState secondTriggerState = new TriggerMachineState(secondState);
-        secondTriggerState.addTransition("third", new GoTransition());
+        secondTriggerState.addTransition("third", new GoTriggerCondition());
 
         MachineStateImpl thirdState = new MachineStateImpl();
         TriggerMachineState thirdTriggerState = new TriggerMachineState(thirdState);
 
-        FiniteStateMachine fsm = new FiniteStateMachine("initial", initialTriggerState);
+        FiniteStateMachine fsm = new FiniteStateMachine("initial");
+        fsm.addState("initial", initialTriggerState);
         fsm.addState("second", secondTriggerState);
         fsm.addState("third", thirdTriggerState);
         fsm.update(0f);
@@ -101,7 +105,7 @@ public class FiniteStateMachineTest extends LibGDXTest {
         assertEquals(1, thirdState.getUpdateCount());
     }
 
-    private static class NoTransition implements MachineStateTransition {
+    private static class NoTriggerCondition implements TriggerCondition {
         @Override
         public void reset() {
 
@@ -113,7 +117,7 @@ public class FiniteStateMachineTest extends LibGDXTest {
         }
     }
 
-    private static class GoTransition implements MachineStateTransition {
+    private static class GoTriggerCondition implements TriggerCondition {
         @Override
         public void reset() {
 

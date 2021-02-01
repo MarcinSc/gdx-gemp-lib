@@ -13,7 +13,7 @@ public class TriggerMachineState implements MachineState {
     @Override
     public String getNextState() {
         for (StateTransition transition : transitions) {
-            if (transition.getTransition().isTriggered())
+            if (transition.getCondition().isTriggered())
                 return transition.getState();
         }
 
@@ -29,7 +29,7 @@ public class TriggerMachineState implements MachineState {
     public void transitioningFrom(String oldState) {
         triggerState.transitioningFrom(oldState);
         for (StateTransition transition : transitions) {
-            transition.getTransition().reset();
+            transition.getCondition().reset();
         }
     }
 
@@ -38,19 +38,19 @@ public class TriggerMachineState implements MachineState {
         triggerState.update(delta);
     }
 
-    public void addTransition(String state, MachineStateTransition transition) {
+    public void addTransition(String state, TriggerCondition transition) {
         transitions.add(new StateTransition(state, transition));
     }
 
-    public void removeTransition(String state, MachineStateTransition transition) {
+    public void removeTransition(String state, TriggerCondition transition) {
         transitions.removeValue(new StateTransition(state, transition), false);
     }
 
     private static class StateTransition {
         private String state;
-        private MachineStateTransition transition;
+        private TriggerCondition transition;
 
-        public StateTransition(String state, MachineStateTransition transition) {
+        public StateTransition(String state, TriggerCondition transition) {
             this.state = state;
             this.transition = transition;
         }
@@ -59,7 +59,7 @@ public class TriggerMachineState implements MachineState {
             return state;
         }
 
-        public MachineStateTransition getTransition() {
+        public TriggerCondition getCondition() {
             return transition;
         }
 
