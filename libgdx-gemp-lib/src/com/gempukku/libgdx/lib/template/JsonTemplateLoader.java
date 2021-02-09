@@ -143,20 +143,9 @@ public class JsonTemplateLoader {
 
     private static JsonValue resolveValueForArray(JsonValue json, FileHandleResolver resolver) {
         JsonValue result = new JsonValue(JsonValue.ValueType.array);
-        result.setName(json.name());
-        JsonValue lastChild = null;
-        for (JsonValue jsonValue : json) {
-            if (lastChild == null) {
-                lastChild = resolveJson(jsonValue, resolver);
-                result.addChild(lastChild);
-            } else {
-                JsonValue newChild = resolveJson(jsonValue, resolver);
-                lastChild.next = newChild;
-                newChild.parent = result;
-                lastChild = newChild;
-            }
+        for (JsonValue child : json) {
+            result.addChild(resolveJson(child, resolver));
         }
-        result.size = json.size;
         return result;
     }
 }
