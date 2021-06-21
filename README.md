@@ -15,6 +15,17 @@ If you want to use the Ashley integration, also add:
 api "com.gempukku.libgdx.lib:libgdx-gemp-lib-ashley:$gdxGempLibVersion"
 ```
 
+### Gwt
+In the `html/build.gradle` file define the source version of the library:
+```
+api "com.gempukku.libgdx.lib:libgdx-gemp-lib:$gdxGempLibVersion:sources"
+```
+Then inside the `html/src/main/java/.../GdxDefinitions.gwt.xml` file add under the other `<inherits />`:
+```xml
+<inherits name="com.gempukku.libgdx.lib"/>
+```
+After that delete `html/build` and `html/war` and you should be good to go.
+
 ## Camera 2D
 The package provides classes to easily setup a camera system for 2D games.  
 Documentation available: [Camera 2D documentation](https://github.com/MarcinSc/libgdx-gemp-lib/wiki/Camera-2D)
