@@ -1,8 +1,6 @@
 package com.gempukku.libgdx.ai.fst;
 
-public interface MachineState {
-    String getNextState();
-
+public interface TriggerState {
     void transitioningTo(String newState);
 
     void transitioningFrom(String oldState);

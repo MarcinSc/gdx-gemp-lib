@@ -42,6 +42,8 @@ public class FitAllCamera2DConstraint implements Camera2DConstraint {
                 tmpRectangle.merge(tmpVector);
             }
         }
+        tmpRectangle.width = Math.max(0.0001f, tmpRectangle.width);
+        tmpRectangle.height = Math.max(0.0001f, tmpRectangle.height);
 
         float cameraAspectRatio = camera.viewportWidth / camera.viewportHeight;
 
@@ -49,12 +51,7 @@ public class FitAllCamera2DConstraint implements Camera2DConstraint {
         float desiredHeight = window.height * camera.viewportHeight;
 
         float desiredAspectRatio = desiredWidth / desiredHeight;
-
-        float requiredAspectRatio;
-        if (tmpRectangle.height == 0)
-            requiredAspectRatio = Float.MAX_VALUE;
-        else
-            requiredAspectRatio = tmpRectangle.width / tmpRectangle.height;
+        float requiredAspectRatio = tmpRectangle.width / tmpRectangle.height;
 
         float windowWidth;
         float windowHeight;

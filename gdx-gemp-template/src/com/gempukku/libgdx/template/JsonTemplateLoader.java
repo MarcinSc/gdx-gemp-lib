@@ -63,6 +63,9 @@ public class JsonTemplateLoader {
         }
 
         if (json.has("tpl:removeFields")) {
+            if (!json.has("tpl:extends"))
+                throw new GdxRuntimeException("tpl:removeFields can only be used in combination with tpl:extends");
+
             JsonValue jsonValue = json.get("tpl:removeFields");
             if (jsonValue.isString()) {
                 removeFields = new ObjectSet<>();
@@ -85,7 +88,10 @@ public class JsonTemplateLoader {
             }
         }
         for (JsonValue jsonValue : json) {
-            appendField(jsonValue, result, removeFields, resolver);
+            String fieldName = jsonValue.name();
+            if (!fieldName.startsWith("tpl:")) {
+                appendField(jsonValue, result, removeFields, resolver);
+            }
         }
 
         return result;
@@ -99,7 +105,7 @@ public class JsonTemplateLoader {
 
     private static void appendField(JsonValue field, JsonValue result, ObjectSet<String> removeFields, FileHandleResolver resolver) {
         String fieldName = field.name();
-        if (!fieldName.startsWith("tpl:") && (removeFields == null || !removeFields.contains(fieldName))) {
+        if (removeFields == null || !removeFields.contains(fieldName)) {
             if (result.has(fieldName)) {
                 JsonValue existingChild = result.get(fieldName);
                 if (existingChild.isObject() && field.isObject()) {
@@ -133,20 +139,9 @@ public class JsonTemplateLoader {
 
     private static JsonValue resolveValueForArray(JsonValue json, FileHandleResolver resolver) {
         JsonValue result = new JsonValue(JsonValue.ValueType.array);
-        result.setName(json.name());
-        JsonValue lastChild = null;
-        for (JsonValue jsonValue : json) {
-            if (lastChild == null) {
-                lastChild = resolveJson(jsonValue, resolver);
-                result.addChild(lastChild);
-            } else {
-                JsonValue newChild = resolveJson(jsonValue, resolver);
-                lastChild.next = newChild;
-                newChild.parent = result;
-                lastChild = newChild;
-            }
+        for (JsonValue child : json) {
+            result.addChild(resolveJson(child, resolver));
         }
-        result.size = json.size;
         return result;
     }
 }
