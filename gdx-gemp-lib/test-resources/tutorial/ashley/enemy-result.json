@@ -1,0 +1,14 @@
+{
+  "com.github.StrengthComponent": {
+    "strength": 10
+  },
+  "com.github.HealthComponent": {
+    "health": 20
+  },
+  "com.github.PositionComponent": {
+    "position": {
+      "x": 12,
+      "y": 6
+    }
+  }
+}

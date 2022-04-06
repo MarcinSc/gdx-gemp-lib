@@ -1,1 +1,3 @@
-include 'libgdx-gemp-lib', 'libgdx-gemp-lib-ashley', 'libgdx-gemp-lib-test'
+include 'gdx-gemp-lib', 'gdx-gemp-ai', 'gdx-gemp-camera2d',
+        'gdx-gemp-template', 'gdx-gemp-template-ashley',
+        'gdx-gemp-test'

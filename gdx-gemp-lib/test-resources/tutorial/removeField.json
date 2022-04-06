@@ -1,0 +1,5 @@
+{
+  "tpl:comment": "Inherit basic data",
+  "tpl:extends": "tutorial/sample.json",
+  "tpl:removeFields": "a"
+}

@@ -1,0 +1,5 @@
+{
+  "tpl:extends": "template/simple.json",
+  "tpl:removeFields": "a",
+  "b": "c"
+}

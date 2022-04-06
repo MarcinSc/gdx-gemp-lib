@@ -15,12 +15,11 @@ buildscript {
 allprojects {
     apply plugin: "maven"
     apply plugin: "eclipse"
-    apply plugin: "maven-publish"
 
     group = "com.gempukku.libgdx.lib"
     version = '0.1.11'
     ext {
-        appName = "Libgdx Graph"
+        appName = "GDX Gemp Lib"
         gdxVersion = '1.9.12'
         roboVMVersion = '2.3.8'
         box2DLightsVersion = '1.4'
@@ -48,7 +47,7 @@ configure(subprojects) {
     }
 }
 
-project(":libgdx-gemp-lib") {
+project(":gdx-gemp-lib") {
     apply plugin: "java-library"
 
     dependencies {
@@ -59,11 +58,50 @@ project(":libgdx-gemp-lib") {
     }
 }
 
-project(":libgdx-gemp-lib-ashley") {
+project(":gdx-gemp-ai") {
     apply plugin: "java-library"
 
     dependencies {
-        implementation project(":libgdx-gemp-lib")
+        implementation project(":gdx-gemp-lib")
+        api "com.badlogicgames.gdx:gdx:$gdxVersion"
+
+        testImplementation 'junit:junit:4.13'
+        testImplementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+        testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    }
+}
+
+project(":gdx-gemp-camera2d") {
+    apply plugin: "java-library"
+
+    dependencies {
+        implementation project(":gdx-gemp-lib")
+        api "com.badlogicgames.gdx:gdx:$gdxVersion"
+
+        testImplementation 'junit:junit:4.13'
+        testImplementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+        testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    }
+}
+
+project(":gdx-gemp-template") {
+    apply plugin: "java-library"
+
+    dependencies {
+        implementation project(":gdx-gemp-lib")
+        api "com.badlogicgames.gdx:gdx:$gdxVersion"
+
+        testImplementation 'junit:junit:4.13'
+        testImplementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+        testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    }
+}
+
+project(":gdx-gemp-template-ashley") {
+    apply plugin: "java-library"
+
+    dependencies {
+        implementation project(":gdx-gemp-template")
         api 'com.github.libgdx:ashley:d4dc6d4f9c'
 
         testImplementation 'junit:junit:4.13'
@@ -72,12 +110,13 @@ project(":libgdx-gemp-lib-ashley") {
     }
 }
 
-project(":libgdx-gemp-lib-test") {
+project(":gdx-gemp-test") {
     apply plugin: "java-library"
 
     dependencies {
-        implementation project(":libgdx-gemp-lib")
-        implementation project(":libgdx-gemp-lib-ashley")
+        implementation project(":gdx-gemp-template-ashley")
+        implementation project(":gdx-gemp-camera2d")
+
         api "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"

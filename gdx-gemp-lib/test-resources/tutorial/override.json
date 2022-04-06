@@ -1,0 +1,4 @@
+{
+  "tpl:extends": "tutorial/sample.json",
+  "a": "c"
+}

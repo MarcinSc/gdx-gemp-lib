@@ -1,0 +1,31 @@
+apply plugin: "java"
+apply plugin: "maven"
+
+sourceCompatibility = 1.7
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+sourceSets.main.java.srcDirs = ["src/"]
+sourceSets.main.resources.srcDirs = ["resources/"]
+sourceSets.test.java.srcDirs = ["test/"]
+sourceSets.test.resources.srcDirs = ["test-resources/"]
+
+
+sourceSets.main.java.srcDirs = ["src/"]
+
+archivesBaseName = "gdx-gemp-template"
+
+eclipse.project.name = "gdx-gemp-template"
+
+task javadocJar(type: Jar) {
+    classifier 'javadoc'
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    classifier 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}

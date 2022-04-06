@@ -1,0 +1,8 @@
+{
+  "com.github.StrengthComponent": {
+    "strength": 10
+  },
+  "com.github.HealthComponent": {
+    "health": 20
+  }
+}
