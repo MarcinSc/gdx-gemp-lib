@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.*;
 import com.gempukku.libgdx.template.JsonTemplateLoader;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.io.Writer;
 
 public class AshleyGameStateSerializer {
@@ -16,9 +17,18 @@ public class AshleyGameStateSerializer {
     private static final JsonReader reader = new JsonReader();
 
     public static void loadIntoEngine(Engine engine, String filePath, FileHandleResolver resolver) {
+        JsonValue value = JsonTemplateLoader.loadTemplateFromFile(filePath, resolver);
+        loadJsonTemplateToEngine(engine, value);
+    }
+
+    public static void loadIntoEngine(Engine engine, Reader reader, FileHandleResolver resolver) {
+        JsonValue value = JsonTemplateLoader.loadTemplateFromFile(reader, resolver);
+        loadJsonTemplateToEngine(engine, value);
+    }
+
+    private static void loadJsonTemplateToEngine(Engine engine, JsonValue value) {
         json.setEngine(engine);
 
-        JsonValue value = JsonTemplateLoader.loadTemplateFromFile(filePath, resolver);
         JsonValue entities = value.get("entities");
         for (JsonValue jsonEntity : entities) {
             EntityDef entityDef = AshleyTemplateEntityLoader.convertToAshley(jsonEntity, json);
@@ -36,6 +46,19 @@ public class AshleyGameStateSerializer {
     }
 
     public static void saveFromEngine(Engine engine, FileHandle fileHandle) {
+        try {
+            Writer writer = fileHandle.writer(false);
+            try {
+                saveFromEngine(engine, writer);
+            } finally {
+                writer.close();
+            }
+        } catch (IOException exp) {
+            throw new GdxRuntimeException("Unable to save to disk", exp);
+        }
+    }
+
+    public static void saveFromEngine(Engine engine, Writer writer) {
         json.setEngine(engine);
 
         JsonValue result = new JsonValue(JsonValue.ValueType.object);
@@ -70,12 +93,7 @@ public class AshleyGameStateSerializer {
         result.addChild("entities", entitiesJson);
 
         try {
-            Writer writer = fileHandle.writer(false);
-            try {
-                writer.write(result.toJson(JsonWriter.OutputType.json));
-            } finally {
-                writer.close();
-            }
+            writer.write(result.toJson(JsonWriter.OutputType.json));
         } catch (IOException exp) {
             throw new GdxRuntimeException("Unable to save to disk", exp);
         }

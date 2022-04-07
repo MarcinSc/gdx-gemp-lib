@@ -6,6 +6,7 @@ import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.*;
 
+import java.io.Reader;
 import java.util.Arrays;
 import java.util.List;
 
@@ -19,6 +20,11 @@ public class JsonTemplateLoader {
 
     public static JsonValue loadTemplateFromFile(String file, FileHandleResolver resolver) {
         return loadTemplateFromFile(resolver.resolve(file), resolver);
+    }
+
+    public static JsonValue loadTemplateFromFile(Reader reader, FileHandleResolver resolver) {
+        JsonValue originalJson = new JsonReader().parse(reader);
+        return resolveTemplate(originalJson, resolver);
     }
 
     public static JsonValue loadTemplateFromFile(FileHandle fileHandle, FileHandleResolver resolver) {
