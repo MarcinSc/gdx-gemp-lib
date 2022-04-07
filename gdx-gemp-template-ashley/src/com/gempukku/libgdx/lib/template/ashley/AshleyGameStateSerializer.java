@@ -9,9 +9,9 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonWriter;
+import com.gempukku.libgdx.template.JsonTemplateLoader;
 
 import java.io.IOException;
-import java.io.Reader;
 import java.io.Writer;
 
 public class AshleyGameStateSerializer {
@@ -21,22 +21,16 @@ public class AshleyGameStateSerializer {
     public static void loadIntoEngine(Engine engine, String filePath, FileHandleResolver resolver) throws IOException {
         json.setEngine(engine);
 
-        FileHandle fileHandle = resolver.resolve(filePath);
-        Reader fileReader = fileHandle.reader();
-        try {
-            JsonValue value = reader.parse(fileReader);
-            JsonValue entities = value.get("entities");
-            for (JsonValue jsonEntity : entities) {
-                EntityDef entityDef = AshleyTemplateEntityLoader.convertToAshley(jsonEntity, json);
+        JsonValue value = JsonTemplateLoader.loadTemplateFromFile(filePath, resolver);
+        JsonValue entities = value.get("entities");
+        for (JsonValue jsonEntity : entities) {
+            EntityDef entityDef = AshleyTemplateEntityLoader.convertToAshley(jsonEntity, json);
 
-                Entity entity = engine.createEntity();
-                for (Component component : entityDef.getComponents()) {
-                    entity.add(component);
-                }
-                engine.addEntity(entity);
+            Entity entity = engine.createEntity();
+            for (Component component : entityDef.getComponents()) {
+                entity.add(component);
             }
-        } finally {
-            fileReader.close();
+            engine.addEntity(entity);
         }
     }
 
