@@ -5,18 +5,39 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.*;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.JsonWriter;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.io.Writer;
 
 public class AshleyGameStateSerializer {
-    private static final Json json = new Json();
+    private static final AshleyEntityJson json = new AshleyEntityJson();
     private static final JsonReader reader = new JsonReader();
 
-    public static void loadIntoEngine(Engine engine, String filePath, FileHandleResolver resolver) {
+    public static void loadIntoEngine(Engine engine, String filePath, FileHandleResolver resolver) throws IOException {
+        json.setEngine(engine);
 
+        FileHandle fileHandle = resolver.resolve(filePath);
+        Reader fileReader = fileHandle.reader();
+        try {
+            JsonValue value = reader.parse(fileReader);
+            JsonValue entities = value.get("entities");
+            for (JsonValue jsonEntity : entities) {
+                EntityDef entityDef = AshleyTemplateEntityLoader.convertToAshley(jsonEntity, json);
 
+                Entity entity = engine.createEntity();
+                for (Component component : entityDef.getComponents()) {
+                    entity.add(component);
+                }
+                engine.addEntity(entity);
+            }
+        } finally {
+            fileReader.close();
+        }
     }
 
     private static JsonValue convertComponentToJson(Component component) {
@@ -24,6 +45,8 @@ public class AshleyGameStateSerializer {
     }
 
     public static void saveFromEngine(Engine engine, FileHandle fileHandle) throws IOException {
+        json.setEngine(engine);
+
         JsonValue result = new JsonValue(JsonValue.ValueType.object);
 
         Array<Entity> entityArray = new Array<>();
