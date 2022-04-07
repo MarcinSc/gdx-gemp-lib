@@ -5,10 +5,7 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.JsonValue;
-import com.badlogic.gdx.utils.JsonWriter;
+import com.badlogic.gdx.utils.*;
 import com.gempukku.libgdx.template.JsonTemplateLoader;
 
 import java.io.IOException;
@@ -18,7 +15,7 @@ public class AshleyGameStateSerializer {
     private static final AshleyEntityJson json = new AshleyEntityJson();
     private static final JsonReader reader = new JsonReader();
 
-    public static void loadIntoEngine(Engine engine, String filePath, FileHandleResolver resolver) throws IOException {
+    public static void loadIntoEngine(Engine engine, String filePath, FileHandleResolver resolver) {
         json.setEngine(engine);
 
         JsonValue value = JsonTemplateLoader.loadTemplateFromFile(filePath, resolver);
@@ -38,7 +35,7 @@ public class AshleyGameStateSerializer {
         return reader.parse(json.toJson(component));
     }
 
-    public static void saveFromEngine(Engine engine, FileHandle fileHandle) throws IOException {
+    public static void saveFromEngine(Engine engine, FileHandle fileHandle) {
         json.setEngine(engine);
 
         JsonValue result = new JsonValue(JsonValue.ValueType.object);
@@ -72,11 +69,15 @@ public class AshleyGameStateSerializer {
 
         result.addChild("entities", entitiesJson);
 
-        Writer writer = fileHandle.writer(false);
         try {
-            writer.write(result.toJson(JsonWriter.OutputType.json));
-        } finally {
-            writer.close();
+            Writer writer = fileHandle.writer(false);
+            try {
+                writer.write(result.toJson(JsonWriter.OutputType.json));
+            } finally {
+                writer.close();
+            }
+        } catch (IOException exp) {
+            throw new GdxRuntimeException("Unable to save to disk", exp);
         }
     }
 }
