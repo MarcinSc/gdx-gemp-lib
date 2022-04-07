@@ -1,0 +1,65 @@
+package com.gempukku.libgdx.lib.template.ashley;
+
+import com.badlogic.ashley.core.Component;
+import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.assets.loaders.FileHandleResolver;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.*;
+
+import java.io.IOException;
+import java.io.Writer;
+
+public class AshleyGameStateSerializer {
+    private static final Json json = new Json();
+    private static final JsonReader reader = new JsonReader();
+
+    public static void loadIntoEngine(Engine engine, String filePath, FileHandleResolver resolver) {
+
+
+    }
+
+    private static JsonValue convertComponentToJson(Component component) {
+        return reader.parse(json.toJson(component));
+    }
+
+    public static void saveFromEngine(Engine engine, FileHandle fileHandle) throws IOException {
+        JsonValue result = new JsonValue(JsonValue.ValueType.object);
+
+        Array<Entity> entityArray = new Array<>();
+
+        for (Entity entity : engine.getEntities()) {
+            InternalEntityComponent internalEntity = entity.getComponent(InternalEntityComponent.class);
+            if (internalEntity == null) {
+                entityArray.add(entity);
+            }
+        }
+
+        JsonValue entitiesJson = JsonUtils.convertToJsonArray(entityArray, new JsonUtils.JsonConverter<Entity>() {
+            @Override
+            public JsonValue convert(Entity entity) {
+                Array<Component> componentArray = new Array<>();
+                for (Component component : entity.getComponents()) {
+                    if (component.getClass().getAnnotation(InternalComponent.class) == null) {
+                        componentArray.add(component);
+                    }
+                }
+
+                JsonValue result = new JsonValue(JsonValue.ValueType.object);
+                for (Component component : componentArray) {
+                    result.addChild(component.getClass().getName(), convertComponentToJson(component));
+                }
+                return result;
+            }
+        });
+
+        result.addChild("entities", entitiesJson);
+
+        Writer writer = fileHandle.writer(false);
+        try {
+            writer.write(result.toJson(JsonWriter.OutputType.json));
+        } finally {
+            writer.close();
+        }
+    }
+}
