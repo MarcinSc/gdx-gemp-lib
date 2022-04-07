@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.io.Writer;
 
 public class AshleyGameStateSerializer {
-    private static final AshleyEntityJson json = new AshleyEntityJson();
+    private static final AshleyEngineJson json = new AshleyEngineJson();
     private static final JsonReader reader = new JsonReader();
 
     public static void loadIntoEngine(Engine engine, String filePath, FileHandleResolver resolver) {
