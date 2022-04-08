@@ -18,8 +18,8 @@ public class LerpToWindowCamera2DConstraintTest extends LibGDXTest {
 
         cameraConstraint.applyConstraint(camera, new Vector2(0, 0f), 1f);
 
-        assertEquals(0, camera.position.x, 0.0001);
-        assertEquals(0, camera.position.y, 0.0001);
+        assertEquals(0, camera.position.x, TEST_DELTA);
+        assertEquals(0, camera.position.y, TEST_DELTA);
     }
 
     @Test
@@ -31,8 +31,8 @@ public class LerpToWindowCamera2DConstraintTest extends LibGDXTest {
 
         cameraConstraint.applyConstraint(camera, new Vector2(3, 0f), 1f);
 
-        assertEquals(1, camera.position.x, 0.0001);
-        assertEquals(0, camera.position.y, 0.0001);
+        assertEquals(1, camera.position.x, TEST_DELTA);
+        assertEquals(0, camera.position.y, TEST_DELTA);
     }
 
     @Test
@@ -44,7 +44,7 @@ public class LerpToWindowCamera2DConstraintTest extends LibGDXTest {
 
         cameraConstraint.applyConstraint(camera, new Vector2(3, 0f), 1f);
 
-        assertEquals(0.4f, camera.position.x, 0.0001);
-        assertEquals(0, camera.position.y, 0.0001);
+        assertEquals(0.4f, camera.position.x, TEST_DELTA);
+        assertEquals(0, camera.position.y, TEST_DELTA);
     }
 }

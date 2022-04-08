@@ -15,8 +15,8 @@ public class MinimumViewportCamera2DConstraintTest extends LibGDXTest {
 
         cameraConstraint.applyConstraint(camera, null, 0);
 
-        assertEquals(4, camera.viewportWidth, 0.0001f);
-        assertEquals(3, camera.viewportHeight, 0.0001f);
+        assertEquals(4, camera.viewportWidth, TEST_DELTA);
+        assertEquals(3, camera.viewportHeight, TEST_DELTA);
     }
 
     @Test
@@ -27,8 +27,8 @@ public class MinimumViewportCamera2DConstraintTest extends LibGDXTest {
 
         cameraConstraint.applyConstraint(camera, null, 0);
 
-        assertEquals(8, camera.viewportWidth, 0.0001f);
-        assertEquals(6, camera.viewportHeight, 0.0001f);
+        assertEquals(8, camera.viewportWidth, TEST_DELTA);
+        assertEquals(6, camera.viewportHeight, TEST_DELTA);
     }
 
     @Test
@@ -39,8 +39,8 @@ public class MinimumViewportCamera2DConstraintTest extends LibGDXTest {
 
         cameraConstraint.applyConstraint(camera, null, 0);
 
-        assertEquals(8, camera.viewportWidth, 0.0001f);
-        assertEquals(6, camera.viewportHeight, 0.0001f);
+        assertEquals(8, camera.viewportWidth, TEST_DELTA);
+        assertEquals(6, camera.viewportHeight, TEST_DELTA);
     }
 
     @Test
@@ -51,7 +51,7 @@ public class MinimumViewportCamera2DConstraintTest extends LibGDXTest {
 
         cameraConstraint.applyConstraint(camera, null, 0);
 
-        assertEquals(8, camera.viewportWidth, 0.0001f);
-        assertEquals(6, camera.viewportHeight, 0.0001f);
+        assertEquals(8, camera.viewportWidth, TEST_DELTA);
+        assertEquals(6, camera.viewportHeight, TEST_DELTA);
     }
 }

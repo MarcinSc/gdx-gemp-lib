@@ -17,9 +17,9 @@ public class PixelPerfectCamera2DConstraintTest extends LibGDXTest {
 
         cameraConstraint.applyConstraint(camera, null, 0);
 
-        assertEquals(1, camera.position.x, 0.0001);
-        assertEquals(0, camera.position.y, 0.0001);
-        assertEquals(0, camera.position.z, 0.0001);
+        assertEquals(1, camera.position.x, TEST_DELTA);
+        assertEquals(-0.5f, camera.position.y, TEST_DELTA);
+        assertEquals(0f, camera.position.z, TEST_DELTA);
     }
 
     @Test
@@ -32,9 +32,9 @@ public class PixelPerfectCamera2DConstraintTest extends LibGDXTest {
 
         cameraConstraint.applyConstraint(camera, null, 0);
 
-        assertEquals(0, camera.position.x, 0.0001);
-        assertEquals(1, camera.position.y, 0.0001);
-        assertEquals(0, camera.position.z, 0.0001);
+        assertEquals(0, camera.position.x, TEST_DELTA);
+        assertEquals(0.5f, camera.position.y, TEST_DELTA);
+        assertEquals(0, camera.position.z, TEST_DELTA);
     }
 
     @Test
@@ -47,9 +47,9 @@ public class PixelPerfectCamera2DConstraintTest extends LibGDXTest {
 
         cameraConstraint.applyConstraint(camera, null, 0);
 
-        assertEquals(1, camera.position.x, 0.0001);
-        assertEquals(1, camera.position.y, 0.0001);
-        assertEquals(0, camera.position.z, 0.0001);
+        assertEquals(1, camera.position.x, TEST_DELTA);
+        assertEquals(0.5f, camera.position.y, TEST_DELTA);
+        assertEquals(0, camera.position.z, TEST_DELTA);
     }
 
     @Test
@@ -62,8 +62,8 @@ public class PixelPerfectCamera2DConstraintTest extends LibGDXTest {
 
         cameraConstraint.applyConstraint(camera, null, 0);
 
-        assertEquals(4, camera.viewportWidth, 0.0001);
-        assertEquals(3, camera.viewportHeight, 0.0001);
+        assertEquals(4, camera.viewportWidth, TEST_DELTA);
+        assertEquals(3, camera.viewportHeight, TEST_DELTA);
     }
 
     @Test
@@ -76,7 +76,7 @@ public class PixelPerfectCamera2DConstraintTest extends LibGDXTest {
 
         cameraConstraint.applyConstraint(camera, null, 0);
 
-        assertEquals(4, camera.viewportWidth, 0.0001);
-        assertEquals(3, camera.viewportHeight, 0.0001);
+        assertEquals(4, camera.viewportWidth, TEST_DELTA);
+        assertEquals(3, camera.viewportHeight, TEST_DELTA);
     }
 }

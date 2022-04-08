@@ -1,22 +1,22 @@
 {
   "components": [
     {
-      "class": "com.gempukku.libgdx.lib.test.component.PositionComponent",
+      "class": "com.gempukku.libgdx.test.component.PositionComponent",
       "x": 0,
       "y": -650
     },
     {
-      "class": "com.gempukku.libgdx.lib.test.component.SizeComponent",
+      "class": "com.gempukku.libgdx.test.component.SizeComponent",
       "x": 2261,
       "y": 777
     },
     {
-      "class": "com.gempukku.libgdx.lib.test.component.AnchorComponent",
+      "class": "com.gempukku.libgdx.test.component.AnchorComponent",
       "x": 0.5,
       "y": 1
     },
     {
-      "class": "com.gempukku.libgdx.lib.test.component.SpriteComponent",
+      "class": "com.gempukku.libgdx.test.component.SpriteComponent",
       "layer": 95,
       "tags": [
         "Background"

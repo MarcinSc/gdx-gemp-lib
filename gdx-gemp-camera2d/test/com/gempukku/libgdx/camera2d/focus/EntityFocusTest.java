@@ -12,7 +12,7 @@ public class EntityFocusTest extends LibGDXTest {
         EntityFocus focus = new EntityFocus(
                 new PositionProviderImpl(new Vector2(0, 0)), 2);
 
-        assertEquals(2f, focus.getWeight(), 0.0001f);
+        assertEquals(2f, focus.getWeight(), TEST_DELTA);
     }
 
     @Test
@@ -21,8 +21,8 @@ public class EntityFocusTest extends LibGDXTest {
                 new PositionProviderImpl(new Vector2(10, 0)), 2);
 
         Vector2 result = focus.getFocus(new Vector2());
-        assertEquals(10, result.x, 0.0001f);
-        assertEquals(0, result.y, 0.0001f);
+        assertEquals(10, result.x, TEST_DELTA);
+        assertEquals(0, result.y, TEST_DELTA);
     }
 
     private static class PositionProviderImpl implements PositionProvider {

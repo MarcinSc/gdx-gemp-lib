@@ -1,26 +1,26 @@
 {
   "components": [
     {
-      "class": "com.gempukku.libgdx.lib.test.component.PositionComponent",
+      "class": "com.gempukku.libgdx.test.component.PositionComponent",
       "x": -170,
       "y": -310
     },
     {
-      "class": "com.gempukku.libgdx.lib.test.component.SizeComponent",
+      "class": "com.gempukku.libgdx.test.component.SizeComponent",
       "x": 256,
       "y": 256
     },
     {
-      "class": "com.gempukku.libgdx.lib.test.component.AnchorComponent",
+      "class": "com.gempukku.libgdx.test.component.AnchorComponent",
       "x": 0.5,
       "y": 0.8
     },
     {
-      "class": "com.gempukku.libgdx.lib.test.component.FacingComponent",
+      "class": "com.gempukku.libgdx.test.component.FacingComponent",
       "faceDirection": "Right"
     },
     {
-      "class": "com.gempukku.libgdx.lib.test.component.SpriteComponent",
+      "class": "com.gempukku.libgdx.test.component.SpriteComponent",
       "layer": 10,
       "tags": [
         "Animated"
@@ -66,7 +66,7 @@
       }
     },
     {
-      "class": "com.gempukku.libgdx.lib.test.component.PhysicsComponent",
+      "class": "com.gempukku.libgdx.test.component.PhysicsComponent",
       "type": "dynamic",
       "colliderAnchor": {
         "x": 0.5,

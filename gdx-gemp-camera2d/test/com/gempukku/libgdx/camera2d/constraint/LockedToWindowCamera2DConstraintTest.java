@@ -17,8 +17,8 @@ public class LockedToWindowCamera2DConstraintTest extends LibGDXTest {
 
         cameraConstraint.applyConstraint(camera, new Vector2(0, 0f), 0);
 
-        assertEquals(0, camera.position.x, 0.0001);
-        assertEquals(0, camera.position.y, 0.0001);
+        assertEquals(0, camera.position.x, TEST_DELTA);
+        assertEquals(0, camera.position.y, TEST_DELTA);
     }
 
     @Test
@@ -29,8 +29,8 @@ public class LockedToWindowCamera2DConstraintTest extends LibGDXTest {
 
         cameraConstraint.applyConstraint(camera, new Vector2(-2, 0f), 0);
 
-        assertEquals(-1, camera.position.x, 0.0001);
-        assertEquals(0, camera.position.y, 0.0001);
+        assertEquals(-1, camera.position.x, TEST_DELTA);
+        assertEquals(0, camera.position.y, TEST_DELTA);
     }
 
     @Test
@@ -41,8 +41,8 @@ public class LockedToWindowCamera2DConstraintTest extends LibGDXTest {
 
         cameraConstraint.applyConstraint(camera, new Vector2(2, 0f), 0);
 
-        assertEquals(1, camera.position.x, 0.0001);
-        assertEquals(0, camera.position.y, 0.0001);
+        assertEquals(1, camera.position.x, TEST_DELTA);
+        assertEquals(0, camera.position.y, TEST_DELTA);
     }
 
     @Test
@@ -53,8 +53,8 @@ public class LockedToWindowCamera2DConstraintTest extends LibGDXTest {
 
         cameraConstraint.applyConstraint(camera, new Vector2(0, -2f), 0);
 
-        assertEquals(0, camera.position.x, 0.0001);
-        assertEquals(-1.25f, camera.position.y, 0.0001);
+        assertEquals(0, camera.position.x, TEST_DELTA);
+        assertEquals(-1.25f, camera.position.y, TEST_DELTA);
     }
 
     @Test
@@ -65,7 +65,7 @@ public class LockedToWindowCamera2DConstraintTest extends LibGDXTest {
 
         cameraConstraint.applyConstraint(camera, new Vector2(0, 2f), 0);
 
-        assertEquals(0, camera.position.x, 0.0001);
-        assertEquals(1.25f, camera.position.y, 0.0001);
+        assertEquals(0, camera.position.x, TEST_DELTA);
+        assertEquals(1.25f, camera.position.y, TEST_DELTA);
     }
 }

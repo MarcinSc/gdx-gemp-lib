@@ -14,8 +14,8 @@ public class FitAllFocusTest extends LibGDXTest {
 
         Vector2 result = focus.getFocus(new Vector2());
 
-        assertEquals(0, result.x, 0.0001f);
-        assertEquals(0, result.y, 0.0001f);
+        assertEquals(0, result.x, TEST_DELTA);
+        assertEquals(0, result.y, TEST_DELTA);
     }
 
     @Test
@@ -26,8 +26,8 @@ public class FitAllFocusTest extends LibGDXTest {
 
         Vector2 result = focus.getFocus(new Vector2());
 
-        assertEquals(1, result.x, 0.0001f);
-        assertEquals(1, result.y, 0.0001f);
+        assertEquals(1, result.x, TEST_DELTA);
+        assertEquals(1, result.y, TEST_DELTA);
     }
 
     @Test
@@ -39,8 +39,8 @@ public class FitAllFocusTest extends LibGDXTest {
 
         Vector2 result = focus.getFocus(new Vector2());
 
-        assertEquals(1, result.x, 0.0001f);
-        assertEquals(1, result.y, 0.0001f);
+        assertEquals(1, result.x, TEST_DELTA);
+        assertEquals(1, result.y, TEST_DELTA);
     }
 
     private static class Camera2DFocusImpl implements Camera2DFocus {

@@ -1,5 +1,5 @@
 {
-  "com.gempukku.libgdx.lib.template.ashley.TestComponent": {
+  "com.gempukku.libgdx.template.ashley.TestComponent": {
     "a": "b"
   }
 }

@@ -20,8 +20,8 @@ public class FitAllCamera2DConstraintTest extends LibGDXTest {
 
         cameraConstraint.applyConstraint(camera, null, 0);
 
-        assertEquals(0, camera.viewportWidth, 0.0001f);
-        assertEquals(0, camera.viewportHeight, 0.0001f);
+        assertEquals(0, camera.viewportWidth, TEST_DELTA);
+        assertEquals(0, camera.viewportHeight, TEST_DELTA);
     }
 
     @Test
@@ -36,8 +36,8 @@ public class FitAllCamera2DConstraintTest extends LibGDXTest {
 
         cameraConstraint.applyConstraint(camera, null, 0);
 
-        assertEquals(2f, camera.viewportWidth, 0.0001f);
-        assertEquals(1.5f, camera.viewportHeight, 0.0001f);
+        assertEquals(2f, camera.viewportWidth, TEST_DELTA);
+        assertEquals(1.5f, camera.viewportHeight, TEST_DELTA);
     }
 
     @Test
@@ -52,8 +52,8 @@ public class FitAllCamera2DConstraintTest extends LibGDXTest {
 
         cameraConstraint.applyConstraint(camera, null, 0);
 
-        assertEquals(2.6666f, camera.viewportWidth, 0.0001f);
-        assertEquals(2f, camera.viewportHeight, 0.0001f);
+        assertEquals(2.6666f, camera.viewportWidth, TEST_DELTA);
+        assertEquals(2f, camera.viewportHeight, TEST_DELTA);
     }
 
     @Test
@@ -68,8 +68,8 @@ public class FitAllCamera2DConstraintTest extends LibGDXTest {
 
         cameraConstraint.applyConstraint(camera, null, 0);
 
-        assertEquals(8, camera.viewportWidth, 0.0001f);
-        assertEquals(6, camera.viewportHeight, 0.0001f);
+        assertEquals(8, camera.viewportWidth, TEST_DELTA);
+        assertEquals(6, camera.viewportHeight, TEST_DELTA);
     }
 
     private static class PositionCamera2DFocus implements Camera2DFocus {
