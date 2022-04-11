@@ -64,8 +64,8 @@ public class ArtemisGameStateSerializer {
         Array<Entity> entityArray = new Array<>();
 
         IntBag entityIds = world.getAspectSubscriptionManager().get(Aspect.exclude(InternalEntityComponent.class)).getEntities();
-        for (int entityId : entityIds.getData()) {
-            Entity entity = world.getEntity(entityId);
+        for (int i = 0, s = entityIds.size(); s > i; i++) {
+            Entity entity = world.getEntity(entityIds.get(i));
             InternalEntityComponent internalEntity = entity.getComponent(InternalEntityComponent.class);
             if (internalEntity == null) {
                 entityArray.add(entity);
