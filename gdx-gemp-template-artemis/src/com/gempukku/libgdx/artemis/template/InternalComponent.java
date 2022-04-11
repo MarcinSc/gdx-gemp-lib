@@ -1,4 +1,4 @@
-package com.gempukku.libgdx.template.ashley;
+package com.gempukku.libgdx.artemis.template;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

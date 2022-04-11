@@ -1,4 +1,4 @@
-package com.gempukku.libgdx.template;
+package com.gempukku.libgdx.artemis;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;

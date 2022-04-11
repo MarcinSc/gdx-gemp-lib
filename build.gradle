@@ -52,6 +52,7 @@ project(":gdx-gemp-lib") {
 
     dependencies {
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
+
         testImplementation 'junit:junit:4.13'
         testImplementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
         testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
@@ -90,6 +91,19 @@ project(":gdx-gemp-template") {
     dependencies {
         implementation project(":gdx-gemp-lib")
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
+
+        testImplementation 'junit:junit:4.13'
+        testImplementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+        testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    }
+}
+
+project(":gdx-gemp-template-artemis") {
+    apply plugin: "java-library"
+
+    dependencies {
+        implementation project(":gdx-gemp-template")
+        api "net.onedaybeard.artemis:artemis-odb:2.3.0"
 
         testImplementation 'junit:junit:4.13'
         testImplementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"

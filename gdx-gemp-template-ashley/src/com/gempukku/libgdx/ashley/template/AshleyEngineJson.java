@@ -1,4 +1,4 @@
-package com.gempukku.libgdx.template.ashley;
+package com.gempukku.libgdx.ashley.template;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Engine;
@@ -13,7 +13,7 @@ public class AshleyEngineJson extends Json {
 
     @Override
     protected Object newInstance(Class type) {
-        if (type.isAssignableFrom(Component.class))
+        if (Component.class.isAssignableFrom(type))
             return engine.createComponent((Class<Component>) type);
 
         return super.newInstance(type);

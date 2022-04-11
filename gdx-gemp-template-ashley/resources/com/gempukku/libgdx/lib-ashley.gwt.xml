@@ -3,7 +3,5 @@
 		"http://google-web-toolkit.googlecode.com/svn/trunk/distro-source/core/src/gwt-module.dtd">
 <module>
 	<source path="lib/template/ashley"/>
-	<extend-configuration-property name="gdx.reflect.include"
-								   value="com.gempukku.libgdx.template.ashley.EntityDef"/>
 	<extend-configuration-property name="gdx.reflect.include" value="com.badlogic.ashley.core.Component"/>
 </module>

@@ -1,4 +1,4 @@
-package com.gempukku.libgdx.template.ashley;
+package com.gempukku.libgdx.template;
 
 import com.badlogic.gdx.utils.JsonValue;
 

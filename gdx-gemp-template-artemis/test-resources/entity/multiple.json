@@ -1,0 +1,8 @@
+{
+  "com.gempukku.libgdx.artemis.template.TestComponent": {
+    "a": "b"
+  },
+  "com.gempukku.libgdx.artemis.template.Test2Component": {
+    "b": "c"
+  }
+}

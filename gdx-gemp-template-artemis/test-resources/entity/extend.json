@@ -1,6 +1,6 @@
 {
   "tpl:extends": "entity/simple.json",
-  "com.gempukku.libgdx.ashley.template.Test2Component": {
+  "com.gempukku.libgdx.artemis.template.Test2Component": {
     "b": "c"
   }
 }

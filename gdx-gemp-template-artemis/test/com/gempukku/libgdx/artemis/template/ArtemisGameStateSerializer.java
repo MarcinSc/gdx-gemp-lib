@@ -1,43 +1,41 @@
-package com.gempukku.libgdx.template.ashley;
+package com.gempukku.libgdx.artemis.template;
 
-import com.badlogic.ashley.core.Component;
-import com.badlogic.ashley.core.Engine;
-import com.badlogic.ashley.core.Entity;
+import com.artemis.Aspect;
+import com.artemis.Component;
+import com.artemis.Entity;
+import com.artemis.World;
+import com.artemis.utils.Bag;
+import com.artemis.utils.IntBag;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.*;
 import com.gempukku.libgdx.template.JsonTemplateLoader;
+import com.gempukku.libgdx.template.JsonUtils;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 
-public class AshleyGameStateSerializer {
-    private static final AshleyEngineJson json = new AshleyEngineJson();
+public class ArtemisGameStateSerializer {
+    private static final ArtemisWorldJson json = new ArtemisWorldJson();
     private static final JsonReader reader = new JsonReader();
 
-    public static void loadIntoEngine(Engine engine, String filePath, FileHandleResolver resolver) {
+    public static void loadIntoEngine(World world, String filePath, FileHandleResolver resolver) {
         JsonValue value = JsonTemplateLoader.loadTemplateFromFile(filePath, resolver);
-        loadJsonTemplateToEngine(engine, value);
+        loadJsonTemplateToEngine(world, value);
     }
 
-    public static void loadIntoEngine(Engine engine, Reader reader, FileHandleResolver resolver) {
+    public static void loadIntoEngine(World world, Reader reader, FileHandleResolver resolver) {
         JsonValue value = JsonTemplateLoader.loadTemplateFromFile(reader, resolver);
-        loadJsonTemplateToEngine(engine, value);
+        loadJsonTemplateToEngine(world, value);
     }
 
-    private static void loadJsonTemplateToEngine(Engine engine, JsonValue value) {
-        json.setEngine(engine);
+    private static void loadJsonTemplateToEngine(World world, JsonValue value) {
+        json.setWorld(world);
 
         JsonValue entities = value.get("entities");
         for (JsonValue jsonEntity : entities) {
-            EntityDef entityDef = AshleyTemplateEntityLoader.convertToAshley(jsonEntity, json);
-
-            Entity entity = engine.createEntity();
-            for (Component component : entityDef.getComponents()) {
-                entity.add(component);
-            }
-            engine.addEntity(entity);
+            ArtemisTemplateEntityLoader.loadAshleyTempalteToWorld(world, jsonEntity, json);
         }
     }
 
@@ -45,11 +43,11 @@ public class AshleyGameStateSerializer {
         return reader.parse(json.toJson(component));
     }
 
-    public static void saveFromEngine(Engine engine, FileHandle fileHandle) {
+    public static void saveFromEngine(World world, FileHandle fileHandle) {
         try {
             Writer writer = fileHandle.writer(false);
             try {
-                saveFromEngine(engine, writer);
+                saveFromEngine(world, writer);
             } finally {
                 writer.close();
             }
@@ -58,25 +56,30 @@ public class AshleyGameStateSerializer {
         }
     }
 
-    public static void saveFromEngine(Engine engine, Writer writer) {
-        json.setEngine(engine);
+    public static void saveFromEngine(World world, Writer writer) {
+        json.setWorld(world);
 
         JsonValue result = new JsonValue(JsonValue.ValueType.object);
 
         Array<Entity> entityArray = new Array<>();
 
-        for (Entity entity : engine.getEntities()) {
+        IntBag entityIds = world.getAspectSubscriptionManager().get(Aspect.exclude(InternalEntityComponent.class)).getEntities();
+        for (int entityId : entityIds.getData()) {
+            Entity entity = world.getEntity(entityId);
             InternalEntityComponent internalEntity = entity.getComponent(InternalEntityComponent.class);
             if (internalEntity == null) {
                 entityArray.add(entity);
             }
         }
 
+        final Bag<Component> componentBag = new Bag<>();
+
         JsonValue entitiesJson = JsonUtils.convertToJsonArray(entityArray, new JsonUtils.JsonConverter<Entity>() {
             @Override
             public JsonValue convert(Entity entity) {
+                componentBag.clear();
                 Array<Component> componentArray = new Array<>();
-                for (Component component : entity.getComponents()) {
+                for (Component component : entity.getComponents(componentBag)) {
                     if (component.getClass().getAnnotation(InternalComponent.class) == null) {
                         componentArray.add(component);
                     }

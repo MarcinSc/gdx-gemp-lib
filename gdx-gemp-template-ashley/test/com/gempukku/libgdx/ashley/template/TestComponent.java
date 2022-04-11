@@ -1,4 +1,4 @@
-package com.gempukku.libgdx.template.ashley;
+package com.gempukku.libgdx.ashley.template;
 
 import com.badlogic.ashley.core.Component;
 
