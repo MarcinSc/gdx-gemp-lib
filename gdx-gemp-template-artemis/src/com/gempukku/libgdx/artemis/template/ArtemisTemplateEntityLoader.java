@@ -15,17 +15,17 @@ import com.gempukku.libgdx.template.JsonTemplateLoader;
 public class ArtemisTemplateEntityLoader {
     public static Entity loadTemplateToWorld(World world, String file, ArtemisWorldJson json, FileHandleResolver resolver) {
         JsonValue jsonValue = JsonTemplateLoader.loadTemplateFromFile(file, resolver);
-        return loadAshleyTempalteToWorld(world, jsonValue, json);
+        return loadArtemisTempalteToWorld(world, jsonValue, json);
     }
 
     public static Entity loadTemplateToWorld(World world, FileHandle fileHandle, ArtemisWorldJson json, FileHandleResolver resolver) {
         JsonValue jsonValue = JsonTemplateLoader.loadTemplateFromFile(fileHandle, resolver);
-        return loadAshleyTempalteToWorld(world, jsonValue, json);
+        return loadArtemisTempalteToWorld(world, jsonValue, json);
     }
 
-    public static Entity loadAshleyTempalteToWorld(World world, JsonValue jsonValue, ArtemisWorldJson json) {
+    public static Entity loadArtemisTempalteToWorld(World world, JsonValue jsonValue, ArtemisWorldJson json) {
         if (Gdx.app.getLogLevel() >= Application.LOG_DEBUG)
-            Gdx.app.debug("AshleyTemplate", jsonValue.toJson(JsonWriter.OutputType.json));
+            Gdx.app.debug("ArtemisTemplate", jsonValue.toJson(JsonWriter.OutputType.json));
 
         Entity entity = world.createEntity();
         json.setEntity(entity);
