@@ -11,9 +11,9 @@ sourceSets.test.resources.srcDirs = ["test-resources/"]
 
 sourceSets.main.java.srcDirs = ["src/"]
 
-archivesBaseName = "gdx-gemp-template-ashley"
+archivesBaseName = "gdx-gemp-template-artemis"
 
-eclipse.project.name = "gdx-gemp-template-ashley"
+eclipse.project.name = "gdx-gemp-template-artemis"
 
 task javadocJar(type: Jar) {
     classifier 'javadoc'
