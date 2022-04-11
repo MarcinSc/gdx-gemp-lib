@@ -19,7 +19,7 @@ public class ArtemisWorldJson extends Json {
 
     @Override
     protected Object newInstance(Class type) {
-        if (Component.class.isAssignableFrom(type))
+        if (entity != null && Component.class.isAssignableFrom(type))
             return world.getMapper(type).create(entity);
 
         return super.newInstance(type);

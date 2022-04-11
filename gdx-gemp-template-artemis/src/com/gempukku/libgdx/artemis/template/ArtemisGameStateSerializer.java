@@ -58,6 +58,7 @@ public class ArtemisGameStateSerializer {
 
     public static void saveFromEngine(World world, Writer writer) {
         json.setWorld(world);
+        json.setEntity(null);
 
         JsonValue result = new JsonValue(JsonValue.ValueType.object);
 
