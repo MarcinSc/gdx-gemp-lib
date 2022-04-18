@@ -13,17 +13,20 @@ import com.badlogic.gdx.utils.JsonWriter;
 import com.gempukku.libgdx.template.JsonTemplateLoader;
 
 public class ArtemisTemplateEntityLoader {
-    public static Entity loadTemplateToWorld(World world, String file, ArtemisWorldJson json, FileHandleResolver resolver) {
+    private static final ArtemisWorldJson json = new ArtemisWorldJson();
+
+    public static Entity loadTemplateToWorld(World world, String file, FileHandleResolver resolver) {
         JsonValue jsonValue = JsonTemplateLoader.loadTemplateFromFile(file, resolver);
-        return loadArtemisTemplateToWorld(world, jsonValue, json);
+        return loadArtemisTemplateToWorld(world, jsonValue);
     }
 
-    public static Entity loadTemplateToWorld(World world, FileHandle fileHandle, ArtemisWorldJson json, FileHandleResolver resolver) {
+    public static Entity loadTemplateToWorld(World world, FileHandle fileHandle, FileHandleResolver resolver) {
         JsonValue jsonValue = JsonTemplateLoader.loadTemplateFromFile(fileHandle, resolver);
-        return loadArtemisTemplateToWorld(world, jsonValue, json);
+        return loadArtemisTemplateToWorld(world, jsonValue);
     }
 
-    public static Entity loadArtemisTemplateToWorld(World world, JsonValue jsonValue, ArtemisWorldJson json) {
+    public static Entity loadArtemisTemplateToWorld(World world, JsonValue jsonValue) {
+        json.setWorld(world);
         if (Gdx.app.getLogLevel() >= Application.LOG_DEBUG)
             Gdx.app.debug("ArtemisTemplate", jsonValue.toJson(JsonWriter.OutputType.json));
 

@@ -14,18 +14,15 @@ import static org.junit.Assert.assertTrue;
 
 public class ArtemisTemplateEntityLoaderTest extends LibGDXTest {
     private World world;
-    private ArtemisWorldJson json;
 
     @Before
     public void init() {
         world = new World();
-        json = new ArtemisWorldJson();
-        json.setWorld(world);
     }
 
     @Test
     public void testSimple() {
-        Entity entity = ArtemisTemplateEntityLoader.loadTemplateToWorld(world, "entity/simple.json", json, new ClasspathFileHandleResolver());
+        Entity entity = ArtemisTemplateEntityLoader.loadTemplateToWorld(world, "entity/simple.json", new ClasspathFileHandleResolver());
         assertEquals(1, entity.getComponents(new Bag<Component>()).size());
         assertTrue(entity.getComponents(new Bag<Component>()).get(0) instanceof TestComponent);
         TestComponent test = (TestComponent) entity.getComponents(new Bag<Component>()).get(0);
@@ -34,7 +31,7 @@ public class ArtemisTemplateEntityLoaderTest extends LibGDXTest {
 
     @Test
     public void testMultiple() {
-        Entity entity = ArtemisTemplateEntityLoader.loadTemplateToWorld(world, "entity/multiple.json", json, new ClasspathFileHandleResolver());
+        Entity entity = ArtemisTemplateEntityLoader.loadTemplateToWorld(world, "entity/multiple.json", new ClasspathFileHandleResolver());
         assertEquals(2, entity.getComponents(new Bag<Component>()).size());
         for (Component component : entity.getComponents(new Bag<Component>())) {
             if (component instanceof TestComponent) {
@@ -47,7 +44,7 @@ public class ArtemisTemplateEntityLoaderTest extends LibGDXTest {
 
     @Test
     public void testExtends() {
-        Entity entity = ArtemisTemplateEntityLoader.loadTemplateToWorld(world, "entity/extend.json", json, new ClasspathFileHandleResolver());
+        Entity entity = ArtemisTemplateEntityLoader.loadTemplateToWorld(world, "entity/extend.json", new ClasspathFileHandleResolver());
         assertEquals(2, entity.getComponents(new Bag<Component>()).size());
         for (Component component : entity.getComponents(new Bag<Component>())) {
             if (component instanceof TestComponent) {

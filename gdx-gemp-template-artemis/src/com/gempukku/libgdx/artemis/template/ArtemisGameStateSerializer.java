@@ -31,11 +31,9 @@ public class ArtemisGameStateSerializer {
     }
 
     private static void loadJsonTemplateToEngine(World world, JsonValue value) {
-        json.setWorld(world);
-
         JsonValue entities = value.get("entities");
         for (JsonValue jsonEntity : entities) {
-            ArtemisTemplateEntityLoader.loadArtemisTemplateToWorld(world, jsonEntity, json);
+            ArtemisTemplateEntityLoader.loadArtemisTemplateToWorld(world, jsonEntity);
         }
     }
 
