@@ -26,6 +26,7 @@ allprojects {
         gdxGraphVersion = '0.5.1'
         ashleyVersion = '1.7.3'
         aiVersion = '1.8.0'
+        artemisOdbVersion = '2.3.0'
     }
 
     repositories {
@@ -56,6 +57,16 @@ project(":gdx-gemp-lib") {
         testImplementation 'junit:junit:4.13'
         testImplementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
         testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    }
+}
+
+project(":gdx-gemp-lib-artemis") {
+    apply plugin: "java-library"
+
+    dependencies {
+        implementation project(":gdx-gemp-lib")
+        implementation project(":gdx-gemp-template-artemis")
+        api "net.onedaybeard.artemis:artemis-odb:$artemisOdbVersion"
     }
 }
 
@@ -102,8 +113,8 @@ project(":gdx-gemp-template-artemis") {
     apply plugin: "java-library"
 
     dependencies {
-        implementation project(":gdx-gemp-template")
-        api "net.onedaybeard.artemis:artemis-odb:2.3.0"
+        api project(":gdx-gemp-template")
+        api "net.onedaybeard.artemis:artemis-odb:$artemisOdbVersion"
 
         testImplementation 'junit:junit:4.13'
         testImplementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
