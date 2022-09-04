@@ -11,6 +11,10 @@ import java.util.Comparator;
 public class InputProcessorSystem extends BaseSystem {
     @Override
     protected void initialize() {
+        setupProcessing();
+    }
+
+    public void setupProcessing() {
         Gdx.input.setInputProcessor(buildMultiplexer());
     }
 
