@@ -69,6 +69,7 @@ project(":gdx-gemp-lib-artemis") {
         api project(":gdx-gemp-lib")
         implementation project(":gdx-gemp-template-artemis")
         api "net.onedaybeard.artemis:artemis-odb:$artemisOdbVersion"
+        testImplementation "junit:junit:$junitVersion"
     }
 }
 
