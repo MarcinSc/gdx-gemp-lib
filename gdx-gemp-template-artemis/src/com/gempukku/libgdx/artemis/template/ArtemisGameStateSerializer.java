@@ -22,18 +22,22 @@ public class ArtemisGameStateSerializer {
 
     public static void loadIntoEngine(World world, String filePath, FileHandleResolver resolver) {
         JsonValue value = JsonTemplateLoader.loadTemplateFromFile(filePath, resolver);
-        loadJsonTemplateToEngine(world, value);
+        loadIntoEngine(world, value);
     }
 
     public static void loadIntoEngine(World world, Reader reader, FileHandleResolver resolver) {
         JsonValue value = JsonTemplateLoader.loadTemplateFromFile(reader, resolver);
+        loadIntoEngine(world, value);
+    }
+
+    public static void loadIntoEngine(World world, JsonValue value) {
         loadJsonTemplateToEngine(world, value);
     }
 
     private static void loadJsonTemplateToEngine(World world, JsonValue value) {
         JsonValue entities = value.get("entities");
         for (JsonValue jsonEntity : entities) {
-            ArtemisTemplateEntityLoader.loadArtemisTemplateToWorld(world, jsonEntity);
+            ArtemisTemplateEntityLoader.loadTemplateToWorld(world, jsonEntity);
         }
     }
 

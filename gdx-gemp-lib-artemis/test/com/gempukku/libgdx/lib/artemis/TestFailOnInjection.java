@@ -2,7 +2,7 @@ package com.gempukku.libgdx.lib.artemis;
 
 import com.artemis.BaseSystem;
 import com.artemis.World;
-import com.artemis.WorldConfiguration;
+import com.artemis.WorldConfigurationBuilder;
 import com.artemis.annotations.Wire;
 import org.junit.Test;
 
@@ -10,12 +10,13 @@ public class TestFailOnInjection {
     @Test
     public void testFailOnNullOnField() {
         SystemOne systemOne = new SystemOne();
-        WorldConfiguration worldConfiguration = new WorldConfiguration();
-        worldConfiguration.setSystem(systemOne);
+        WorldConfigurationBuilder builder = new WorldConfigurationBuilder();
+        builder.with(systemOne);
 
-        World world = new World(worldConfiguration);
+        World world = new World(builder.build());
     }
 
+    @Wire(failOnNull = false)
     private static class SystemOne extends BaseSystem {
         @Wire(failOnNull = false)
         private SystemTwo systemTwo;
@@ -26,7 +27,10 @@ public class TestFailOnInjection {
         }
     }
 
-    private static class SystemTwo {
+    private static class SystemTwo extends BaseSystem {
+        @Override
+        protected void processSystem() {
 
+        }
     }
 }

@@ -13,6 +13,7 @@ import com.gempukku.libgdx.lib.artemis.hierarchy.ChildRemoved;
 import com.gempukku.libgdx.lib.artemis.hierarchy.ChildUpdated;
 import com.gempukku.libgdx.lib.artemis.hierarchy.HierarchySystem;
 
+@Wire(failOnNull = false)
 public class TransformSystem extends BaseEntitySystem {
     private static final TransformUpdated updated = new TransformUpdated();
 

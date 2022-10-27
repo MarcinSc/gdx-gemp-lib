@@ -13,6 +13,10 @@ import java.io.Reader;
 public class HierarchyArtemisLoader {
     public static Entity loadHierarchicalEntityToEngine(World world, HierarchySystem hierarchySystem, String filePath, FileHandleResolver resolver) {
         JsonValue value = JsonTemplateLoader.loadTemplateFromFile(filePath, resolver);
+        return loadHierarchicalEntityToEngine(world, hierarchySystem, value);
+    }
+
+    public static Entity loadHierarchicalEntityToEngine(World world, HierarchySystem hierarchySystem, JsonValue value) {
         return loadHierarchyRecursively(world, hierarchySystem, value);
     }
 
@@ -28,7 +32,7 @@ public class HierarchyArtemisLoader {
         return loadHierarchyToEngine(world, hierarchySystem, result, value);
     }
 
-    private static Array<Entity> loadHierarchyToEngine(World world, HierarchySystem hierarchySystem, Array<Entity> result, JsonValue value) {
+    public static Array<Entity> loadHierarchyToEngine(World world, HierarchySystem hierarchySystem, Array<Entity> result, JsonValue value) {
         result.clear();
 
         JsonValue entities = value.get("entities");
@@ -40,7 +44,7 @@ public class HierarchyArtemisLoader {
 
     private static Entity loadHierarchyRecursively(World world, HierarchySystem hierarchySystem, JsonValue definitionJson) {
         JsonValue entityJson = definitionJson.get("entity");
-        Entity parent = ArtemisTemplateEntityLoader.loadArtemisTemplateToWorld(world, entityJson);
+        Entity parent = ArtemisTemplateEntityLoader.loadTemplateToWorld(world, entityJson);
         JsonValue childrenJson = definitionJson.get("children");
         if (childrenJson != null) {
             for (JsonValue childJson : childrenJson) {

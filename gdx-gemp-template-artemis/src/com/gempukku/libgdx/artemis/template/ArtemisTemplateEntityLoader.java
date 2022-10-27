@@ -8,6 +8,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonWriter;
 import com.gempukku.libgdx.template.JsonTemplateLoader;
@@ -15,17 +16,27 @@ import com.gempukku.libgdx.template.JsonTemplateLoader;
 public class ArtemisTemplateEntityLoader {
     private static final ArtemisWorldJson json = new ArtemisWorldJson();
 
+    static {
+        json.setSerializer(JsonValue.class,
+                new Json.ReadOnlySerializer<JsonValue>() {
+                    @Override
+                    public JsonValue read(Json json, JsonValue jsonData, Class type) {
+                        return jsonData;
+                    }
+                });
+    }
+
     public static Entity loadTemplateToWorld(World world, String file, FileHandleResolver resolver) {
         JsonValue jsonValue = JsonTemplateLoader.loadTemplateFromFile(file, resolver);
-        return loadArtemisTemplateToWorld(world, jsonValue);
+        return loadTemplateToWorld(world, jsonValue);
     }
 
     public static Entity loadTemplateToWorld(World world, FileHandle fileHandle, FileHandleResolver resolver) {
         JsonValue jsonValue = JsonTemplateLoader.loadTemplateFromFile(fileHandle, resolver);
-        return loadArtemisTemplateToWorld(world, jsonValue);
+        return loadTemplateToWorld(world, jsonValue);
     }
 
-    public static Entity loadArtemisTemplateToWorld(World world, JsonValue jsonValue) {
+    public static Entity loadTemplateToWorld(World world, JsonValue jsonValue) {
         json.setWorld(world);
         if (Gdx.app.getLogLevel() >= Application.LOG_DEBUG)
             Gdx.app.debug("ArtemisTemplate", jsonValue.toJson(JsonWriter.OutputType.json));
