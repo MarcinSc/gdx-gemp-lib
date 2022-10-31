@@ -2,9 +2,8 @@ package com.gempukku.libgdx.lib.artemis.font;
 
 import com.artemis.BaseSystem;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.utils.Disposable;
 
-public class BitmapFontSystem extends BaseSystem implements Disposable {
+public class BitmapFontSystem extends BaseSystem {
     private BitmapFontHandler bitmapFontHandler;
 
     public BitmapFontSystem(BitmapFontHandler textureHandler) {
