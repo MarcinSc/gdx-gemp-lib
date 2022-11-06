@@ -37,12 +37,26 @@ public class ArtemisTemplateEntityLoader {
     }
 
     public static Entity loadTemplateToWorld(World world, JsonValue jsonValue) {
-        json.setWorld(world);
         if (Gdx.app.getLogLevel() >= Application.LOG_DEBUG)
             Gdx.app.debug("ArtemisTemplate", jsonValue.toJson(JsonWriter.OutputType.json));
 
         Entity entity = world.createEntity();
+        return loadFragmentToEntity(world, entity, jsonValue);
+    }
+
+    public static Entity loadFragmentToEntity(World world, Entity entity, FileHandle fileHandle, FileHandleResolver resolver) {
+        JsonValue jsonValue = JsonTemplateLoader.loadTemplateFromFile(fileHandle, resolver);
+        return loadFragmentToEntity(world, entity, jsonValue);
+    }
+
+    public static Entity loadFragmentToEntity(World world, Entity entity, String file, FileHandleResolver resolver) {
+        JsonValue jsonValue = JsonTemplateLoader.loadTemplateFromFile(file, resolver);
+        return loadFragmentToEntity(world, entity, jsonValue);
+    }
+
+    public static Entity loadFragmentToEntity(World world, Entity entity, JsonValue jsonValue) {
         json.setEntity(entity);
+        json.setWorld(world);
 
         try {
             for (JsonValue component : jsonValue) {
