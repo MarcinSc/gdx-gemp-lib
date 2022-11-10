@@ -1,0 +1,17 @@
+package <PACKAGE>;
+
+import com.gempukku.libgdx.artemis.event.*;
+import com.artemis.*;
+
+public class <CLASS_NAME> implements EntityEventDispatcher {
+<VARIABLES>
+    @Override
+    public void initializeForWorld(World world) {
+<INITIALIZE_BODY>    }
+
+    @Override
+    public void dispatchEvent(EntityEvent entityEvent, Entity entity) {
+        Class<? extends EntityEvent> eventClass = entityEvent.getClass();
+
+<DISPATCH_BODY>    }
+}

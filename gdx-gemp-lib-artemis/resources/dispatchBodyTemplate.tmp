@@ -1,0 +1,2 @@
+        if (eventClass == <EVENT_CLASS>.class) {
+<SYSTEM_DISPATCH>        }
