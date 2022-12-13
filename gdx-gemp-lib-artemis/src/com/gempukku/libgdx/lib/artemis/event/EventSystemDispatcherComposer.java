@@ -11,7 +11,7 @@ import java.io.*;
 import java.lang.reflect.Method;
 import java.util.Comparator;
 
-public class EventSystemComposer {
+public class EventSystemDispatcherComposer {
     public static void scanSystems(String packageName, String className, PrioritySource prioritySource, File sourceFolder, Class<? extends BaseSystem>... systems) throws IOException {
         ObjectMap<String, String> systemClassToVariable = new ObjectMap<>();
         ObjectMap<String, Array<WritingEventDispatcher>> eventDispatchers = new ObjectMap<>();
@@ -107,7 +107,7 @@ public class EventSystemComposer {
 
     private static String asString(String path) throws IOException {
         StringBuilder result = new StringBuilder();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(EventSystemComposer.class.getClassLoader().getResourceAsStream(path)));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(EventSystemDispatcherComposer.class.getClassLoader().getResourceAsStream(path)));
         try {
             String line;
             while ((line = reader.readLine()) != null) {
