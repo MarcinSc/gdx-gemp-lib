@@ -28,10 +28,10 @@ public class EventSystem extends BaseSystem {
     }
 
     public void fireEvent(EntityEvent event, Entity entity) {
-        entityEventDispatcher.dispatchEvent(event, entity);
         for (RawEventListener rawEventListener : rawEventListeners) {
             rawEventListener.eventDispatched(event, entity);
         }
+        entityEventDispatcher.dispatchEvent(event, entity);
     }
 
     @Override
