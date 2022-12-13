@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EventSystem extends BaseSystem {
-    private EntityEventDispatcher entityEventDispatcher;
-    private List<RawEventListener> rawEventListeners = new ArrayList<>();
+    private final EntityEventDispatcher entityEventDispatcher;
+    private final List<RawEventListener> rawEventListeners = new ArrayList<>();
 
     public EventSystem(EntityEventDispatcher entityEventDispatcher) {
         this.entityEventDispatcher = entityEventDispatcher;
