@@ -2,7 +2,7 @@ package com.gempukku.libgdx.network;
 
 import com.gempukku.libgdx.lib.artemis.event.EntityEvent;
 
-public class EventFromClient implements EntityEvent {
+public abstract class EventFromClient implements EntityEvent {
     private String origin;
 
     public String getOrigin() {

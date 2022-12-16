@@ -6,11 +6,13 @@ import com.artemis.WorldConfigurationBuilder;
 import com.gempukku.libgdx.lib.artemis.event.EntityEventDispatcher;
 import com.gempukku.libgdx.lib.artemis.event.EventSystem;
 import com.gempukku.libgdx.network.EntityUpdated;
+import com.gempukku.libgdx.network.server.config.annotation.ReplicateToClientsConfig;
+import com.gempukku.libgdx.network.server.config.annotation.ReplicateToOwnersConfig;
+import com.gempukku.libgdx.network.server.config.annotation.SendEventToClientsConfig;
+import com.gempukku.libgdx.network.server.config.annotation.SendEventToOwnersConfig;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.mockito.internal.verification.Times;
-
 
 public class RemoteEntityManagerHandlerTest {
     private World world;
@@ -19,7 +21,22 @@ public class RemoteEntityManagerHandlerTest {
 
     @Before
     public void setup() {
-        remoteEntityManagerHandler = new RemoteEntityManagerHandler();
+        remoteEntityManagerHandler = new RemoteEntityManagerHandler(
+                new EntityIdMapper() {
+                    @Override
+                    public Entity findfromId(String entityId) {
+                        return world.getEntity(Integer.parseInt(entityId));
+                    }
+
+                    @Override
+                    public String getEntityId(Entity entity) {
+                        return String.valueOf(entity.getId());
+                    }
+                }
+        );
+        remoteEntityManagerHandler.addNetworkEntityConfig(
+                new ReplicateToClientsConfig(), new ReplicateToOwnersConfig(),
+                new SendEventToClientsConfig(), new SendEventToOwnersConfig());
 
         WorldConfigurationBuilder worldConfigurationBuilder = new WorldConfigurationBuilder();
         eventSystem = new EventSystem(Mockito.mock(EntityEventDispatcher.class));
@@ -42,7 +59,7 @@ public class RemoteEntityManagerHandlerTest {
         remoteEntityManagerHandler.addClientConnection(clientConnection);
         Mockito.verify(clientConnection).getName();
         Mockito.verify(clientConnection).setServerCallback(Mockito.any(ServerCallback.class));
-        Mockito.verify(clientConnection).entityAdded(Mockito.any(Entity.class));
+        Mockito.verify(clientConnection).entityAdded(Mockito.anyString(), Mockito.any(Entity.class));
         Mockito.verify(clientConnection).applyChanges();
         Mockito.verifyNoMoreInteractions(clientConnection);
     }
@@ -56,7 +73,7 @@ public class RemoteEntityManagerHandlerTest {
         ClientConnection clientConnection = mockClientConnection("user1");
 
         remoteEntityManagerHandler.addClientConnection(clientConnection);
-        Mockito.verify(clientConnection).getName();
+        Mockito.verify(clientConnection, Mockito.atLeast(1)).getName();
         Mockito.verify(clientConnection).setServerCallback(Mockito.any(ServerCallback.class));
         Mockito.verify(clientConnection).applyChanges();
         Mockito.verifyNoMoreInteractions(clientConnection);
@@ -73,9 +90,9 @@ public class RemoteEntityManagerHandlerTest {
         ClientConnection clientConnection = mockClientConnection("user1");
 
         remoteEntityManagerHandler.addClientConnection(clientConnection);
-        Mockito.verify(clientConnection).getName();
+        Mockito.verify(clientConnection, Mockito.atLeast(1)).getName();
         Mockito.verify(clientConnection).setServerCallback(Mockito.any(ServerCallback.class));
-        Mockito.verify(clientConnection).entityAdded(Mockito.any(Entity.class));
+        Mockito.verify(clientConnection).entityAdded(Mockito.anyString(), Mockito.any(Entity.class));
         Mockito.verify(clientConnection).applyChanges();
         Mockito.verifyNoMoreInteractions(clientConnection);
     }
@@ -91,7 +108,7 @@ public class RemoteEntityManagerHandlerTest {
         ClientConnection clientConnection = mockClientConnection("user1");
 
         remoteEntityManagerHandler.addClientConnection(clientConnection);
-        Mockito.verify(clientConnection).getName();
+        Mockito.verify(clientConnection, Mockito.atLeast(1)).getName();
         Mockito.verify(clientConnection).setServerCallback(Mockito.any(ServerCallback.class));
         Mockito.verify(clientConnection).applyChanges();
         Mockito.verifyNoMoreInteractions(clientConnection);
@@ -112,14 +129,15 @@ public class RemoteEntityManagerHandlerTest {
         Entity entity = world.createEntity();
         world.getMapper(SendToAllComponent.class).create(entity);
 
-        remoteEntityManagerHandler.entityUpdated(new EntityUpdated(), entity);
+        remoteEntityManagerHandler.entityUpdated(EntityUpdated.instance, entity);
 
         world.process();
 
-        Mockito.verify(clientConnection).getName();
+        Mockito.verify(clientConnection, Mockito.atLeast(1)).getName();
         Mockito.verify(clientConnection).setServerCallback(Mockito.any(ServerCallback.class));
-        Mockito.verify(clientConnection).entityAdded(Mockito.any(Entity.class));
-        Mockito.verify(clientConnection, new Times(2)).applyChanges();
+        Mockito.verify(clientConnection).entityAdded(Mockito.anyString(), Mockito.any(Entity.class));
+        Mockito.verify(clientConnection, Mockito.times(2)).applyChanges();
+        Mockito.verify(clientConnection).entityModified(Mockito.anyString(), Mockito.any(Entity.class));
         Mockito.verifyNoMoreInteractions(clientConnection);
     }
 
@@ -131,13 +149,13 @@ public class RemoteEntityManagerHandlerTest {
 
         Entity entity = world.createEntity();
 
-        remoteEntityManagerHandler.entityUpdated(new EntityUpdated(), entity);
+        remoteEntityManagerHandler.entityUpdated(EntityUpdated.instance, entity);
 
         world.process();
 
-        Mockito.verify(clientConnection).getName();
+        Mockito.verify(clientConnection, Mockito.atLeast(1)).getName();
         Mockito.verify(clientConnection).setServerCallback(Mockito.any(ServerCallback.class));
-        Mockito.verify(clientConnection, new Times(2)).applyChanges();
+        Mockito.verify(clientConnection, Mockito.times(2)).applyChanges();
         Mockito.verifyNoMoreInteractions(clientConnection);
     }
 
@@ -151,14 +169,15 @@ public class RemoteEntityManagerHandlerTest {
         SendToOwnerComponent component = world.getMapper(SendToOwnerComponent.class).create(entity);
         component.setOwner("user1");
 
-        remoteEntityManagerHandler.entityUpdated(new EntityUpdated(), entity);
+        remoteEntityManagerHandler.entityUpdated(EntityUpdated.instance, entity);
 
         world.process();
 
-        Mockito.verify(clientConnection).getName();
+        Mockito.verify(clientConnection, Mockito.atLeast(1)).getName();
         Mockito.verify(clientConnection).setServerCallback(Mockito.any(ServerCallback.class));
-        Mockito.verify(clientConnection).entityAdded(Mockito.any(Entity.class));
-        Mockito.verify(clientConnection, new Times(2)).applyChanges();
+        Mockito.verify(clientConnection).entityAdded(Mockito.anyString(), Mockito.any(Entity.class));
+        Mockito.verify(clientConnection, Mockito.times(2)).applyChanges();
+        Mockito.verify(clientConnection).entityModified(Mockito.anyString(), Mockito.any(Entity.class));
         Mockito.verifyNoMoreInteractions(clientConnection);
     }
 
@@ -172,13 +191,13 @@ public class RemoteEntityManagerHandlerTest {
         SendToOwnerComponent component = world.getMapper(SendToOwnerComponent.class).create(entity);
         component.setOwner("user2");
 
-        remoteEntityManagerHandler.entityUpdated(new EntityUpdated(), entity);
+        remoteEntityManagerHandler.entityUpdated(EntityUpdated.instance, entity);
 
         world.process();
 
-        Mockito.verify(clientConnection).getName();
+        Mockito.verify(clientConnection, Mockito.atLeast(1)).getName();
         Mockito.verify(clientConnection).setServerCallback(Mockito.any(ServerCallback.class));
-        Mockito.verify(clientConnection, new Times(2)).applyChanges();
+        Mockito.verify(clientConnection, Mockito.times(2)).applyChanges();
         Mockito.verifyNoMoreInteractions(clientConnection);
     }
 
@@ -192,18 +211,19 @@ public class RemoteEntityManagerHandlerTest {
         SendToOwnerComponent component = world.getMapper(SendToOwnerComponent.class).create(entity);
         component.setOwner("user1");
 
-        remoteEntityManagerHandler.entityUpdated(new EntityUpdated(), entity);
+        remoteEntityManagerHandler.entityUpdated(EntityUpdated.instance, entity);
 
         SendToClientsEvent event = new SendToClientsEvent();
         eventSystem.fireEvent(event, entity);
 
         world.process();
 
-        Mockito.verify(clientConnection).getName();
+        Mockito.verify(clientConnection, Mockito.atLeast(1)).getName();
         Mockito.verify(clientConnection).setServerCallback(Mockito.any(ServerCallback.class));
-        Mockito.verify(clientConnection).entityAdded(Mockito.any(Entity.class));
-        Mockito.verify(clientConnection).eventSent(Mockito.anyInt(), Mockito.eq(event));
-        Mockito.verify(clientConnection, new Times(2)).applyChanges();
+        Mockito.verify(clientConnection).entityAdded(Mockito.anyString(), Mockito.any(Entity.class));
+        Mockito.verify(clientConnection).eventSent(Mockito.anyString(), Mockito.any(Entity.class), Mockito.eq(event));
+        Mockito.verify(clientConnection, Mockito.times(2)).applyChanges();
+        Mockito.verify(clientConnection).entityModified(Mockito.anyString(), Mockito.any(Entity.class));
         Mockito.verifyNoMoreInteractions(clientConnection);
     }
 
@@ -217,16 +237,16 @@ public class RemoteEntityManagerHandlerTest {
         SendToOwnerComponent component = world.getMapper(SendToOwnerComponent.class).create(entity);
         component.setOwner("user2");
 
-        remoteEntityManagerHandler.entityUpdated(new EntityUpdated(), entity);
+        remoteEntityManagerHandler.entityUpdated(EntityUpdated.instance, entity);
 
         SendToClientsEvent event = new SendToClientsEvent();
         eventSystem.fireEvent(event, entity);
 
         world.process();
 
-        Mockito.verify(clientConnection).getName();
+        Mockito.verify(clientConnection, Mockito.atLeast(1)).getName();
         Mockito.verify(clientConnection).setServerCallback(Mockito.any(ServerCallback.class));
-        Mockito.verify(clientConnection, new Times(2)).applyChanges();
+        Mockito.verify(clientConnection, Mockito.times(2)).applyChanges();
         Mockito.verifyNoMoreInteractions(clientConnection);
     }
 //

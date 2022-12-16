@@ -8,24 +8,24 @@ public class NetworkMessage<T> {
         ENTITY_CREATED, ENTITY_MODIFIED, ENTITY_REMOVED, EVENT, APPLY_CHANGES
     }
 
-    private int entityId;
+    private String entityId;
     private Type type;
     private T payload;
     private List<T> payloadList;
 
-    public NetworkMessage(int entityId, Type type, T payload) {
+    public NetworkMessage(String entityId, Type type, T payload) {
         this.entityId = entityId;
         this.type = type;
         this.payload = payload;
     }
 
-    public NetworkMessage(int entityId, Type type, List<T> payloadList) {
+    public NetworkMessage(String entityId, Type type, List<T> payloadList) {
         this.entityId = entityId;
         this.type = type;
         this.payloadList = payloadList;
     }
 
-    public int getEntityId() {
+    public String getEntityId() {
         return entityId;
     }
 

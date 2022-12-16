@@ -6,13 +6,13 @@ import com.gempukku.libgdx.lib.artemis.event.EntityEvent;
 public interface ClientConnection {
     String getName();
 
-    void entityAdded(Entity entityData);
+    void entityAdded(String entityId, Entity entityData);
 
-    void entityModified(Entity entityData);
+    void entityModified(String entityId, Entity entityData);
 
-    void entityRemoved(int entityId);
+    void entityRemoved(String entityId, Entity entityData);
 
-    void eventSent(int entityId, EntityEvent event);
+    void eventSent(String entityId, Entity entity, EntityEvent event);
 
     void applyChanges();
 

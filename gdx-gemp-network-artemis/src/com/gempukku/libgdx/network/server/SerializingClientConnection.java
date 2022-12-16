@@ -3,10 +3,16 @@ package com.gempukku.libgdx.network.server;
 import com.artemis.Component;
 import com.artemis.Entity;
 import com.artemis.utils.Bag;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectSet;
 import com.gempukku.libgdx.lib.artemis.event.EntityEvent;
-import com.gempukku.libgdx.network.*;
+import com.gempukku.libgdx.network.DataSerializer;
+import com.gempukku.libgdx.network.EventFromClient;
+import com.gempukku.libgdx.network.NetworkMessage;
+import com.gempukku.libgdx.network.server.config.NetworkEntitySerializationConfig;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
 
 public class SerializingClientConnection<T> implements ClientConnection {
     private final ClientSession<T> session;
@@ -14,17 +20,21 @@ public class SerializingClientConnection<T> implements ClientConnection {
     private ServerCallback serverCallback;
     private final String username;
 
-    private final Map<Integer, Entity> entitiesCreated = new HashMap<>();
-    private final Map<Integer, Entity> entitiesModified = new HashMap<>();
-    private final Set<Integer> entitiesRemoved = new HashSet<>();
+    private final ObjectMap<String, Entity> entitiesCreated = new ObjectMap<>();
+    private final ObjectMap<String, Entity> entitiesModified = new ObjectMap<>();
+    private final ObjectSet<String> entitiesRemoved = new ObjectSet<>();
     private final List<NetworkMessage<T>> eventsToSend = new LinkedList<>();
 
     private final Bag<Component> tempComponentBag = new Bag<>();
 
-    public SerializingClientConnection(String username, ClientSession<T> session, DataSerializer<T> dataSerializer) {
+    private final NetworkEntitySerializationConfig networkEntitySerializationConfig;
+
+    public SerializingClientConnection(String username, ClientSession<T> session, DataSerializer<T> dataSerializer,
+                                       NetworkEntitySerializationConfig networkEntitySerializationConfig) {
         this.username = username;
         this.session = session;
         this.dataSerializer = dataSerializer;
+        this.networkEntitySerializationConfig = networkEntitySerializationConfig;
     }
 
     @Override
@@ -32,23 +42,26 @@ public class SerializingClientConnection<T> implements ClientConnection {
         return username;
     }
 
-    public void eventReceived(int entityId, T eventData) {
-        serverCallback.processEvent(username, entityId, (EventFromClient) dataSerializer.deserializeData(eventData));
+    public void eventReceived(String entityId, T eventData) {
+        serverCallback.processEvent(username, entityId, (EventFromClient) dataSerializer.deserializeEntityEvent(eventData));
     }
 
     @Override
-    public void entityAdded(Entity entity) {
-        entitiesCreated.put(entity.getId(), entity);
+    public void entityAdded(String entityId, Entity entity) {
+        if (entitiesRemoved.remove(entityId))
+            entitiesModified.put(entityId, entity);
+        else
+            entitiesCreated.put(entityId, entity);
     }
 
     @Override
-    public void entityModified(Entity entity) {
-        if (!entitiesCreated.containsKey(entity.getId()))
-            entitiesModified.put(entity.getId(), entity);
+    public void entityModified(String entityId, Entity entity) {
+        if (!entitiesCreated.containsKey(entityId))
+            entitiesModified.put(entityId, entity);
     }
 
     @Override
-    public void entityRemoved(int entityId) {
+    public void entityRemoved(String entityId, Entity entity) {
         if (entitiesCreated.remove(entityId) == null) {
             entitiesModified.remove(entityId);
             entitiesRemoved.add(entityId);
@@ -56,29 +69,29 @@ public class SerializingClientConnection<T> implements ClientConnection {
     }
 
     @Override
-    public void eventSent(int entityId, EntityEvent event) {
-        T eventData = dataSerializer.serializeData(event);
+    public void eventSent(String entityId, Entity entity, EntityEvent event) {
+        T eventData = dataSerializer.serializeEvent(event);
 
         eventsToSend.add(new NetworkMessage<>(entityId, NetworkMessage.Type.EVENT, eventData));
     }
 
     @Override
     public void applyChanges() {
-        if (entitiesRemoved.size() > 0 || entitiesModified.size() > 0
-                || entitiesCreated.size() > 0 || eventsToSend.size() > 0) {
-            for (int entityId : entitiesRemoved) {
-                session.sendMessage(new NetworkMessage<>(entityId, NetworkMessage.Type.ENTITY_REMOVED, (T) null));
+        if (entitiesRemoved.size > 0 || entitiesModified.size > 0
+                || entitiesCreated.size > 0 || eventsToSend.size() > 0) {
+            for (ObjectMap.Entry<String, Entity> entityEntry : entitiesCreated) {
+                List<T> entityData = convertToEntityData(entityEntry.value);
+                session.sendMessage(new NetworkMessage<>(entityEntry.key, NetworkMessage.Type.ENTITY_CREATED, entityData));
             }
-            for (Entity entity : entitiesCreated.values()) {
-                List<T> entityData = convertToEntityData(entity);
-                session.sendMessage(new NetworkMessage<>(entity.getId(), NetworkMessage.Type.ENTITY_CREATED, entityData));
-            }
-            for (Entity entity : entitiesModified.values()) {
-                List<T> entityData = convertToEntityData(entity);
-                session.sendMessage(new NetworkMessage<>(entity.getId(), NetworkMessage.Type.ENTITY_MODIFIED, entityData));
+            for (ObjectMap.Entry<String, Entity> entityEntry : entitiesModified) {
+                List<T> entityData = convertToEntityData(entityEntry.value);
+                session.sendMessage(new NetworkMessage<>(entityEntry.key, NetworkMessage.Type.ENTITY_MODIFIED, entityData));
             }
             for (NetworkMessage<T> networkMessage : eventsToSend) {
                 session.sendMessage(networkMessage);
+            }
+            for (String entityId : entitiesRemoved) {
+                session.sendMessage(new NetworkMessage<>(entityId, NetworkMessage.Type.ENTITY_REMOVED, (T) null));
             }
 
             entitiesCreated.clear();
@@ -86,7 +99,7 @@ public class SerializingClientConnection<T> implements ClientConnection {
             entitiesRemoved.clear();
             eventsToSend.clear();
 
-            session.sendMessage(new NetworkMessage<>(0, NetworkMessage.Type.APPLY_CHANGES, (T) null));
+            session.sendMessage(new NetworkMessage<>("", NetworkMessage.Type.APPLY_CHANGES, (T) null));
         }
     }
 
@@ -107,25 +120,12 @@ public class SerializingClientConnection<T> implements ClientConnection {
         List<T> entityData = new LinkedList<>();
 
         for (Component component : tempComponentBag) {
-            Class<? extends Component> componentClass = component.getClass();
-            if (componentClass.getAnnotation(ReplicateToClients.class) != null
-                    || componentClass.getAnnotation(ReplicateWithOthers.class) != null
-                    || replicatesToUser(username, componentClass, component)) {
-                entityData.add(dataSerializer.serializeData(component));
+            if (networkEntitySerializationConfig.isComponentSerializedToClient(
+                    component, this)) {
+                entityData.add(dataSerializer.serializeComponent(component));
             }
         }
         return entityData;
-    }
-
-    private boolean replicatesToUser(String username, Class<? extends Component> componentClass, Component componentData) {
-        ReplicateToOwner replicateToOwner = componentClass.getAnnotation(ReplicateToOwner.class);
-        if (replicateToOwner != null) {
-            if (componentData instanceof OwnedComponent && ((OwnedComponent) componentData).getOwner().equals(username))
-                return true;
-            if (componentData instanceof OwnedByMultipleComponent && ((OwnedByMultipleComponent) componentData).getOwners().contains(username))
-                return true;
-        }
-        return false;
     }
 
     @Override

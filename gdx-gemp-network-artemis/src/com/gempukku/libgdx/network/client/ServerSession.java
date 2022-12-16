@@ -1,8 +1,8 @@
-package com.gempukku.libgdx.network.server;
+package com.gempukku.libgdx.network.client;
 
 import com.gempukku.libgdx.network.NetworkMessage;
 
-public interface ClientSession<T> {
+public interface ServerSession<T> {
     void sendMessage(NetworkMessage<T> networkMessage);
 
     void disconnect();
