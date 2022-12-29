@@ -1,9 +1,0 @@
-{
-  "tpl:extends": "tutorial/ashley/enemyTemplate.json",
-  "com.github.PositionComponent": {
-    "position": {
-      "x": 12,
-      "y": 6
-    }
-  }
-}

@@ -1,8 +1,0 @@
-{
-  "tpl:extends": "template/deepMergeTemplate.json",
-  "a": {
-    "b": {
-      "c": "d"
-    }
-  }
-}

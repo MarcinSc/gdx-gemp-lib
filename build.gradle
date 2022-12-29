@@ -50,23 +50,10 @@ configure(subprojects) {
     }
 }
 
-project(":gdx-gemp-lib") {
-    apply plugin: "java-library"
-
-    dependencies {
-        api "com.badlogicgames.gdx:gdx:$gdxVersion"
-
-        testImplementation "junit:junit:$junitVersion"
-        testImplementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
-        testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-    }
-}
-
 project(":gdx-gemp-lib-artemis") {
     apply plugin: "java-library"
 
     dependencies {
-        api project(":gdx-gemp-lib")
         implementation project(":gdx-gemp-template-artemis")
         api "net.onedaybeard.artemis:artemis-odb:$artemisOdbVersion"
         testImplementation "junit:junit:$junitVersion"
@@ -78,6 +65,7 @@ project(":gdx-gemp-network-artemis") {
 
     dependencies {
         api project(":gdx-gemp-lib-artemis")
+        api "com.badlogicgames.gdx:gdx:$gdxVersion"
         api "com.google.guava:guava:21.0"
         api "com.github.czyzby:gdx-websocket:$websocketLibVersion.$gdxWebsocketVersion"
         api "com.neovisionaries:nv-websocket-client:1.31"
@@ -90,7 +78,6 @@ project(":gdx-gemp-ai") {
     apply plugin: "java-library"
 
     dependencies {
-        implementation project(":gdx-gemp-lib")
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
 
         testImplementation "junit:junit:$junitVersion"
@@ -103,7 +90,6 @@ project(":gdx-gemp-camera2d") {
     apply plugin: "java-library"
 
     dependencies {
-        implementation project(":gdx-gemp-lib")
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
 
         testImplementation "junit:junit:$junitVersion"
@@ -116,7 +102,6 @@ project(":gdx-gemp-template") {
     apply plugin: "java-library"
 
     dependencies {
-        implementation project(":gdx-gemp-lib")
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
 
         testImplementation "junit:junit:$junitVersion"

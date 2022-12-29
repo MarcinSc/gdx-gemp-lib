@@ -1,6 +1,0 @@
-{
-  "tpl:extends": "template/templateInside.json",
-  "c": {
-    "b": "c"
-  }
-}
