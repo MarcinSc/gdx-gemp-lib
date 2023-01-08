@@ -2,10 +2,10 @@ buildscript {
     repositories {
         mavenLocal()
         mavenCentral()
-        maven { url "https://plugins.gradle.org/m2/" }
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-        jcenter()
         google()
+        gradlePluginPortal()
+        jcenter()
+        maven { url 'https://jitpack.io' }
     }
     dependencies {
 
@@ -13,8 +13,10 @@ buildscript {
 }
 
 allprojects {
-    apply plugin: "maven"
     apply plugin: "eclipse"
+    apply plugin: "idea"
+    apply plugin: "maven"
+    apply plugin: "java"
 
     group = "com.gempukku.libgdx.lib"
     version = '0.1.14'
@@ -34,10 +36,9 @@ allprojects {
     repositories {
         mavenLocal()
         mavenCentral()
-        jcenter()
         google()
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+        gradlePluginPortal()
+        jcenter()
         maven { url 'https://jitpack.io' }
     }
 }
@@ -45,109 +46,27 @@ allprojects {
 configure(subprojects) {
     apply plugin: 'java-library'
     sourceCompatibility = 8.0
+
+    sourceSets.main.java.srcDirs = ["src/"]
+    sourceSets.main.resources.srcDirs = ["resources/"]
+    sourceSets.test.java.srcDirs = ["test/"]
+    sourceSets.test.resources.srcDirs = ["test-resources/"]
+
     compileJava {
         options.incremental = true
     }
-}
 
-project(":gdx-gemp-lib-artemis") {
-    apply plugin: "java-library"
+    task javadocJar(type: Jar) {
+        classifier 'javadoc'
+        from javadoc
+    }
 
-    dependencies {
-        implementation project(":gdx-gemp-template-artemis")
-        api "net.onedaybeard.artemis:artemis-odb:$artemisOdbVersion"
-        testImplementation "junit:junit:$junitVersion"
+    task sourcesJar(type: Jar) {
+        classifier 'sources'
+        from sourceSets.main.allSource
+    }
+
+    artifacts {
+        archives javadocJar, sourcesJar
     }
 }
-
-project(":gdx-gemp-network-artemis") {
-    apply plugin: "java-library"
-
-    dependencies {
-        api project(":gdx-gemp-lib-artemis")
-        api "com.badlogicgames.gdx:gdx:$gdxVersion"
-        api "com.google.guava:guava:21.0"
-        api "com.github.czyzby:gdx-websocket:$websocketLibVersion.$gdxWebsocketVersion"
-        api "com.neovisionaries:nv-websocket-client:1.31"
-        testImplementation "junit:junit:$junitVersion"
-        testImplementation "org.mockito:mockito-all:$mockitoVersion"
-    }
-}
-
-project(":gdx-gemp-ai") {
-    apply plugin: "java-library"
-
-    dependencies {
-        api "com.badlogicgames.gdx:gdx:$gdxVersion"
-
-        testImplementation "junit:junit:$junitVersion"
-        testImplementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
-        testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-    }
-}
-
-project(":gdx-gemp-camera2d") {
-    apply plugin: "java-library"
-
-    dependencies {
-        api "com.badlogicgames.gdx:gdx:$gdxVersion"
-
-        testImplementation "junit:junit:$junitVersion"
-        testImplementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
-        testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-    }
-}
-
-project(":gdx-gemp-template") {
-    apply plugin: "java-library"
-
-    dependencies {
-        api "com.badlogicgames.gdx:gdx:$gdxVersion"
-
-        testImplementation "junit:junit:$junitVersion"
-        testImplementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
-        testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-    }
-}
-
-project(":gdx-gemp-template-artemis") {
-    apply plugin: "java-library"
-
-    dependencies {
-        api project(":gdx-gemp-template")
-        api "net.onedaybeard.artemis:artemis-odb:$artemisOdbVersion"
-
-        testImplementation "junit:junit:$junitVersion"
-        testImplementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
-        testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-    }
-}
-
-project(":gdx-gemp-template-ashley") {
-    apply plugin: "java-library"
-
-    dependencies {
-        implementation project(":gdx-gemp-template")
-        api 'com.github.libgdx:ashley:d4dc6d4f9c'
-
-        testImplementation "junit:junit:$junitVersion"
-        testImplementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
-        testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-    }
-}
-
-project(":gdx-gemp-test") {
-    apply plugin: "java-library"
-
-    dependencies {
-        implementation project(":gdx-gemp-template-ashley")
-        implementation project(":gdx-gemp-camera2d")
-
-        api "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
-        api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-        api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
-        api "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
-        api "com.gempukku.libgdx.graph:libgdx-graph:$gdxGraphVersion"
-    }
-}
-

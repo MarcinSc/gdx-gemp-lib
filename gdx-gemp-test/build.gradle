@@ -1,9 +1,16 @@
-apply plugin: "java"
-
-sourceCompatibility = 1.7
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
-sourceSets.main.java.srcDirs = [ "src/" ]
-sourceSets.main.resources.srcDirs = ["resources/"]
+archivesBaseName = "gdx-temp-test"
 
 eclipse.project.name = "gdx-temp-test"
+
+dependencies {
+    implementation project(":gdx-gemp-template-ashley")
+    implementation project(":gdx-gemp-camera2d")
+
+    api "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+    api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+    api "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
+    api "com.gempukku.libgdx.graph:libgdx-graph:$gdxGraphVersion"
+}

@@ -1,30 +1,14 @@
-apply plugin: "java"
-apply plugin: "maven"
-
-sourceCompatibility = 1.7
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
-
-sourceSets.main.java.srcDirs = ["src/"]
-sourceSets.main.resources.srcDirs = ["resources/"]
-sourceSets.test.java.srcDirs = ["test/"]
-sourceSets.test.resources.srcDirs = ["test-resources/"]
-
-sourceSets.main.java.srcDirs = ["src/"]
 
 archivesBaseName = "gdx-gemp-template-artemis"
 
 eclipse.project.name = "gdx-gemp-template-artemis"
 
-task javadocJar(type: Jar) {
-    classifier 'javadoc'
-    from javadoc
-}
+dependencies {
+    api project(":gdx-gemp-template")
+    api "net.onedaybeard.artemis:artemis-odb:$artemisOdbVersion"
 
-task sourcesJar(type: Jar) {
-    classifier 'sources'
-    from sourceSets.main.allSource
-}
-
-artifacts {
-    archives javadocJar, sourcesJar
+    testImplementation "junit:junit:$junitVersion"
+    testImplementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+    testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
 }
