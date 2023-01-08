@@ -9,11 +9,6 @@ import com.badlogic.gdx.utils.Sort;
 import java.util.Comparator;
 
 public class InputProcessorSystem extends BaseSystem {
-    @Override
-    protected void initialize() {
-        setupProcessing();
-    }
-
     public void setupProcessing() {
         Gdx.input.setInputProcessor(buildMultiplexer());
     }
@@ -37,9 +32,9 @@ public class InputProcessorSystem extends BaseSystem {
                     public int compare(InputProcessorProvider o1, InputProcessorProvider o2) {
                         int priority1 = o1.getInputPriority();
                         int priority2 = o2.getInputPriority();
-                        if (priority1 < priority2)
-                            return -1;
                         if (priority1 > priority2)
+                            return -1;
+                        if (priority1 < priority2)
                             return 1;
                         return 0;
                     }
