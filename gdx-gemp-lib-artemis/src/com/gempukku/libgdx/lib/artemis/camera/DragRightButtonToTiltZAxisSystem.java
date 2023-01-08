@@ -9,12 +9,15 @@ import com.gempukku.libgdx.lib.artemis.input.InputProcessorProvider;
 
 public class DragRightButtonToTiltZAxisSystem extends BaseSystem implements InputProcessorProvider {
     private final InputAdapter inputAdapter;
-    private final float angleMultiplier;
+
+    private String cameraName;
     private final int processorPriority;
+    private final float angleMultiplier;
 
     private CameraSystem cameraSystem;
 
-    public DragRightButtonToTiltZAxisSystem(int processorPriority, float angleMultiplier) {
+    public DragRightButtonToTiltZAxisSystem(String cameraName, int processorPriority, float angleMultiplier) {
+        this.cameraName = cameraName;
         this.processorPriority = processorPriority;
         this.angleMultiplier = angleMultiplier;
         inputAdapter = new InputAdapter() {
@@ -31,9 +34,9 @@ public class DragRightButtonToTiltZAxisSystem extends BaseSystem implements Inpu
     }
 
     private boolean rightButtonDragged(float amount) {
-        CameraController cameraController = cameraSystem.getCameraController();
+        CameraController cameraController = cameraSystem.getCameraController(cameraName);
         if (cameraController instanceof ZAxisTiltCameraController) {
-            ((ZAxisTiltCameraController) cameraController).moveZAxisAngle(amount * angleMultiplier);
+            ((ZAxisTiltCameraController) cameraController).moveZAxisAngle(cameraName, amount * angleMultiplier);
             return true;
         }
         return false;

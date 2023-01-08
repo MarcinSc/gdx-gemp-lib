@@ -9,9 +9,9 @@ public interface CameraController {
 
     void update(float deltaTime);
 
-    Camera getCamera();
+    Camera getCamera(String cameraName);
 
-    Entity getCameraEntity();
+    Entity getCameraEntity(String cameraName);
 
     void screenResized(int width, int height);
 }

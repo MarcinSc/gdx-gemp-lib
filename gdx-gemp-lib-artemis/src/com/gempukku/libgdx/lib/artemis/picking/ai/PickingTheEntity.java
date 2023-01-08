@@ -16,6 +16,7 @@ public class PickingTheEntity implements ArtemisTriggerCondition {
     private ShapePickingSystem shapePickingSystem;
     private CameraSystem cameraSystem;
 
+    private String cameraName;
     private String pickMask;
     private String pickEntityId;
     private String excludeEntityId;
@@ -28,7 +29,7 @@ public class PickingTheEntity implements ArtemisTriggerCondition {
 
     @Override
     public boolean isTriggered(float deltaTime, Entity entity, ObjectMap<String, Object> blackboard) {
-        Camera camera = cameraSystem.getCamera();
+        Camera camera = cameraSystem.getCamera(cameraName);
         Ray pickRay = camera.getPickRay(Gdx.input.getX(), Gdx.input.getY());
         Integer excludedEntity = getExcludeEntityId(blackboard);
         excludeEntityPredicate.setEntityId(excludedEntity);

@@ -6,36 +6,59 @@ import com.badlogic.gdx.graphics.Camera;
 import com.gempukku.libgdx.lib.artemis.event.EventListener;
 
 public class CameraSystem extends BaseSystem {
-    private final CameraController cameraController;
+    private final CameraController[] cameraControllers;
 
-    public CameraSystem(CameraController cameraController) {
-        this.cameraController = cameraController;
+    public CameraSystem(CameraController... cameraControllers) {
+        this.cameraControllers = cameraControllers;
     }
 
     @Override
     protected void initialize() {
-        cameraController.setupWithWorld(world);
+        for (CameraController cameraController : cameraControllers) {
+            cameraController.setupWithWorld(world);
+        }
     }
 
     @EventListener
     public void screenResized(ScreenResized screenResized, Entity gameEntity) {
-        cameraController.screenResized(screenResized.getWidth(), screenResized.getHeight());
+        for (CameraController cameraController : cameraControllers) {
+            cameraController.screenResized(screenResized.getWidth(), screenResized.getHeight());
+        }
     }
 
     @Override
     protected void processSystem() {
-        cameraController.update(world.getDelta());
+        for (CameraController cameraController : cameraControllers) {
+            cameraController.update(world.getDelta());
+        }
     }
 
-    public Camera getCamera() {
-        return cameraController.getCamera();
+    public Camera getCamera(String cameraName) {
+        for (CameraController cameraController : cameraControllers) {
+            Camera camera = cameraController.getCamera(cameraName);
+            if (camera != null)
+                return camera;
+        }
+
+        return null;
     }
 
-    public Entity getCameraEntity() {
-        return cameraController.getCameraEntity();
+    public Entity getCameraEntity(String cameraName) {
+        for (CameraController cameraController : cameraControllers) {
+            Entity cameraEntity = cameraController.getCameraEntity(cameraName);
+            if (cameraEntity != null)
+                return cameraEntity;
+        }
+
+        return null;
     }
 
-    public CameraController getCameraController() {
-        return cameraController;
+    public CameraController getCameraController(String cameraName) {
+        for (CameraController cameraController : cameraControllers) {
+            if (cameraController.getCameraEntity(cameraName) != null)
+                return cameraController;
+        }
+
+        return null;
     }
 }

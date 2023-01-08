@@ -40,7 +40,7 @@ public class ShapePickingSystem extends BaseSystem {
             if (entityPredicate.evaluate(pickableEntity)) {
                 ShapePickableComponent pickable = shapePickableComponentMapper.get(pickableEntity);
                 if (pickable.getPickingMask().contains(maskType, false)) {
-                    float distanceToPickable = getPickableIntersectionDistance(shapeSystem, ray, pickable, pickableEntity);
+                    float distanceToPickable = getPickableIntersectionDistance2(shapeSystem, ray, pickable, pickableEntity);
                     if (distanceToPickable < shortestDistance) {
                         shortestDistance = distanceToPickable;
                         closestEntity = pickableEntity;
@@ -52,7 +52,36 @@ public class ShapePickingSystem extends BaseSystem {
         return closestEntity;
     }
 
-    private float getPickableIntersectionDistance(ShapeSystem shapeSystem, Ray ray, ShapePickableComponent pickable, Entity pickableEntity) {
+    public Entity findClosest(Vector3 position, String maskType, Predicate<Entity> entityPredicate) {
+        Entity closestEntity = null;
+        float shortestDistance = Float.MAX_VALUE;
+
+        IntBag entities = pickableSubscription.getEntities();
+        for (int i = 0, s = entities.size(); s > i; i++) {
+            int entityId = entities.get(i);
+            Entity pickableEntity = world.getEntity(entityId);
+            if (entityPredicate.evaluate(pickableEntity)) {
+                ShapePickableComponent pickable = shapePickableComponentMapper.get(pickableEntity);
+                if (pickable.getPickingMask().contains(maskType, false)) {
+                    float distanceToPickable = getPickableDistance2(position, pickableEntity);
+                    if (distanceToPickable < shortestDistance) {
+                        shortestDistance = distanceToPickable;
+                        closestEntity = pickableEntity;
+                    }
+                }
+            }
+        }
+
+        return closestEntity;
+    }
+
+    private float getPickableDistance2(Vector3 position, Entity pickableEntity) {
+        Matrix4 transform = transformSystem.getResolvedTransform(pickableEntity);
+        Vector3 pickablePosition = transform.getTranslation(tmpVector1);
+        return position.dst2(pickablePosition);
+    }
+
+    private float getPickableIntersectionDistance2(ShapeSystem shapeSystem, Ray ray, ShapePickableComponent pickable, Entity pickableEntity) {
         String shapeName = pickable.getShape();
         Matrix4 localTransform = pickable.getTransform();
         String positionDataType = pickable.getPositionDataType();
@@ -72,12 +101,12 @@ public class ShapePickingSystem extends BaseSystem {
             setVectorFromData(indices[i + 1], data, tmpVector2);
             setVectorFromData(indices[i + 2], data, tmpVector3);
 
-            tmpVector1.mul(resultTransform);
-            tmpVector2.mul(resultTransform);
-            tmpVector3.mul(resultTransform);
+            tmpVector1.prj(resultTransform);
+            tmpVector2.prj(resultTransform);
+            tmpVector3.prj(resultTransform);
 
             if (Intersector.intersectRayTriangle(ray, tmpVector1, tmpVector2, tmpVector3, tmpVectorIntersection)) {
-                float distance = ray.origin.dst(tmpVectorIntersection);
+                float distance = ray.origin.dst2(tmpVectorIntersection);
                 shortestDistance = Math.min(distance, shortestDistance);
             }
         }

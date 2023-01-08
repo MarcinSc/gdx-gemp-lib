@@ -7,12 +7,14 @@ import com.gempukku.libgdx.lib.artemis.input.InputProcessorProvider;
 
 public class ScrollToZoomSystem extends BaseSystem implements InputProcessorProvider {
     private final InputAdapter inputAdapter;
-    private final float distanceMultiplier;
+    private String cameraName;
     private final int processorPriority;
+    private final float distanceMultiplier;
 
     private CameraSystem cameraSystem;
 
-    public ScrollToZoomSystem(int processorPriority, float distanceMultiplier) {
+    public ScrollToZoomSystem(String cameraName, int processorPriority, float distanceMultiplier) {
+        this.cameraName = cameraName;
         this.processorPriority = processorPriority;
         this.distanceMultiplier = distanceMultiplier;
         inputAdapter = new InputAdapter() {
@@ -24,9 +26,9 @@ public class ScrollToZoomSystem extends BaseSystem implements InputProcessorProv
     }
 
     private boolean mouseWheelScrolled(float amount) {
-        CameraController cameraController = cameraSystem.getCameraController();
+        CameraController cameraController = cameraSystem.getCameraController(cameraName);
         if (cameraController instanceof ZoomCameraController) {
-            ((ZoomCameraController) cameraController).zoom(amount * distanceMultiplier);
+            ((ZoomCameraController) cameraController).zoom(cameraName, amount * distanceMultiplier);
             return true;
         }
         return false;
