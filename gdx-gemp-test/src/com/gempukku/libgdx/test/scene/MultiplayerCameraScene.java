@@ -161,24 +161,25 @@ public class MultiplayerCameraScene implements LibgdxLibTestScene {
 
         UpdateCameraControl updateCameraControl = new UpdateCameraControl(camera);
 
-        Camera2DController cameraController = new Camera2DController(camera,
+        Camera2DController cameraController = new Camera2DController(
                 // Try to focus on the point provided by position provider
                 new FitAllFocus(
                         new EntityFocus(positionProvider1),
                         new EntityFocus(positionProvider2),
                         new EntityFocus(positionProvider3)),
-                new LockedCamera2DConstraint(updateCameraControl, new Vector2(0.5f, 0.5f)),
-                new FitAllCamera2DConstraint(updateCameraControl, gameAreaRectangle,
+                new LockedCamera2DConstraint(new Vector2(0.5f, 0.5f)),
+                new FitAllCamera2DConstraint(gameAreaRectangle,
                         new EntityFocus(positionProvider1),
                         new EntityFocus(positionProvider2),
                         new EntityFocus(positionProvider3)),
-                new MinimumViewportCamera2DConstraint(updateCameraControl, 1280, 720),
-                new SceneCamera2DConstraint(updateCameraControl, new Rectangle(-2560, -414, 5120, 2000)));
+                new MinimumViewportCamera2DConstraint(1280, 720),
+                new SceneCamera2DConstraint(new Rectangle(-2560, -414, 5120, 2000)));
 
         // Move the camera to make sure that pixels outside of the scene bounds are not shown
         //,
 
         engine.getSystem(CameraSystem.class).setConstraintCameraController(cameraController);
+        engine.getSystem(CameraSystem.class).setCameraControl(updateCameraControl);
 
         Gdx.input.setInputProcessor(stage);
 

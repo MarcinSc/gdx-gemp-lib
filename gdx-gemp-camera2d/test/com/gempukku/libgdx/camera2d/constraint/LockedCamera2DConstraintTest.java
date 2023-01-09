@@ -13,9 +13,9 @@ public class LockedCamera2DConstraintTest extends LibGDXTest {
     public void noAdjustment() {
         OrthographicCamera camera = new OrthographicCamera(4, 3);
 
-        LockedCamera2DConstraint cameraConstraint = new LockedCamera2DConstraint(new UpdateCameraControl(camera), new Vector2(0.5f, 0.5f));
+        LockedCamera2DConstraint cameraConstraint = new LockedCamera2DConstraint(new Vector2(0.5f, 0.5f));
 
-        cameraConstraint.applyConstraint(camera, new Vector2(0, 0f), 0);
+        cameraConstraint.applyConstraint(new UpdateCameraControl(camera), new Vector2(0, 0f), 0);
 
         assertEquals(0, camera.position.x, TEST_DELTA);
         assertEquals(0, camera.position.y, TEST_DELTA);
@@ -25,9 +25,9 @@ public class LockedCamera2DConstraintTest extends LibGDXTest {
     public void adjustPosition() {
         OrthographicCamera camera = new OrthographicCamera(4, 3);
 
-        LockedCamera2DConstraint cameraConstraint = new LockedCamera2DConstraint(new UpdateCameraControl(camera), new Vector2(0.5f, 0.5f));
+        LockedCamera2DConstraint cameraConstraint = new LockedCamera2DConstraint(new Vector2(0.5f, 0.5f));
 
-        cameraConstraint.applyConstraint(camera, new Vector2(1, 0f), 0);
+        cameraConstraint.applyConstraint(new UpdateCameraControl(camera), new Vector2(1, 0f), 0);
 
         assertEquals(1, camera.position.x, TEST_DELTA);
         assertEquals(0, camera.position.y, TEST_DELTA);
@@ -37,9 +37,9 @@ public class LockedCamera2DConstraintTest extends LibGDXTest {
     public void adjustDifferentAnchor() {
         OrthographicCamera camera = new OrthographicCamera(4, 3);
 
-        LockedCamera2DConstraint cameraConstraint = new LockedCamera2DConstraint(new UpdateCameraControl(camera), new Vector2(0f, 0.5f));
+        LockedCamera2DConstraint cameraConstraint = new LockedCamera2DConstraint(new Vector2(0f, 0.5f));
 
-        cameraConstraint.applyConstraint(camera, new Vector2(1, 0f), 0);
+        cameraConstraint.applyConstraint(new UpdateCameraControl(camera), new Vector2(1, 0f), 0);
 
         assertEquals(3, camera.position.x, TEST_DELTA);
         assertEquals(0, camera.position.y, TEST_DELTA);

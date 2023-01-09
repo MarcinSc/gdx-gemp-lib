@@ -12,9 +12,9 @@ public class MinimumViewportCamera2DConstraintTest extends LibGDXTest {
     public void noChange() {
         OrthographicCamera camera = new OrthographicCamera(4, 3);
 
-        MinimumViewportCamera2DConstraint cameraConstraint = new MinimumViewportCamera2DConstraint(new UpdateCameraControl(camera), 1, 1);
+        MinimumViewportCamera2DConstraint cameraConstraint = new MinimumViewportCamera2DConstraint(1, 1);
 
-        cameraConstraint.applyConstraint(camera, null, 0);
+        cameraConstraint.applyConstraint(new UpdateCameraControl(camera), null, 0);
 
         assertEquals(4, camera.viewportWidth, TEST_DELTA);
         assertEquals(3, camera.viewportHeight, TEST_DELTA);
@@ -24,9 +24,9 @@ public class MinimumViewportCamera2DConstraintTest extends LibGDXTest {
     public void tooSmallHorizontally() {
         OrthographicCamera camera = new OrthographicCamera(4, 3);
 
-        MinimumViewportCamera2DConstraint cameraConstraint = new MinimumViewportCamera2DConstraint(new UpdateCameraControl(camera), 8, 1);
+        MinimumViewportCamera2DConstraint cameraConstraint = new MinimumViewportCamera2DConstraint(8, 1);
 
-        cameraConstraint.applyConstraint(camera, null, 0);
+        cameraConstraint.applyConstraint(new UpdateCameraControl(camera), null, 0);
 
         assertEquals(8, camera.viewportWidth, TEST_DELTA);
         assertEquals(6, camera.viewportHeight, TEST_DELTA);
@@ -36,9 +36,9 @@ public class MinimumViewportCamera2DConstraintTest extends LibGDXTest {
     public void tooSmallVertically() {
         OrthographicCamera camera = new OrthographicCamera(4, 3);
 
-        MinimumViewportCamera2DConstraint cameraConstraint = new MinimumViewportCamera2DConstraint(new UpdateCameraControl(camera), 1, 6);
+        MinimumViewportCamera2DConstraint cameraConstraint = new MinimumViewportCamera2DConstraint(1, 6);
 
-        cameraConstraint.applyConstraint(camera, null, 0);
+        cameraConstraint.applyConstraint(new UpdateCameraControl(camera), null, 0);
 
         assertEquals(8, camera.viewportWidth, TEST_DELTA);
         assertEquals(6, camera.viewportHeight, TEST_DELTA);
@@ -48,9 +48,9 @@ public class MinimumViewportCamera2DConstraintTest extends LibGDXTest {
     public void tooSmallBothSides() {
         OrthographicCamera camera = new OrthographicCamera(4, 3);
 
-        MinimumViewportCamera2DConstraint cameraConstraint = new MinimumViewportCamera2DConstraint(new UpdateCameraControl(camera), 8, 5);
+        MinimumViewportCamera2DConstraint cameraConstraint = new MinimumViewportCamera2DConstraint(8, 5);
 
-        cameraConstraint.applyConstraint(camera, null, 0);
+        cameraConstraint.applyConstraint(new UpdateCameraControl(camera), null, 0);
 
         assertEquals(8, camera.viewportWidth, TEST_DELTA);
         assertEquals(6, camera.viewportHeight, TEST_DELTA);

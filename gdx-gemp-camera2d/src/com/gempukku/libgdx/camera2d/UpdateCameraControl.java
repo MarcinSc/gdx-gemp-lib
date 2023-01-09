@@ -10,6 +10,11 @@ public class UpdateCameraControl implements CameraControl {
     }
 
     @Override
+    public Camera getCamera() {
+        return camera;
+    }
+
+    @Override
     public void moveBy(float x, float y) {
         camera.position.x += x;
         camera.position.y += y;

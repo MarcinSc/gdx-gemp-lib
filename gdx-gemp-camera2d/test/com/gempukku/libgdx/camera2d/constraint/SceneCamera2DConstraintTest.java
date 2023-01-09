@@ -15,9 +15,9 @@ public class SceneCamera2DConstraintTest extends LibGDXTest {
         camera.position.set(10, 10f, 0);
         camera.update();
 
-        SceneCamera2DConstraint cameraConstraint = new SceneCamera2DConstraint(new UpdateCameraControl(camera), new Rectangle(0, 0, 200, 100));
+        SceneCamera2DConstraint cameraConstraint = new SceneCamera2DConstraint(new Rectangle(0, 0, 200, 100));
 
-        cameraConstraint.applyConstraint(camera, null, 0);
+        cameraConstraint.applyConstraint(new UpdateCameraControl(camera), null, 0);
 
         assertEquals(10, camera.position.x, TEST_DELTA);
         assertEquals(10, camera.position.y, TEST_DELTA);
@@ -29,9 +29,9 @@ public class SceneCamera2DConstraintTest extends LibGDXTest {
         camera.position.set(0, 10f, 0);
         camera.update();
 
-        SceneCamera2DConstraint cameraConstraint = new SceneCamera2DConstraint(new UpdateCameraControl(camera), new Rectangle(0, 0, 200, 100));
+        SceneCamera2DConstraint cameraConstraint = new SceneCamera2DConstraint(new Rectangle(0, 0, 200, 100));
 
-        cameraConstraint.applyConstraint(camera, null, 0);
+        cameraConstraint.applyConstraint(new UpdateCameraControl(camera), null, 0);
 
         assertEquals(2, camera.position.x, TEST_DELTA);
         assertEquals(10, camera.position.y, TEST_DELTA);
@@ -43,9 +43,9 @@ public class SceneCamera2DConstraintTest extends LibGDXTest {
         camera.position.set(200, 10f, 0);
         camera.update();
 
-        SceneCamera2DConstraint cameraConstraint = new SceneCamera2DConstraint(new UpdateCameraControl(camera), new Rectangle(0, 0, 200, 100));
+        SceneCamera2DConstraint cameraConstraint = new SceneCamera2DConstraint(new Rectangle(0, 0, 200, 100));
 
-        cameraConstraint.applyConstraint(camera, null, 0);
+        cameraConstraint.applyConstraint(new UpdateCameraControl(camera), null, 0);
 
         assertEquals(198, camera.position.x, TEST_DELTA);
         assertEquals(10, camera.position.y, TEST_DELTA);
@@ -57,9 +57,9 @@ public class SceneCamera2DConstraintTest extends LibGDXTest {
         camera.position.set(10, 0f, 0);
         camera.update();
 
-        SceneCamera2DConstraint cameraConstraint = new SceneCamera2DConstraint(new UpdateCameraControl(camera), new Rectangle(0, 0, 200, 100));
+        SceneCamera2DConstraint cameraConstraint = new SceneCamera2DConstraint(new Rectangle(0, 0, 200, 100));
 
-        cameraConstraint.applyConstraint(camera, null, 0);
+        cameraConstraint.applyConstraint(new UpdateCameraControl(camera), null, 0);
 
         assertEquals(10, camera.position.x, TEST_DELTA);
         assertEquals(1.5f, camera.position.y, TEST_DELTA);
@@ -71,9 +71,9 @@ public class SceneCamera2DConstraintTest extends LibGDXTest {
         camera.position.set(10, 100f, 0);
         camera.update();
 
-        SceneCamera2DConstraint cameraConstraint = new SceneCamera2DConstraint(new UpdateCameraControl(camera), new Rectangle(0, 0, 200, 100));
+        SceneCamera2DConstraint cameraConstraint = new SceneCamera2DConstraint(new Rectangle(0, 0, 200, 100));
 
-        cameraConstraint.applyConstraint(camera, null, 0);
+        cameraConstraint.applyConstraint(new UpdateCameraControl(camera), null, 0);
 
         assertEquals(10, camera.position.x, TEST_DELTA);
         assertEquals(98.5f, camera.position.y, TEST_DELTA);

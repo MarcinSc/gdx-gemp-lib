@@ -13,10 +13,8 @@ public class FitAllCamera2DConstraint implements Camera2DConstraint {
 
     private Rectangle tmpRectangle = new Rectangle();
     private Vector2 tmpVector = new Vector2();
-    private CameraControl cameraControl;
 
-    public FitAllCamera2DConstraint(CameraControl cameraControl, Rectangle window, Camera2DFocus... cameraFoci) {
-        this.cameraControl = cameraControl;
+    public FitAllCamera2DConstraint(Rectangle window, Camera2DFocus... cameraFoci) {
         setWindow(window);
         cameraFocusArray.addAll(cameraFoci);
     }
@@ -34,7 +32,8 @@ public class FitAllCamera2DConstraint implements Camera2DConstraint {
     }
 
     @Override
-    public void applyConstraint(Camera camera, Vector2 focus, float delta) {
+    public void applyConstraint(CameraControl cameraControl, Vector2 focus, float delta) {
+        Camera camera = cameraControl.getCamera();
         boolean first = true;
         for (Camera2DFocus cameraFocus : cameraFocusArray) {
             tmpVector = cameraFocus.getFocus(tmpVector);

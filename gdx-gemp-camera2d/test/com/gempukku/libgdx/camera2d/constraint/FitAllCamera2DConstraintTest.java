@@ -15,12 +15,11 @@ public class FitAllCamera2DConstraintTest extends LibGDXTest {
     public void testWithOneFocus() {
         OrthographicCamera camera = new OrthographicCamera(4, 3);
 
-        FitAllCamera2DConstraint cameraConstraint = new FitAllCamera2DConstraint(new UpdateCameraControl(camera), new Rectangle(0.25f, 0.25f, 0.5f, 0.5f));
+        FitAllCamera2DConstraint cameraConstraint = new FitAllCamera2DConstraint(new Rectangle(0.25f, 0.25f, 0.5f, 0.5f));
         cameraConstraint.addCameraFocus(
                 new PositionCamera2DFocus(0, 0));
 
-
-        cameraConstraint.applyConstraint(camera, null, 0);
+        cameraConstraint.applyConstraint(new UpdateCameraControl(camera), null, 0);
 
         assertEquals(0, camera.viewportWidth, TEST_DELTA);
         assertEquals(0, camera.viewportHeight, TEST_DELTA);
@@ -30,13 +29,13 @@ public class FitAllCamera2DConstraintTest extends LibGDXTest {
     public void testWithTwoFociHorizontally() {
         OrthographicCamera camera = new OrthographicCamera(4, 3);
 
-        FitAllCamera2DConstraint cameraConstraint = new FitAllCamera2DConstraint(new UpdateCameraControl(camera), new Rectangle(0.25f, 0.25f, 0.5f, 0.5f));
+        FitAllCamera2DConstraint cameraConstraint = new FitAllCamera2DConstraint(new Rectangle(0.25f, 0.25f, 0.5f, 0.5f));
         cameraConstraint.addCameraFocus(
                 new PositionCamera2DFocus(0, 0));
         cameraConstraint.addCameraFocus(
                 new PositionCamera2DFocus(1, 0));
 
-        cameraConstraint.applyConstraint(camera, null, 0);
+        cameraConstraint.applyConstraint(new UpdateCameraControl(camera), null, 0);
 
         assertEquals(2f, camera.viewportWidth, TEST_DELTA);
         assertEquals(1.5f, camera.viewportHeight, TEST_DELTA);
@@ -46,13 +45,13 @@ public class FitAllCamera2DConstraintTest extends LibGDXTest {
     public void testWithTwoFociVertically() {
         OrthographicCamera camera = new OrthographicCamera(4, 3);
 
-        FitAllCamera2DConstraint cameraConstraint = new FitAllCamera2DConstraint(new UpdateCameraControl(camera), new Rectangle(0.25f, 0.25f, 0.5f, 0.5f));
+        FitAllCamera2DConstraint cameraConstraint = new FitAllCamera2DConstraint(new Rectangle(0.25f, 0.25f, 0.5f, 0.5f));
         cameraConstraint.addCameraFocus(
                 new PositionCamera2DFocus(0, 0));
         cameraConstraint.addCameraFocus(
                 new PositionCamera2DFocus(0, 1));
 
-        cameraConstraint.applyConstraint(camera, null, 0);
+        cameraConstraint.applyConstraint(new UpdateCameraControl(camera), null, 0);
 
         assertEquals(2.6666f, camera.viewportWidth, TEST_DELTA);
         assertEquals(2f, camera.viewportHeight, TEST_DELTA);
@@ -62,13 +61,13 @@ public class FitAllCamera2DConstraintTest extends LibGDXTest {
     public void testWithTwoFociBothSides() {
         OrthographicCamera camera = new OrthographicCamera(4, 3);
 
-        FitAllCamera2DConstraint cameraConstraint = new FitAllCamera2DConstraint(new UpdateCameraControl(camera), new Rectangle(0.25f, 0.25f, 0.5f, 0.5f));
+        FitAllCamera2DConstraint cameraConstraint = new FitAllCamera2DConstraint(new Rectangle(0.25f, 0.25f, 0.5f, 0.5f));
         cameraConstraint.addCameraFocus(
                 new PositionCamera2DFocus(0, 0));
         cameraConstraint.addCameraFocus(
                 new PositionCamera2DFocus(4, 2));
 
-        cameraConstraint.applyConstraint(camera, null, 0);
+        cameraConstraint.applyConstraint(new UpdateCameraControl(camera), null, 0);
 
         assertEquals(8, camera.viewportWidth, TEST_DELTA);
         assertEquals(6, camera.viewportHeight, TEST_DELTA);

@@ -14,9 +14,9 @@ public class PixelPerfectCamera2DConstraintTest extends LibGDXTest {
         camera.position.set(0.5f, 0f, 0);
         camera.update();
 
-        PixelPerfectCamera2DConstraint cameraConstraint = new PixelPerfectCamera2DConstraint(new UpdateCameraControl(camera));
+        PixelPerfectCamera2DConstraint cameraConstraint = new PixelPerfectCamera2DConstraint();
 
-        cameraConstraint.applyConstraint(camera, null, 0);
+        cameraConstraint.applyConstraint(new UpdateCameraControl(camera), null, 0);
 
         assertEquals(1, camera.position.x, TEST_DELTA);
         assertEquals(-0.5f, camera.position.y, TEST_DELTA);
@@ -29,9 +29,9 @@ public class PixelPerfectCamera2DConstraintTest extends LibGDXTest {
         camera.position.set(0, 0.5f, 0);
         camera.update();
 
-        PixelPerfectCamera2DConstraint cameraConstraint = new PixelPerfectCamera2DConstraint(new UpdateCameraControl(camera));
+        PixelPerfectCamera2DConstraint cameraConstraint = new PixelPerfectCamera2DConstraint();
 
-        cameraConstraint.applyConstraint(camera, null, 0);
+        cameraConstraint.applyConstraint(new UpdateCameraControl(camera), null, 0);
 
         assertEquals(0, camera.position.x, TEST_DELTA);
         assertEquals(0.5f, camera.position.y, TEST_DELTA);
@@ -44,9 +44,9 @@ public class PixelPerfectCamera2DConstraintTest extends LibGDXTest {
         camera.position.set(0.5f, 0.5f, 0);
         camera.update();
 
-        PixelPerfectCamera2DConstraint cameraConstraint = new PixelPerfectCamera2DConstraint(new UpdateCameraControl(camera));
+        PixelPerfectCamera2DConstraint cameraConstraint = new PixelPerfectCamera2DConstraint();
 
-        cameraConstraint.applyConstraint(camera, null, 0);
+        cameraConstraint.applyConstraint(new UpdateCameraControl(camera), null, 0);
 
         assertEquals(1, camera.position.x, TEST_DELTA);
         assertEquals(0.5f, camera.position.y, TEST_DELTA);
@@ -59,9 +59,9 @@ public class PixelPerfectCamera2DConstraintTest extends LibGDXTest {
         camera.position.set(0f, 0f, 0);
         camera.update();
 
-        PixelPerfectCamera2DConstraint cameraConstraint = new PixelPerfectCamera2DConstraint(new UpdateCameraControl(camera));
+        PixelPerfectCamera2DConstraint cameraConstraint = new PixelPerfectCamera2DConstraint();
 
-        cameraConstraint.applyConstraint(camera, null, 0);
+        cameraConstraint.applyConstraint(new UpdateCameraControl(camera), null, 0);
 
         assertEquals(4, camera.viewportWidth, TEST_DELTA);
         assertEquals(3, camera.viewportHeight, TEST_DELTA);
@@ -73,9 +73,9 @@ public class PixelPerfectCamera2DConstraintTest extends LibGDXTest {
         camera.position.set(0f, 0f, 0);
         camera.update();
 
-        PixelPerfectCamera2DConstraint cameraConstraint = new PixelPerfectCamera2DConstraint(new UpdateCameraControl(camera));
+        PixelPerfectCamera2DConstraint cameraConstraint = new PixelPerfectCamera2DConstraint();
 
-        cameraConstraint.applyConstraint(camera, null, 0);
+        cameraConstraint.applyConstraint(new UpdateCameraControl(camera), null, 0);
 
         assertEquals(4, camera.viewportWidth, TEST_DELTA);
         assertEquals(3, camera.viewportHeight, TEST_DELTA);

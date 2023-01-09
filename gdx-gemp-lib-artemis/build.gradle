@@ -6,6 +6,7 @@ eclipse.project.name = "gdx-gemp-lib-artemis"
 
 dependencies {
     implementation project(":gdx-gemp-template-artemis")
+    implementation project(":gdx-gemp-camera2d")
     api "net.onedaybeard.artemis:artemis-odb:$artemisOdbVersion"
     testImplementation "junit:junit:$junitVersion"
 }

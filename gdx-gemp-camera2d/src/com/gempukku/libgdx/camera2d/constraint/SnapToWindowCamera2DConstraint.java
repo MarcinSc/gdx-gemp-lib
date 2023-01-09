@@ -10,10 +10,8 @@ public class SnapToWindowCamera2DConstraint implements Camera2DConstraint {
     private Vector2 speed = new Vector2();
 
     private Vector2 tmpVector = new Vector2();
-    private CameraControl cameraControl;
 
-    public SnapToWindowCamera2DConstraint(CameraControl cameraControl, Rectangle window, Vector2 speed) {
-        this.cameraControl = cameraControl;
+    public SnapToWindowCamera2DConstraint(Rectangle window, Vector2 speed) {
         setWindow(window);
         setSpeed(speed);
     }
@@ -27,7 +25,8 @@ public class SnapToWindowCamera2DConstraint implements Camera2DConstraint {
     }
 
     @Override
-    public void applyConstraint(Camera camera, Vector2 focus, float delta) {
+    public void applyConstraint(CameraControl cameraControl, Vector2 focus, float delta) {
+        Camera camera = cameraControl.getCamera();
         float currentAnchorX = 0.5f + (focus.x - camera.position.x) / camera.viewportWidth;
         float currentAnchorY = 0.5f + (focus.y - camera.position.y) / camera.viewportHeight;
 

@@ -6,14 +6,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.gempukku.libgdx.camera2d.CameraControl;
 
 public class PixelPerfectCamera2DConstraint implements Camera2DConstraint {
-    private CameraControl cameraControl;
-
-    public PixelPerfectCamera2DConstraint(CameraControl cameraControl) {
-        this.cameraControl = cameraControl;
-    }
-
     @Override
-    public void applyConstraint(Camera camera, Vector2 focus, float delta) {
+    public void applyConstraint(CameraControl cameraControl, Vector2 focus, float delta) {
+        Camera camera = cameraControl.getCamera();
         float x = MathUtils.round(camera.position.x);
         if (MathUtils.round(camera.viewportWidth) % 2 == 1)
             x -= 0.5f;

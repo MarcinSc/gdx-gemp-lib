@@ -5,6 +5,7 @@ import com.artemis.utils.IntBag;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.gempukku.libgdx.lib.artemis.camera.CameraController;
@@ -104,6 +105,23 @@ public class OrthographicCameraController implements CameraController {
             orthographicCameras.put(orthographicCamera.getName(), camera);
         }
         newCameraEntities.clear();
+    }
+
+    public void moveTo(String cameraName, float x, float y) {
+        OrthographicCameraComponent camera = cameraEntities.get(cameraName).getComponent(OrthographicCameraComponent.class);
+        Vector3 cameraPosition = camera.getPosition();
+        cameraPosition.set(x, y, cameraPosition.z);
+    }
+
+    public void moveBy(String cameraName, float x, float y) {
+        OrthographicCameraComponent camera = cameraEntities.get(cameraName).getComponent(OrthographicCameraComponent.class);
+        Vector3 cameraPosition = camera.getPosition();
+        cameraPosition.add(x, y, 0);
+    }
+
+    public void resizeTo(String cameraName, float width, float height) {
+        OrthographicCameraComponent camera = cameraEntities.get(cameraName).getComponent(OrthographicCameraComponent.class);
+        camera.setHeight(height);
     }
 
     @Override

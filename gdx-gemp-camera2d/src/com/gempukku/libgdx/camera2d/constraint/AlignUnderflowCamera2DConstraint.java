@@ -7,12 +7,10 @@ import com.badlogic.gdx.utils.Align;
 import com.gempukku.libgdx.camera2d.CameraControl;
 
 public class AlignUnderflowCamera2DConstraint implements Camera2DConstraint {
-    private CameraControl cameraControl;
     private Rectangle bounds;
     private int alignment;
 
-    public AlignUnderflowCamera2DConstraint(CameraControl cameraControl, Rectangle bounds, int alignment) {
-        this.cameraControl = cameraControl;
+    public AlignUnderflowCamera2DConstraint(Rectangle bounds, int alignment) {
         this.bounds = bounds;
         this.alignment = alignment;
     }
@@ -26,7 +24,8 @@ public class AlignUnderflowCamera2DConstraint implements Camera2DConstraint {
     }
 
     @Override
-    public void applyConstraint(Camera camera, Vector2 focus, float delta) {
+    public void applyConstraint(CameraControl cameraControl, Vector2 focus, float delta) {
+        Camera camera = cameraControl.getCamera();
         float resultX = camera.position.x;
         float resultY = camera.position.y;
         if (camera.viewportWidth > bounds.width)

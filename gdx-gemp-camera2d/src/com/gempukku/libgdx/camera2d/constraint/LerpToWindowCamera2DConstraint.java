@@ -11,10 +11,8 @@ public class LerpToWindowCamera2DConstraint implements Camera2DConstraint {
     private Vector2 maxSpeed = new Vector2();
 
     private Vector2 tmpVector = new Vector2();
-    private CameraControl cameraControl;
 
-    public LerpToWindowCamera2DConstraint(CameraControl cameraControl, Rectangle window, Vector2 partPerSecond, Vector2 maxSpeed) {
-        this.cameraControl = cameraControl;
+    public LerpToWindowCamera2DConstraint(Rectangle window, Vector2 partPerSecond, Vector2 maxSpeed) {
         setWindow(window);
         setPartPerSecond(partPerSecond);
         setMaxSpeed(maxSpeed);
@@ -33,7 +31,8 @@ public class LerpToWindowCamera2DConstraint implements Camera2DConstraint {
     }
 
     @Override
-    public void applyConstraint(Camera camera, Vector2 focus, float delta) {
+    public void applyConstraint(CameraControl cameraControl, Vector2 focus, float delta) {
+        Camera camera = cameraControl.getCamera();
         float currentAnchorX = 0.5f + (focus.x - camera.position.x) / camera.viewportWidth;
         float currentAnchorY = 0.5f + (focus.y - camera.position.y) / camera.viewportHeight;
 

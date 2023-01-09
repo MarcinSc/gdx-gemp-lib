@@ -7,10 +7,8 @@ import com.gempukku.libgdx.camera2d.CameraControl;
 public class MinimumViewportCamera2DConstraint implements Camera2DConstraint {
     private float width;
     private float height;
-    private CameraControl cameraControl;
 
-    public MinimumViewportCamera2DConstraint(CameraControl cameraControl, float width, float height) {
-        this.cameraControl = cameraControl;
+    public MinimumViewportCamera2DConstraint(float width, float height) {
         setSize(width, height);
     }
 
@@ -28,7 +26,8 @@ public class MinimumViewportCamera2DConstraint implements Camera2DConstraint {
     }
 
     @Override
-    public void applyConstraint(Camera camera, Vector2 focus, float delta) {
+    public void applyConstraint(CameraControl cameraControl, Vector2 focus, float delta) {
+        Camera camera = cameraControl.getCamera();
         float cameraAspectRatio = camera.viewportWidth / camera.viewportHeight;
 
         float resultWidth = Math.max(width, camera.viewportWidth);

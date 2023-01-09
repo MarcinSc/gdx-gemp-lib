@@ -119,14 +119,15 @@ public class FacingLockedSceneCameraScene implements LibgdxLibTestScene {
 
         UpdateCameraControl updateCameraControl = new UpdateCameraControl(camera);
 
-        Camera2DController cameraController = new Camera2DController(camera,
+        Camera2DController cameraController = new Camera2DController(
                 // Try to focus on the point provided by position provider
                 new EntityFocus(positionProvider),
-                new LockedCamera2DConstraint(updateCameraControl, new Vector2(0.5f, 0.5f)),
+                new LockedCamera2DConstraint(new Vector2(0.5f, 0.5f)),
                 // Move the camera to make sure that pixels outside of the scene bounds are not shown
-                new SceneCamera2DConstraint(updateCameraControl, new Rectangle(-2560, -414, 5120, 2000)));
+                new SceneCamera2DConstraint(new Rectangle(-2560, -414, 5120, 2000)));
 
         engine.getSystem(CameraSystem.class).setConstraintCameraController(cameraController);
+        engine.getSystem(CameraSystem.class).setCameraControl(updateCameraControl);
 
         Gdx.input.setInputProcessor(stage);
 

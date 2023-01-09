@@ -113,13 +113,14 @@ public class LockedCameraScene implements LibgdxLibTestScene {
 
         UpdateCameraControl updateCameraControl = new UpdateCameraControl(camera);
 
-        Camera2DController cameraController = new Camera2DController(camera,
+        Camera2DController cameraController = new Camera2DController(
                 // Try to focus on the point provided by position provider
                 new EntityFocus(positionProvider),
                 // Lock the camera to the focus (player)
-                new LockedCamera2DConstraint(updateCameraControl, new Vector2(0.5f, 0.5f)));
+                new LockedCamera2DConstraint(new Vector2(0.5f, 0.5f)));
 
         engine.getSystem(CameraSystem.class).setConstraintCameraController(cameraController);
+        engine.getSystem(CameraSystem.class).setCameraControl(updateCameraControl);
 
         Gdx.input.setInputProcessor(stage);
 

@@ -9,10 +9,8 @@ public class LockedToWindowCamera2DConstraint implements Camera2DConstraint {
     private Rectangle window = new Rectangle();
 
     private Vector2 tmpVector = new Vector2();
-    private CameraControl cameraControl;
 
-    public LockedToWindowCamera2DConstraint(CameraControl cameraControl, Rectangle window) {
-        this.cameraControl = cameraControl;
+    public LockedToWindowCamera2DConstraint(Rectangle window) {
         setWindow(window);
     }
 
@@ -21,7 +19,8 @@ public class LockedToWindowCamera2DConstraint implements Camera2DConstraint {
     }
 
     @Override
-    public void applyConstraint(Camera camera, Vector2 focus, float delta) {
+    public void applyConstraint(CameraControl cameraControl, Vector2 focus, float delta) {
+        Camera camera = cameraControl.getCamera();
         float currentAnchorX = 0.5f + (focus.x - camera.position.x) / camera.viewportWidth;
         float currentAnchorY = 0.5f + (focus.y - camera.position.y) / camera.viewportHeight;
         Vector2 snapChange = getRequiredChangeToRectangle(window, tmpVector, currentAnchorX, currentAnchorY);

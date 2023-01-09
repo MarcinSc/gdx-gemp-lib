@@ -10,10 +10,8 @@ public class SceneCamera2DConstraint implements Camera2DConstraint {
 
     private Vector2 tmpVector1 = new Vector2();
     private Vector2 tmpVector2 = new Vector2();
-    private CameraControl cameraControl;
 
-    public SceneCamera2DConstraint(CameraControl cameraControl, Rectangle bounds) {
-        this.cameraControl = cameraControl;
+    public SceneCamera2DConstraint(Rectangle bounds) {
         setBounds(bounds);
     }
 
@@ -22,7 +20,8 @@ public class SceneCamera2DConstraint implements Camera2DConstraint {
     }
 
     @Override
-    public void applyConstraint(Camera camera, Vector2 focus, float delta) {
+    public void applyConstraint(CameraControl cameraControl, Vector2 focus, float delta) {
+        Camera camera = cameraControl.getCamera();
         Vector2 visibleMin = tmpVector1.set(camera.position.x, camera.position.y).add(-camera.viewportWidth / 2f, -camera.viewportHeight / 2f);
         Vector2 visibleMax = tmpVector2.set(camera.position.x, camera.position.y).add(+camera.viewportWidth / 2f, +camera.viewportHeight / 2f);
 
