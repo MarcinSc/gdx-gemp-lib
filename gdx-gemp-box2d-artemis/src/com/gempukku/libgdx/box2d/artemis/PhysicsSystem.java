@@ -3,12 +3,12 @@ package com.gempukku.libgdx.box2d.artemis;
 import com.artemis.Aspect;
 import com.artemis.Entity;
 import com.artemis.EntitySystem;
+import com.artemis.utils.Bag;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.ObjectSet;
 import com.gempukku.libgdx.box2d.artemis.sensor.SensorContactListener;
 import com.gempukku.libgdx.box2d.artemis.sensor.SensorData;
 import com.gempukku.libgdx.box2d.artemis.sensor.SensorDef;
@@ -25,7 +25,6 @@ public class PhysicsSystem extends EntitySystem {
     private ObjectMap<String, SensorContactListener> sensorContactListeners = new ObjectMap<>();
     private ObjectMap<String, FixtureShapeHandler> shapeHandlers = new ObjectMap<>();
     private ObjectMap<String, Short> categoryBits = new ObjectMap<>();
-    private ObjectSet<Entity> physicsEntities = new ObjectSet<>();
     private Vector2 gravity;
     private float pixelsToMeters;
 
@@ -159,7 +158,9 @@ public class PhysicsSystem extends EntitySystem {
     protected void processSystem() {
         box2DWorld.step(world.getDelta(), 6, 2);
 
-        for (Entity physicsEntity : physicsEntities) {
+        Bag<Entity> physicsEntities = getEntities();
+        for (int i = 0, size = physicsEntities.size(); i < size; i++) {
+            Entity physicsEntity = physicsEntities.get(i);
             PhysicsComponent physicsComponent = physicsEntity.getComponent(PhysicsComponent.class);
             Body body = physicsComponent.getBody();
             if (body.getType() == BodyDef.BodyType.DynamicBody) {
