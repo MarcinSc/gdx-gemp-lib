@@ -3,10 +3,9 @@ package com.gempukku.libgdx.lib.artemis.texture;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectMap;
 
-public class RuntimeTextureHandler implements TextureHandler, Disposable {
+public class RuntimeTextureHandler implements TextureHandler {
     private ObjectMap<String, TextureAtlas> loadedTextures = new ObjectMap<>();
 
     @Override

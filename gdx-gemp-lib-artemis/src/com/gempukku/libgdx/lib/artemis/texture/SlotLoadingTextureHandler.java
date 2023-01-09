@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.*;
 
-public class SlotLoadingTextureHandler implements TextureHandler, Disposable {
+public class SlotLoadingTextureHandler implements TextureHandler {
     private int pageWidth;
     private int pageHeight;
     private int cellWidth;

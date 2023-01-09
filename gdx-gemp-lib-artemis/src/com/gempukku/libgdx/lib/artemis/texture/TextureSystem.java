@@ -53,4 +53,16 @@ public class TextureSystem extends BaseSystem implements PropertyEvaluator {
     protected void processSystem() {
 
     }
+
+    @Override
+    protected void dispose() {
+        if (defaultTextureHandler != null)
+            defaultTextureHandler.dispose();
+        for (TextureHandler textureHandler : configuredTextureHandler.values()) {
+            textureHandler.dispose();
+        }
+
+        defaultTextureHandler = null;
+        configuredTextureHandler.clear();
+    }
 }
