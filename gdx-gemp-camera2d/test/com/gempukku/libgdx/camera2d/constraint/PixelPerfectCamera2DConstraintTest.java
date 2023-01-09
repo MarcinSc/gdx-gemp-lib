@@ -2,6 +2,7 @@ package com.gempukku.libgdx.camera2d.constraint;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.gempukku.libgdx.camera2d.LibGDXTest;
+import com.gempukku.libgdx.camera2d.UpdateCameraControl;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -9,11 +10,11 @@ import static org.junit.Assert.assertEquals;
 public class PixelPerfectCamera2DConstraintTest extends LibGDXTest {
     @Test
     public void roundX() {
-        PixelPerfectCamera2DConstraint cameraConstraint = new PixelPerfectCamera2DConstraint();
-
         OrthographicCamera camera = new OrthographicCamera(4, 3);
         camera.position.set(0.5f, 0f, 0);
         camera.update();
+
+        PixelPerfectCamera2DConstraint cameraConstraint = new PixelPerfectCamera2DConstraint(new UpdateCameraControl(camera));
 
         cameraConstraint.applyConstraint(camera, null, 0);
 
@@ -24,11 +25,11 @@ public class PixelPerfectCamera2DConstraintTest extends LibGDXTest {
 
     @Test
     public void roundY() {
-        PixelPerfectCamera2DConstraint cameraConstraint = new PixelPerfectCamera2DConstraint();
-
         OrthographicCamera camera = new OrthographicCamera(4, 3);
         camera.position.set(0, 0.5f, 0);
         camera.update();
+
+        PixelPerfectCamera2DConstraint cameraConstraint = new PixelPerfectCamera2DConstraint(new UpdateCameraControl(camera));
 
         cameraConstraint.applyConstraint(camera, null, 0);
 
@@ -39,11 +40,11 @@ public class PixelPerfectCamera2DConstraintTest extends LibGDXTest {
 
     @Test
     public void roundBoth() {
-        PixelPerfectCamera2DConstraint cameraConstraint = new PixelPerfectCamera2DConstraint();
-
         OrthographicCamera camera = new OrthographicCamera(4, 3);
         camera.position.set(0.5f, 0.5f, 0);
         camera.update();
+
+        PixelPerfectCamera2DConstraint cameraConstraint = new PixelPerfectCamera2DConstraint(new UpdateCameraControl(camera));
 
         cameraConstraint.applyConstraint(camera, null, 0);
 
@@ -54,11 +55,11 @@ public class PixelPerfectCamera2DConstraintTest extends LibGDXTest {
 
     @Test
     public void roundWidth() {
-        PixelPerfectCamera2DConstraint cameraConstraint = new PixelPerfectCamera2DConstraint();
-
         OrthographicCamera camera = new OrthographicCamera(4.25f, 3);
         camera.position.set(0f, 0f, 0);
         camera.update();
+
+        PixelPerfectCamera2DConstraint cameraConstraint = new PixelPerfectCamera2DConstraint(new UpdateCameraControl(camera));
 
         cameraConstraint.applyConstraint(camera, null, 0);
 
@@ -68,11 +69,11 @@ public class PixelPerfectCamera2DConstraintTest extends LibGDXTest {
 
     @Test
     public void roundHeight() {
-        PixelPerfectCamera2DConstraint cameraConstraint = new PixelPerfectCamera2DConstraint();
-
         OrthographicCamera camera = new OrthographicCamera(4f, 3.25f);
         camera.position.set(0f, 0f, 0);
         camera.update();
+
+        PixelPerfectCamera2DConstraint cameraConstraint = new PixelPerfectCamera2DConstraint(new UpdateCameraControl(camera));
 
         cameraConstraint.applyConstraint(camera, null, 0);
 

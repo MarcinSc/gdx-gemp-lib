@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ObjectSet;
+import com.gempukku.libgdx.camera2d.CameraControl;
 import com.gempukku.libgdx.camera2d.focus.Camera2DFocus;
 
 public class FitAllCamera2DConstraint implements Camera2DConstraint {
@@ -12,8 +13,10 @@ public class FitAllCamera2DConstraint implements Camera2DConstraint {
 
     private Rectangle tmpRectangle = new Rectangle();
     private Vector2 tmpVector = new Vector2();
+    private CameraControl cameraControl;
 
-    public FitAllCamera2DConstraint(Rectangle window, Camera2DFocus... cameraFoci) {
+    public FitAllCamera2DConstraint(CameraControl cameraControl, Rectangle window, Camera2DFocus... cameraFoci) {
+        this.cameraControl = cameraControl;
         setWindow(window);
         cameraFocusArray.addAll(cameraFoci);
     }
@@ -63,8 +66,6 @@ public class FitAllCamera2DConstraint implements Camera2DConstraint {
             windowWidth = windowHeight * cameraAspectRatio;
         }
 
-        camera.viewportWidth = windowWidth;
-        camera.viewportHeight = windowHeight;
-        camera.update();
+        cameraControl.resizeTo(windowWidth, windowHeight);
     }
 }

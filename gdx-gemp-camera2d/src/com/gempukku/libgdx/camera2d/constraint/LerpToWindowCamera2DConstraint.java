@@ -3,6 +3,7 @@ package com.gempukku.libgdx.camera2d.constraint;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.gempukku.libgdx.camera2d.CameraControl;
 
 public class LerpToWindowCamera2DConstraint implements Camera2DConstraint {
     private Rectangle window = new Rectangle();
@@ -10,8 +11,10 @@ public class LerpToWindowCamera2DConstraint implements Camera2DConstraint {
     private Vector2 maxSpeed = new Vector2();
 
     private Vector2 tmpVector = new Vector2();
+    private CameraControl cameraControl;
 
-    public LerpToWindowCamera2DConstraint(Rectangle window, Vector2 partPerSecond, Vector2 maxSpeed) {
+    public LerpToWindowCamera2DConstraint(CameraControl cameraControl, Rectangle window, Vector2 partPerSecond, Vector2 maxSpeed) {
+        this.cameraControl = cameraControl;
         setWindow(window);
         setPartPerSecond(partPerSecond);
         setMaxSpeed(maxSpeed);
@@ -40,10 +43,7 @@ public class LerpToWindowCamera2DConstraint implements Camera2DConstraint {
 
         float moveX = camera.viewportWidth * snapChange.x;
         float moveY = camera.viewportHeight * snapChange.y;
-        camera.position.x += moveX;
-        camera.position.y += moveY;
-        if (moveX != 0 || moveY != 0)
-            camera.update();
+        cameraControl.moveBy(moveX, moveY);
     }
 
     private Vector2 getRequiredChangeToRectangle(Rectangle rectangle, Vector2 tmpVector, float desiredAnchorX, float desiredAnchorY) {

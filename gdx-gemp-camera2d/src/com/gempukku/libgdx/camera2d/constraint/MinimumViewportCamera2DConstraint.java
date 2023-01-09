@@ -2,12 +2,15 @@ package com.gempukku.libgdx.camera2d.constraint;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
+import com.gempukku.libgdx.camera2d.CameraControl;
 
 public class MinimumViewportCamera2DConstraint implements Camera2DConstraint {
     private float width;
     private float height;
+    private CameraControl cameraControl;
 
-    public MinimumViewportCamera2DConstraint(float width, float height) {
+    public MinimumViewportCamera2DConstraint(CameraControl cameraControl, float width, float height) {
+        this.cameraControl = cameraControl;
         setSize(width, height);
     }
 
@@ -33,12 +36,9 @@ public class MinimumViewportCamera2DConstraint implements Camera2DConstraint {
 
         float resultCameraAspectRatio = resultWidth / resultHeight;
         if (resultCameraAspectRatio > cameraAspectRatio) {
-            camera.viewportWidth = resultWidth;
-            camera.viewportHeight = resultWidth / cameraAspectRatio;
+            cameraControl.resizeTo(resultWidth, resultWidth / cameraAspectRatio);
         } else {
-            camera.viewportHeight = resultHeight;
-            camera.viewportWidth = resultHeight * cameraAspectRatio;
+            cameraControl.resizeTo(resultHeight * cameraAspectRatio, resultHeight);
         }
-        camera.update();
     }
 }

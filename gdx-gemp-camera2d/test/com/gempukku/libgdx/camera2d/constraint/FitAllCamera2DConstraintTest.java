@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.gempukku.libgdx.camera2d.LibGDXTest;
+import com.gempukku.libgdx.camera2d.UpdateCameraControl;
 import com.gempukku.libgdx.camera2d.focus.Camera2DFocus;
 import org.junit.Test;
 
@@ -12,11 +13,12 @@ import static org.junit.Assert.assertEquals;
 public class FitAllCamera2DConstraintTest extends LibGDXTest {
     @Test
     public void testWithOneFocus() {
-        FitAllCamera2DConstraint cameraConstraint = new FitAllCamera2DConstraint(new Rectangle(0.25f, 0.25f, 0.5f, 0.5f));
+        OrthographicCamera camera = new OrthographicCamera(4, 3);
+
+        FitAllCamera2DConstraint cameraConstraint = new FitAllCamera2DConstraint(new UpdateCameraControl(camera), new Rectangle(0.25f, 0.25f, 0.5f, 0.5f));
         cameraConstraint.addCameraFocus(
                 new PositionCamera2DFocus(0, 0));
 
-        OrthographicCamera camera = new OrthographicCamera(4, 3);
 
         cameraConstraint.applyConstraint(camera, null, 0);
 
@@ -26,13 +28,13 @@ public class FitAllCamera2DConstraintTest extends LibGDXTest {
 
     @Test
     public void testWithTwoFociHorizontally() {
-        FitAllCamera2DConstraint cameraConstraint = new FitAllCamera2DConstraint(new Rectangle(0.25f, 0.25f, 0.5f, 0.5f));
+        OrthographicCamera camera = new OrthographicCamera(4, 3);
+
+        FitAllCamera2DConstraint cameraConstraint = new FitAllCamera2DConstraint(new UpdateCameraControl(camera), new Rectangle(0.25f, 0.25f, 0.5f, 0.5f));
         cameraConstraint.addCameraFocus(
                 new PositionCamera2DFocus(0, 0));
         cameraConstraint.addCameraFocus(
                 new PositionCamera2DFocus(1, 0));
-
-        OrthographicCamera camera = new OrthographicCamera(4, 3);
 
         cameraConstraint.applyConstraint(camera, null, 0);
 
@@ -42,13 +44,13 @@ public class FitAllCamera2DConstraintTest extends LibGDXTest {
 
     @Test
     public void testWithTwoFociVertically() {
-        FitAllCamera2DConstraint cameraConstraint = new FitAllCamera2DConstraint(new Rectangle(0.25f, 0.25f, 0.5f, 0.5f));
+        OrthographicCamera camera = new OrthographicCamera(4, 3);
+
+        FitAllCamera2DConstraint cameraConstraint = new FitAllCamera2DConstraint(new UpdateCameraControl(camera), new Rectangle(0.25f, 0.25f, 0.5f, 0.5f));
         cameraConstraint.addCameraFocus(
                 new PositionCamera2DFocus(0, 0));
         cameraConstraint.addCameraFocus(
                 new PositionCamera2DFocus(0, 1));
-
-        OrthographicCamera camera = new OrthographicCamera(4, 3);
 
         cameraConstraint.applyConstraint(camera, null, 0);
 
@@ -58,13 +60,13 @@ public class FitAllCamera2DConstraintTest extends LibGDXTest {
 
     @Test
     public void testWithTwoFociBothSides() {
-        FitAllCamera2DConstraint cameraConstraint = new FitAllCamera2DConstraint(new Rectangle(0.25f, 0.25f, 0.5f, 0.5f));
+        OrthographicCamera camera = new OrthographicCamera(4, 3);
+
+        FitAllCamera2DConstraint cameraConstraint = new FitAllCamera2DConstraint(new UpdateCameraControl(camera), new Rectangle(0.25f, 0.25f, 0.5f, 0.5f));
         cameraConstraint.addCameraFocus(
                 new PositionCamera2DFocus(0, 0));
         cameraConstraint.addCameraFocus(
                 new PositionCamera2DFocus(4, 2));
-
-        OrthographicCamera camera = new OrthographicCamera(4, 3);
 
         cameraConstraint.applyConstraint(camera, null, 0);
 

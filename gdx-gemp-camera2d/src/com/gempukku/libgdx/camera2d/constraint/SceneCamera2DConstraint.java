@@ -3,14 +3,17 @@ package com.gempukku.libgdx.camera2d.constraint;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.gempukku.libgdx.camera2d.CameraControl;
 
 public class SceneCamera2DConstraint implements Camera2DConstraint {
     private Rectangle bounds = new Rectangle();
 
     private Vector2 tmpVector1 = new Vector2();
     private Vector2 tmpVector2 = new Vector2();
+    private CameraControl cameraControl;
 
-    public SceneCamera2DConstraint(Rectangle bounds) {
+    public SceneCamera2DConstraint(CameraControl cameraControl, Rectangle bounds) {
+        this.cameraControl = cameraControl;
         setBounds(bounds);
     }
 
@@ -26,9 +29,6 @@ public class SceneCamera2DConstraint implements Camera2DConstraint {
         float moveX = Math.min(Math.max(0, bounds.x - visibleMin.x), bounds.x + bounds.width - visibleMax.x);
         float moveY = Math.min(Math.max(0, bounds.y - visibleMin.y), bounds.y + bounds.height - visibleMax.y);
 
-        camera.position.x += moveX;
-        camera.position.y += moveY;
-        if (moveX != 0 || moveY != 0)
-            camera.update();
+        cameraControl.moveBy(moveX, moveY);
     }
 }

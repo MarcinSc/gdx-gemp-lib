@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.gempukku.libgdx.camera2d.LibGDXTest;
+import com.gempukku.libgdx.camera2d.UpdateCameraControl;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -11,10 +12,11 @@ import static org.junit.Assert.assertEquals;
 public class LerpToWindowCamera2DConstraintTest extends LibGDXTest {
     @Test
     public void noMovement() {
-        LerpToWindowCamera2DConstraint cameraConstraint = new LerpToWindowCamera2DConstraint(
-                new Rectangle(0.25f, 0.25f, 0.5f, 0.5f), new Vector2(1, 1), new Vector2(1, 1));
-
         OrthographicCamera camera = new OrthographicCamera(4, 3);
+
+        LerpToWindowCamera2DConstraint cameraConstraint = new LerpToWindowCamera2DConstraint(
+                new UpdateCameraControl(camera),
+                new Rectangle(0.25f, 0.25f, 0.5f, 0.5f), new Vector2(1, 1), new Vector2(1, 1));
 
         cameraConstraint.applyConstraint(camera, new Vector2(0, 0f), 1f);
 
@@ -24,10 +26,11 @@ public class LerpToWindowCamera2DConstraintTest extends LibGDXTest {
 
     @Test
     public void lerpMaximumDistance() {
-        LerpToWindowCamera2DConstraint cameraConstraint = new LerpToWindowCamera2DConstraint(
-                new Rectangle(0.25f, 0.25f, 0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f));
-
         OrthographicCamera camera = new OrthographicCamera(4, 3);
+
+        LerpToWindowCamera2DConstraint cameraConstraint = new LerpToWindowCamera2DConstraint(
+                new UpdateCameraControl(camera),
+                new Rectangle(0.25f, 0.25f, 0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f));
 
         cameraConstraint.applyConstraint(camera, new Vector2(3, 0f), 1f);
 
@@ -37,10 +40,11 @@ public class LerpToWindowCamera2DConstraintTest extends LibGDXTest {
 
     @Test
     public void lerpMaximumSpeed() {
-        LerpToWindowCamera2DConstraint cameraConstraint = new LerpToWindowCamera2DConstraint(
-                new Rectangle(0.25f, 0.25f, 0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.1f, 0.1f));
-
         OrthographicCamera camera = new OrthographicCamera(4, 3);
+
+        LerpToWindowCamera2DConstraint cameraConstraint = new LerpToWindowCamera2DConstraint(
+                new UpdateCameraControl(camera),
+                new Rectangle(0.25f, 0.25f, 0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.1f, 0.1f));
 
         cameraConstraint.applyConstraint(camera, new Vector2(3, 0f), 1f);
 

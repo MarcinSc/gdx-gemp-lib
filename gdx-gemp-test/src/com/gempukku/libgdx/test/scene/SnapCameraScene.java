@@ -21,6 +21,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.gempukku.libgdx.camera2d.Camera2DController;
+import com.gempukku.libgdx.camera2d.UpdateCameraControl;
 import com.gempukku.libgdx.camera2d.constraint.SceneCamera2DConstraint;
 import com.gempukku.libgdx.camera2d.constraint.SnapToWindowCamera2DConstraint;
 import com.gempukku.libgdx.camera2d.focus.EntityFocus;
@@ -119,12 +120,14 @@ public class SnapCameraScene implements LibgdxLibTestScene {
 
         snapRectangle = new Rectangle(0.4f, 0.25f, 0.2f, 0.3f);
 
+        UpdateCameraControl updateCameraControl = new UpdateCameraControl(camera);
+
         Camera2DController cameraController = new Camera2DController(camera,
                 // Try to focus on the point provided by position provider
                 new EntityFocus(positionProvider),
-                new SnapToWindowCamera2DConstraint(snapRectangle, new Vector2(0.1f, 0.1f)),
+                new SnapToWindowCamera2DConstraint(updateCameraControl, snapRectangle, new Vector2(0.1f, 0.1f)),
                 // Move the camera to make sure that pixels outside of the scene bounds are not shown
-                new SceneCamera2DConstraint(new Rectangle(-2560, -414, 5120, 2000)));
+                new SceneCamera2DConstraint(updateCameraControl, new Rectangle(-2560, -414, 5120, 2000)));
 
         engine.getSystem(CameraSystem.class).setConstraintCameraController(cameraController);
 

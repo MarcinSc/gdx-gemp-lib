@@ -21,6 +21,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.gempukku.libgdx.camera2d.Camera2DController;
+import com.gempukku.libgdx.camera2d.UpdateCameraControl;
 import com.gempukku.libgdx.camera2d.constraint.LockedCamera2DConstraint;
 import com.gempukku.libgdx.camera2d.constraint.SceneCamera2DConstraint;
 import com.gempukku.libgdx.camera2d.focus.EntityFocus;
@@ -116,12 +117,14 @@ public class FacingLockedSceneCameraScene implements LibgdxLibTestScene {
             }
         };
 
+        UpdateCameraControl updateCameraControl = new UpdateCameraControl(camera);
+
         Camera2DController cameraController = new Camera2DController(camera,
                 // Try to focus on the point provided by position provider
                 new EntityFocus(positionProvider),
-                new LockedCamera2DConstraint(new Vector2(0.5f, 0.5f)),
+                new LockedCamera2DConstraint(updateCameraControl, new Vector2(0.5f, 0.5f)),
                 // Move the camera to make sure that pixels outside of the scene bounds are not shown
-                new SceneCamera2DConstraint(new Rectangle(-2560, -414, 5120, 2000)));
+                new SceneCamera2DConstraint(updateCameraControl, new Rectangle(-2560, -414, 5120, 2000)));
 
         engine.getSystem(CameraSystem.class).setConstraintCameraController(cameraController);
 

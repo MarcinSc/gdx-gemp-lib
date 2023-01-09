@@ -3,13 +3,16 @@ package com.gempukku.libgdx.camera2d.constraint;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.gempukku.libgdx.camera2d.CameraControl;
 
 public class LockedToWindowCamera2DConstraint implements Camera2DConstraint {
     private Rectangle window = new Rectangle();
 
     private Vector2 tmpVector = new Vector2();
+    private CameraControl cameraControl;
 
-    public LockedToWindowCamera2DConstraint(Rectangle window) {
+    public LockedToWindowCamera2DConstraint(CameraControl cameraControl, Rectangle window) {
+        this.cameraControl = cameraControl;
         setWindow(window);
     }
 
@@ -24,10 +27,7 @@ public class LockedToWindowCamera2DConstraint implements Camera2DConstraint {
         Vector2 snapChange = getRequiredChangeToRectangle(window, tmpVector, currentAnchorX, currentAnchorY);
         float moveX = camera.viewportWidth * snapChange.x;
         float moveY = camera.viewportHeight * snapChange.y;
-        camera.position.x += moveX;
-        camera.position.y += moveY;
-        if (moveX != 0 || moveY != 0)
-            camera.update();
+        cameraControl.moveBy(moveX, moveY);
     }
 
     private Vector2 getRequiredChangeToRectangle(Rectangle rectangle, Vector2 tmpVector, float desiredAnchorX, float desiredAnchorY) {

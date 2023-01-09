@@ -2,6 +2,7 @@ package com.gempukku.libgdx.camera2d.constraint;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.gempukku.libgdx.camera2d.LibGDXTest;
+import com.gempukku.libgdx.camera2d.UpdateCameraControl;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -9,9 +10,9 @@ import static org.junit.Assert.assertEquals;
 public class MinimumViewportCamera2DConstraintTest extends LibGDXTest {
     @Test
     public void noChange() {
-        MinimumViewportCamera2DConstraint cameraConstraint = new MinimumViewportCamera2DConstraint(1, 1);
-
         OrthographicCamera camera = new OrthographicCamera(4, 3);
+
+        MinimumViewportCamera2DConstraint cameraConstraint = new MinimumViewportCamera2DConstraint(new UpdateCameraControl(camera), 1, 1);
 
         cameraConstraint.applyConstraint(camera, null, 0);
 
@@ -21,9 +22,9 @@ public class MinimumViewportCamera2DConstraintTest extends LibGDXTest {
 
     @Test
     public void tooSmallHorizontally() {
-        MinimumViewportCamera2DConstraint cameraConstraint = new MinimumViewportCamera2DConstraint(8, 1);
-
         OrthographicCamera camera = new OrthographicCamera(4, 3);
+
+        MinimumViewportCamera2DConstraint cameraConstraint = new MinimumViewportCamera2DConstraint(new UpdateCameraControl(camera), 8, 1);
 
         cameraConstraint.applyConstraint(camera, null, 0);
 
@@ -33,9 +34,9 @@ public class MinimumViewportCamera2DConstraintTest extends LibGDXTest {
 
     @Test
     public void tooSmallVertically() {
-        MinimumViewportCamera2DConstraint cameraConstraint = new MinimumViewportCamera2DConstraint(1, 6);
-
         OrthographicCamera camera = new OrthographicCamera(4, 3);
+
+        MinimumViewportCamera2DConstraint cameraConstraint = new MinimumViewportCamera2DConstraint(new UpdateCameraControl(camera), 1, 6);
 
         cameraConstraint.applyConstraint(camera, null, 0);
 
@@ -45,9 +46,9 @@ public class MinimumViewportCamera2DConstraintTest extends LibGDXTest {
 
     @Test
     public void tooSmallBothSides() {
-        MinimumViewportCamera2DConstraint cameraConstraint = new MinimumViewportCamera2DConstraint(8, 5);
-
         OrthographicCamera camera = new OrthographicCamera(4, 3);
+
+        MinimumViewportCamera2DConstraint cameraConstraint = new MinimumViewportCamera2DConstraint(new UpdateCameraControl(camera), 8, 5);
 
         cameraConstraint.applyConstraint(camera, null, 0);
 

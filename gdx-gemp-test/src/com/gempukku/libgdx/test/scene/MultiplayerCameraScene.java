@@ -21,6 +21,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.gempukku.libgdx.camera2d.Camera2DController;
+import com.gempukku.libgdx.camera2d.UpdateCameraControl;
 import com.gempukku.libgdx.camera2d.constraint.FitAllCamera2DConstraint;
 import com.gempukku.libgdx.camera2d.constraint.LockedCamera2DConstraint;
 import com.gempukku.libgdx.camera2d.constraint.MinimumViewportCamera2DConstraint;
@@ -158,19 +159,21 @@ public class MultiplayerCameraScene implements LibgdxLibTestScene {
 
         gameAreaRectangle = new Rectangle(0.2f, 0.2f, 0.6f, 0.6f);
 
+        UpdateCameraControl updateCameraControl = new UpdateCameraControl(camera);
+
         Camera2DController cameraController = new Camera2DController(camera,
                 // Try to focus on the point provided by position provider
                 new FitAllFocus(
                         new EntityFocus(positionProvider1),
                         new EntityFocus(positionProvider2),
                         new EntityFocus(positionProvider3)),
-                new LockedCamera2DConstraint(new Vector2(0.5f, 0.5f)),
-                new FitAllCamera2DConstraint(gameAreaRectangle,
+                new LockedCamera2DConstraint(updateCameraControl, new Vector2(0.5f, 0.5f)),
+                new FitAllCamera2DConstraint(updateCameraControl, gameAreaRectangle,
                         new EntityFocus(positionProvider1),
                         new EntityFocus(positionProvider2),
                         new EntityFocus(positionProvider3)),
-                new MinimumViewportCamera2DConstraint(1280, 720),
-                new SceneCamera2DConstraint(new Rectangle(-2560, -414, 5120, 2000)));
+                new MinimumViewportCamera2DConstraint(updateCameraControl, 1280, 720),
+                new SceneCamera2DConstraint(updateCameraControl, new Rectangle(-2560, -414, 5120, 2000)));
 
         // Move the camera to make sure that pixels outside of the scene bounds are not shown
         //,
