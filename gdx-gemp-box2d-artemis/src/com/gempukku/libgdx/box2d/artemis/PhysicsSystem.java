@@ -7,8 +7,8 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectSet;
 import com.gempukku.libgdx.box2d.artemis.sensor.SensorContactListener;
 import com.gempukku.libgdx.box2d.artemis.sensor.SensorData;
 import com.gempukku.libgdx.box2d.artemis.sensor.SensorDef;
@@ -25,7 +25,7 @@ public class PhysicsSystem extends EntitySystem {
     private ObjectMap<String, SensorContactListener> sensorContactListeners = new ObjectMap<>();
     private ObjectMap<String, FixtureShapeHandler> shapeHandlers = new ObjectMap<>();
     private ObjectMap<String, Short> categoryBits = new ObjectMap<>();
-    private Array<Entity> physicsEntities;
+    private ObjectSet<Entity> physicsEntities = new ObjectSet<>();
     private Vector2 gravity;
     private float pixelsToMeters;
 
