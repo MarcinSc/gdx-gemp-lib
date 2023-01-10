@@ -1,8 +1,12 @@
 package com.gempukku.libgdx.camera2d;
 
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.math.Vector2;
 
 public class UpdateCameraControl implements CameraControl {
+    private Vector2 tmpCameraPosition = new Vector2();
+    private Vector2 tmpCameraViewport = new Vector2();
+
     private Camera camera;
 
     public UpdateCameraControl(Camera camera) {
@@ -10,8 +14,13 @@ public class UpdateCameraControl implements CameraControl {
     }
 
     @Override
-    public Camera getCamera() {
-        return camera;
+    public Vector2 getCameraPosition() {
+        return tmpCameraPosition.set(camera.position.x, camera.position.y);
+    }
+
+    @Override
+    public Vector2 getCameraViewport() {
+        return tmpCameraViewport.set(camera.viewportWidth, camera.viewportHeight);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.gempukku.libgdx.lib.artemis.camera.orthographic;
 
-import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.math.Vector2;
 import com.gempukku.libgdx.camera2d.CameraControl;
 import com.gempukku.libgdx.lib.artemis.camera.CameraSystem;
 
@@ -18,8 +18,13 @@ public class OrthographicCameraControl implements CameraControl {
     }
 
     @Override
-    public Camera getCamera() {
-        return cameraSystem.getCamera(cameraName);
+    public Vector2 getCameraPosition() {
+        return ((OrthographicCameraController) cameraSystem.getCameraController(cameraName)).getCameraPosition(cameraName);
+    }
+
+    @Override
+    public Vector2 getCameraViewport() {
+        return ((OrthographicCameraController) cameraSystem.getCameraController(cameraName)).getCameraViewport(cameraName);
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.artemis.utils.IntBag;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -17,6 +18,9 @@ import java.util.Arrays;
 public class OrthographicCameraController implements CameraController {
     private World world;
     private EventSystem eventSystem;
+
+    private Vector2 tmpCameraPosition = new Vector2();
+    private Vector2 tmpCameraViewport = new Vector2();
 
     private ComponentMapper<OrthographicCameraComponent> orthographicCameraComponentMapper;
     private EntitySubscription cameraEntitySubscription;
@@ -105,6 +109,19 @@ public class OrthographicCameraController implements CameraController {
             orthographicCameras.put(orthographicCamera.getName(), camera);
         }
         newCameraEntities.clear();
+    }
+
+    public Vector2 getCameraPosition(String cameraName) {
+        OrthographicCameraComponent camera = cameraEntities.get(cameraName).getComponent(OrthographicCameraComponent.class);
+        Vector3 cameraPosition = camera.getPosition();
+        return tmpCameraPosition.set(cameraPosition.x, cameraPosition.y);
+    }
+
+    public Vector2 getCameraViewport(String cameraName) {
+        OrthographicCameraComponent camera = cameraEntities.get(cameraName).getComponent(OrthographicCameraComponent.class);
+        OrthographicCamera cameraObject = getCamera(cameraName);
+        float aspectRatio = cameraObject.viewportWidth / cameraObject.viewportHeight;
+        return tmpCameraViewport.set(aspectRatio * camera.getHeight(), camera.getHeight());
     }
 
     public void moveTo(String cameraName, float x, float y) {

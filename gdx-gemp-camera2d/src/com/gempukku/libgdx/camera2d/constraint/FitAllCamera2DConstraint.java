@@ -1,6 +1,5 @@
 package com.gempukku.libgdx.camera2d.constraint;
 
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ObjectSet;
@@ -33,7 +32,7 @@ public class FitAllCamera2DConstraint implements Camera2DConstraint {
 
     @Override
     public void applyConstraint(CameraControl cameraControl, Vector2 focus, float delta) {
-        Camera camera = cameraControl.getCamera();
+        Vector2 cameraViewport = cameraControl.getCameraViewport();
         boolean first = true;
         for (Camera2DFocus cameraFocus : cameraFocusArray) {
             tmpVector = cameraFocus.getFocus(tmpVector);
@@ -47,10 +46,10 @@ public class FitAllCamera2DConstraint implements Camera2DConstraint {
         tmpRectangle.width = Math.max(0.0001f, tmpRectangle.width);
         tmpRectangle.height = Math.max(0.0001f, tmpRectangle.height);
 
-        float cameraAspectRatio = camera.viewportWidth / camera.viewportHeight;
+        float cameraAspectRatio = cameraViewport.x / cameraViewport.y;
 
-        float desiredWidth = window.width * camera.viewportWidth;
-        float desiredHeight = window.height * camera.viewportHeight;
+        float desiredWidth = window.width * cameraViewport.x;
+        float desiredHeight = window.height * cameraViewport.y;
 
         float desiredAspectRatio = desiredWidth / desiredHeight;
         float requiredAspectRatio = tmpRectangle.width / tmpRectangle.height;
