@@ -106,8 +106,8 @@ public class HierarchySystem extends BaseEntitySystem {
     }
 
     public void removeFromHierarchy(Entity child) {
-        HierarchyComponent hierarchy = hierarchyMapper.get(child);
-        if (hierarchy != null) {
+        if (hierarchyMapper.has(child)) {
+            HierarchyComponent hierarchy = hierarchyMapper.get(child);
             int parentId = hierarchy.getParentId();
             hierarchyMapper.remove(child);
 
@@ -151,8 +151,8 @@ public class HierarchySystem extends BaseEntitySystem {
     }
 
     public Entity getParent(Entity child) {
-        HierarchyComponent hierarchy = hierarchyMapper.get(child);
-        if (hierarchy != null) {
+        if (hierarchyMapper.has(child)) {
+            HierarchyComponent hierarchy = hierarchyMapper.get(child);
             return world.getEntity(hierarchy.getParentId());
         }
         return null;
