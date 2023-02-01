@@ -35,8 +35,8 @@ public class DragRightButtonToTiltZAxisSystem extends BaseSystem implements Inpu
 
     private boolean rightButtonDragged(float amount) {
         CameraController cameraController = cameraSystem.getCameraController(cameraName);
-        if (cameraController instanceof ZAxisTiltCameraController) {
-            ((ZAxisTiltCameraController) cameraController).moveZAxisAngle(cameraName, amount * angleMultiplier);
+        if (cameraController instanceof YAxisTiltCameraController) {
+            ((YAxisTiltCameraController) cameraController).moveYAxisAngle(cameraName, amount * angleMultiplier);
             return true;
         }
         return false;

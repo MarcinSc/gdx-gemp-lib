@@ -9,13 +9,13 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.gempukku.libgdx.lib.artemis.camera.CameraController;
 import com.gempukku.libgdx.lib.artemis.camera.CameraUpdated;
-import com.gempukku.libgdx.lib.artemis.camera.ZAxisTiltCameraController;
+import com.gempukku.libgdx.lib.artemis.camera.YAxisTiltCameraController;
 import com.gempukku.libgdx.lib.artemis.camera.ZoomCameraController;
 import com.gempukku.libgdx.lib.artemis.event.EventSystem;
 
 import java.util.Arrays;
 
-public class TopDownCameraController implements CameraController, ZoomCameraController, ZAxisTiltCameraController {
+public class TopDownCameraController implements CameraController, ZoomCameraController, YAxisTiltCameraController {
     private World world;
     private EventSystem eventSystem;
 
@@ -87,7 +87,7 @@ public class TopDownCameraController implements CameraController, ZoomCameraCont
                     Math.max(oldDistance, topDownCamera.getDistance()));
 
             position.set(0, 0, 1);
-            position.rotate(topDownCamera.getzAxisAngle(), 0, 0, 1);
+            position.rotate(topDownCamera.getyAxisAngle(), 0, 1, 0);
             position.rotate(topDownCamera.getxAxisAngle(), 1, 0, 0);
             position.scl(newDistance);
             position.add(topDownCamera.getCenter());
@@ -161,16 +161,29 @@ public class TopDownCameraController implements CameraController, ZoomCameraCont
     }
 
     @Override
-    public void moveZAxisAngle(String cameraName, float angle) {
+    public void moveYAxisAngle(String cameraName, float angle) {
         Entity cameraEntity = getCameraEntity(cameraName);
 
         TopDownCameraComponent topDownCamera = topDownCameraComponentMapper.get(cameraEntity);
 
-        Vector2 zAxisAngleRange = topDownCamera.getzAxisAngleRange();
-        float zAxisAngle = topDownCamera.getzAxisAngle();
+        float yAxisAngle = topDownCamera.getyAxisAngle();
+        float requestedAngle = yAxisAngle + angle;
 
-        float resultAngle = Math.min(zAxisAngleRange.y, Math.max(zAxisAngle + angle, zAxisAngleRange.x));
+        Vector2 yAxisAngleRange = topDownCamera.getyAxisAngleRange();
+        float resultAngle = Math.min(yAxisAngleRange.y, Math.max(requestedAngle, yAxisAngleRange.x));
 
-        topDownCamera.setzAxisAngle(resultAngle);
+        topDownCamera.setyAxisAngle(resultAngle);
+    }
+
+    @Override
+    public void setYAxisAngle(String cameraName, float angle) {
+        Entity cameraEntity = getCameraEntity(cameraName);
+
+        TopDownCameraComponent topDownCamera = topDownCameraComponentMapper.get(cameraEntity);
+
+        Vector2 yAxisAngleRange = topDownCamera.getyAxisAngleRange();
+        float resultAngle = Math.min(yAxisAngleRange.y, Math.max(angle, yAxisAngleRange.x));
+
+        topDownCamera.setyAxisAngle(resultAngle);
     }
 }

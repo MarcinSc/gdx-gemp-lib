@@ -14,12 +14,12 @@ public class TopDownCameraComponent extends Component {
     private float oldDistance;
     private float distance;
     private float xAxisAngle;
-    private float zAxisAngle;
+    private float yAxisAngle;
 
     private Rectangle bounds;
     private Vector2 distanceRange;
     private Vector2 xAxisAngleRange;
-    private Vector2 zAxisAngleRange;
+    private Vector2 yAxisAngleRange;
 
     public String getName() {
         return name;
@@ -89,19 +89,19 @@ public class TopDownCameraComponent extends Component {
         this.xAxisAngle = xAxisAngle;
     }
 
-    public float getzAxisAngle() {
-        return zAxisAngle;
+    public float getyAxisAngle() {
+        return yAxisAngle;
     }
 
-    public void setzAxisAngle(float zAxisAngle) {
-        this.zAxisAngle = zAxisAngle;
+    public void setyAxisAngle(float yAxisAngle) {
+        this.yAxisAngle = yAxisAngle;
     }
 
     public Vector2 getxAxisAngleRange() {
         return xAxisAngleRange;
     }
 
-    public Vector2 getzAxisAngleRange() {
-        return zAxisAngleRange;
+    public Vector2 getyAxisAngleRange() {
+        return yAxisAngleRange;
     }
 }
