@@ -10,16 +10,15 @@ public class TopDownCameraComponent extends Component {
     private float near;
     private float far;
     private float fieldOfView;
-    private Vector3 center;
-    private float oldDistance;
+    private Vector3 focus = new Vector3();
     private float distance;
-    private float xAxisAngle;
-    private float yAxisAngle;
+    private float rotation;
+    private float angle;
 
     private Rectangle bounds;
-    private Vector2 distanceRange;
-    private Vector2 xAxisAngleRange;
-    private Vector2 yAxisAngleRange;
+    private Vector2 distanceRange = new Vector2();
+    private Vector2 rotationRange = new Vector2();
+    private Vector2 angleRange = new Vector2();
 
     public String getName() {
         return name;
@@ -27,14 +26,6 @@ public class TopDownCameraComponent extends Component {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public float getOldDistance() {
-        return oldDistance;
-    }
-
-    public void setOldDistance(float oldDistance) {
-        this.oldDistance = oldDistance;
     }
 
     public float getFieldOfView() {
@@ -61,47 +52,51 @@ public class TopDownCameraComponent extends Component {
         this.far = far;
     }
 
-    public void setDistance(float distance) {
-        this.distance = distance;
+    public Vector3 getFocus() {
+        return focus;
     }
 
-    public Vector3 getCenter() {
-        return center;
+    public void setDistance(float distance) {
+        this.distance = distance;
     }
 
     public float getDistance() {
         return distance;
     }
 
+    public float getRotation() {
+        return rotation;
+    }
+
+    public void setRotation(float rotation) {
+        this.rotation = rotation;
+    }
+
+    public float getAngle() {
+        return angle;
+    }
+
+    public void setAngle(float angle) {
+        this.angle = angle;
+    }
+
     public Rectangle getBounds() {
         return bounds;
+    }
+
+    public void setBounds(Rectangle bounds) {
+        this.bounds = bounds;
     }
 
     public Vector2 getDistanceRange() {
         return distanceRange;
     }
 
-    public float getxAxisAngle() {
-        return xAxisAngle;
+    public Vector2 getRotationRange() {
+        return rotationRange;
     }
 
-    public void setxAxisAngle(float xAxisAngle) {
-        this.xAxisAngle = xAxisAngle;
-    }
-
-    public float getyAxisAngle() {
-        return yAxisAngle;
-    }
-
-    public void setyAxisAngle(float yAxisAngle) {
-        this.yAxisAngle = yAxisAngle;
-    }
-
-    public Vector2 getxAxisAngleRange() {
-        return xAxisAngleRange;
-    }
-
-    public Vector2 getyAxisAngleRange() {
-        return yAxisAngleRange;
+    public Vector2 getAngleRange() {
+        return angleRange;
     }
 }

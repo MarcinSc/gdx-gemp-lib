@@ -4,18 +4,20 @@ import com.artemis.*;
 import com.artemis.utils.IntBag;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.math.*;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.gempukku.libgdx.lib.artemis.camera.CameraController;
 import com.gempukku.libgdx.lib.artemis.camera.CameraUpdated;
-import com.gempukku.libgdx.lib.artemis.camera.YAxisTiltCameraController;
 import com.gempukku.libgdx.lib.artemis.camera.ZoomCameraController;
 import com.gempukku.libgdx.lib.artemis.event.EventSystem;
 
 import java.util.Arrays;
 
-public class TopDownCameraController implements CameraController, ZoomCameraController, YAxisTiltCameraController {
+public class TopDownCameraController implements CameraController, ZoomCameraController {
     private World world;
     private EventSystem eventSystem;
 
@@ -79,24 +81,18 @@ public class TopDownCameraController implements CameraController, ZoomCameraCont
             perspectiveCamera.fieldOfView = topDownCamera.getFieldOfView();
 
             Vector3 position = perspectiveCamera.position;
-            float oldDistance = topDownCamera.getOldDistance();
 
-            float newDistance = MathUtils.lerp(oldDistance, topDownCamera.getDistance(), 5f * deltaTime);
-            newDistance = MathUtils.clamp(newDistance,
-                    Math.min(oldDistance, topDownCamera.getDistance()),
-                    Math.max(oldDistance, topDownCamera.getDistance()));
+            position.set(0, 1, 0);
+            position.rotate(topDownCamera.getAngle(), 1, 0, 0);
+            position.rotate(topDownCamera.getRotation(), 0, 0, 1);
+            position.nor();
 
-            position.set(0, 0, 1);
-            position.rotate(topDownCamera.getyAxisAngle(), 0, 1, 0);
-            position.rotate(topDownCamera.getxAxisAngle(), 1, 0, 0);
-            position.scl(newDistance);
-            position.add(topDownCamera.getCenter());
+            position.scl(topDownCamera.getDistance());
+            position.add(topDownCamera.getFocus());
 
-            perspectiveCamera.up.set(0, 1, 0);
-            perspectiveCamera.lookAt(topDownCamera.getCenter());
+            perspectiveCamera.up.set(0, 0, 1);
+            perspectiveCamera.lookAt(topDownCamera.getFocus());
             perspectiveCamera.update();
-
-            topDownCamera.setOldDistance(newDistance);
 
             if (!Arrays.equals(tmpMatrix4.val, perspectiveCamera.combined.val)) {
                 eventSystem.fireEvent(new CameraUpdated(cameraName), cameraEntity);
@@ -107,7 +103,6 @@ public class TopDownCameraController implements CameraController, ZoomCameraCont
     private void processNewCameras() {
         for (Entity newCameraEntity : newCameraEntities) {
             TopDownCameraComponent topDownCamera = topDownCameraComponentMapper.get(newCameraEntity);
-            topDownCamera.setOldDistance(topDownCamera.getDistance());
             cameraEntities.put(topDownCamera.getName(), newCameraEntity);
             perspectiveCameras.put(topDownCamera.getName(), new PerspectiveCamera(topDownCamera.getFieldOfView(), Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         }
@@ -132,18 +127,39 @@ public class TopDownCameraController implements CameraController, ZoomCameraCont
         }
     }
 
-    public void moveBy(String cameraName, float x, float z) {
+    public void moveTo(String cameraName, float x, float y, float z) {
         Entity cameraEntity = getCameraEntity(cameraName);
 
         TopDownCameraComponent topDownCamera = topDownCameraComponentMapper.get(cameraEntity);
 
         Rectangle bounds = topDownCamera.getBounds();
-        Vector3 cameraCenter = topDownCamera.getCenter();
+        Vector3 focus = topDownCamera.getFocus();
 
-        float resultX = Math.min(bounds.x + bounds.width, Math.max(cameraCenter.x + x, bounds.x));
-        float resultY = Math.min(bounds.y + bounds.height, Math.max(cameraCenter.z + z, bounds.y));
+        if (bounds != null) {
+            float resultX = Math.min(bounds.x + bounds.width, Math.max(focus.x + x, bounds.x));
+            float resultY = Math.min(bounds.y + bounds.height, Math.max(focus.y + y, bounds.y));
 
-        cameraCenter.set(resultX, cameraCenter.y, resultY);
+            focus.set(resultX, resultY, focus.z + z);
+        } else {
+            focus.set(focus.x + x, focus.y + y, focus.z + z);
+        }
+    }
+
+    public void moveBy(String cameraName, float x, float y, float z) {
+        Entity cameraEntity = getCameraEntity(cameraName);
+
+        TopDownCameraComponent topDownCamera = topDownCameraComponentMapper.get(cameraEntity);
+
+        Rectangle bounds = topDownCamera.getBounds();
+
+        if (bounds != null) {
+            float resultX = Math.min(bounds.x + bounds.width, Math.max(x, bounds.x));
+            float resultY = Math.min(bounds.y + bounds.height, Math.max(y, bounds.y));
+
+            topDownCamera.getFocus().set(resultX, resultY, z);
+        } else {
+            topDownCamera.getFocus().set(x, y, z);
+        }
     }
 
     @Override
@@ -160,30 +176,53 @@ public class TopDownCameraController implements CameraController, ZoomCameraCont
         topDownCamera.setDistance(resultDistance);
     }
 
-    @Override
-    public void moveYAxisAngle(String cameraName, float angle) {
+    public void rotateBy(String cameraName, float angle) {
         Entity cameraEntity = getCameraEntity(cameraName);
 
         TopDownCameraComponent topDownCamera = topDownCameraComponentMapper.get(cameraEntity);
 
-        float yAxisAngle = topDownCamera.getyAxisAngle();
-        float requestedAngle = yAxisAngle + angle;
+        float rotationAngle = topDownCamera.getRotation();
+        float requestedAngle = rotationAngle + angle;
 
-        Vector2 yAxisAngleRange = topDownCamera.getyAxisAngleRange();
-        float resultAngle = Math.min(yAxisAngleRange.y, Math.max(requestedAngle, yAxisAngleRange.x));
+        Vector2 rotationRange = topDownCamera.getRotationRange();
+        float resultAngle = Math.min(rotationRange.y, Math.max(requestedAngle, rotationRange.x));
 
-        topDownCamera.setyAxisAngle(resultAngle);
+        topDownCamera.setRotation(resultAngle);
     }
 
-    @Override
-    public void setYAxisAngle(String cameraName, float angle) {
+    public void setRotation(String cameraName, float angle) {
         Entity cameraEntity = getCameraEntity(cameraName);
 
         TopDownCameraComponent topDownCamera = topDownCameraComponentMapper.get(cameraEntity);
 
-        Vector2 yAxisAngleRange = topDownCamera.getyAxisAngleRange();
+        Vector2 yAxisAngleRange = topDownCamera.getRotationRange();
         float resultAngle = Math.min(yAxisAngleRange.y, Math.max(angle, yAxisAngleRange.x));
 
-        topDownCamera.setyAxisAngle(resultAngle);
+        topDownCamera.setRotation(resultAngle);
+    }
+
+    public void angleBy(String cameraName, float angle) {
+        Entity cameraEntity = getCameraEntity(cameraName);
+
+        TopDownCameraComponent topDownCamera = topDownCameraComponentMapper.get(cameraEntity);
+
+        float angleValue = topDownCamera.getAngle();
+        float requestedAngle = angleValue + angle;
+
+        Vector2 angleRange = topDownCamera.getAngleRange();
+        float resultAngle = Math.min(angleRange.y, Math.max(requestedAngle, angleRange.x));
+
+        topDownCamera.setAngle(resultAngle);
+    }
+
+    public void setAngle(String cameraName, float angle) {
+        Entity cameraEntity = getCameraEntity(cameraName);
+
+        TopDownCameraComponent topDownCamera = topDownCameraComponentMapper.get(cameraEntity);
+
+        Vector2 angleRange = topDownCamera.getAngleRange();
+        float resultAngle = Math.min(angleRange.y, Math.max(angle, angleRange.x));
+
+        topDownCamera.setAngle(resultAngle);
     }
 }
