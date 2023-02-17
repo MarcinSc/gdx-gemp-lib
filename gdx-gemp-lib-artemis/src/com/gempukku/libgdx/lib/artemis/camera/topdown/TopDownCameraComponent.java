@@ -13,12 +13,14 @@ public class TopDownCameraComponent extends Component {
     private Vector3 focus = new Vector3();
     private float distance;
     private float rotation;
+    private float tilt;
     private float angle;
 
     private Rectangle bounds;
     private Vector2 distanceRange = new Vector2();
     private Vector2 rotationRange = new Vector2();
     private Vector2 angleRange = new Vector2();
+    private Vector2 tiltRange = new Vector2();
 
     public String getName() {
         return name;
@@ -80,6 +82,14 @@ public class TopDownCameraComponent extends Component {
         this.angle = angle;
     }
 
+    public float getTilt() {
+        return tilt;
+    }
+
+    public void setTilt(float tilt) {
+        this.tilt = tilt;
+    }
+
     public Rectangle getBounds() {
         return bounds;
     }
@@ -98,5 +108,9 @@ public class TopDownCameraComponent extends Component {
 
     public Vector2 getAngleRange() {
         return angleRange;
+    }
+
+    public Vector2 getTiltRange() {
+        return tiltRange;
     }
 }

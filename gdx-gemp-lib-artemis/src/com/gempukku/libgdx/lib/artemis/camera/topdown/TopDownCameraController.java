@@ -18,7 +18,6 @@ import com.gempukku.libgdx.lib.artemis.event.EventSystem;
 import java.util.Arrays;
 
 public class TopDownCameraController implements CameraController, ZoomCameraController {
-    private World world;
     private EventSystem eventSystem;
 
     private ComponentMapper<TopDownCameraComponent> topDownCameraComponentMapper;
@@ -29,11 +28,11 @@ public class TopDownCameraController implements CameraController, ZoomCameraCont
     private ObjectMap<String, PerspectiveCamera> perspectiveCameras = new ObjectMap<>();
     private ObjectMap<String, Entity> cameraEntities = new ObjectMap<>();
 
+    private Matrix4 oldCombined = new Matrix4();
     private Matrix4 tmpMatrix4 = new Matrix4();
 
     @Override
     public void setupWithWorld(final World world) {
-        this.world = world;
         eventSystem = world.getSystem(EventSystem.class);
         topDownCameraComponentMapper = world.getMapper(TopDownCameraComponent.class);
         cameraEntitySubscription = world.getAspectSubscriptionManager().get(Aspect.all(TopDownCameraComponent.class));
@@ -74,27 +73,28 @@ public class TopDownCameraController implements CameraController, ZoomCameraCont
 
             PerspectiveCamera perspectiveCamera = perspectiveCameras.get(cameraName);
 
-            tmpMatrix4.set(perspectiveCamera.combined);
+            oldCombined.set(perspectiveCamera.combined);
 
             perspectiveCamera.near = topDownCamera.getNear();
             perspectiveCamera.far = topDownCamera.getFar();
             perspectiveCamera.fieldOfView = topDownCamera.getFieldOfView();
 
-            Vector3 position = perspectiveCamera.position;
+            tmpMatrix4.idt()
+                    .rotate(0, 0, 1, topDownCamera.getRotation())
+                    .rotate(1, 0, 0, topDownCamera.getAngle())
+                    .rotate(0, 1, 0, topDownCamera.getTilt());
 
-            position.set(0, 1, 0);
-            position.rotate(topDownCamera.getAngle(), 1, 0, 0);
-            position.rotate(topDownCamera.getRotation(), 0, 0, 1);
-            position.nor();
+            perspectiveCamera.position.set(0, 1, 0)
+                    .mul(tmpMatrix4)
+                    .nor()
+                    .scl(topDownCamera.getDistance())
+                    .add(topDownCamera.getFocus());
 
-            position.scl(topDownCamera.getDistance());
-            position.add(topDownCamera.getFocus());
-
-            perspectiveCamera.up.set(0, 0, 1);
+            perspectiveCamera.up.set(0, 0, 1).mul(tmpMatrix4);
             perspectiveCamera.lookAt(topDownCamera.getFocus());
             perspectiveCamera.update();
 
-            if (!Arrays.equals(tmpMatrix4.val, perspectiveCamera.combined.val)) {
+            if (!Arrays.equals(oldCombined.val, perspectiveCamera.combined.val)) {
                 eventSystem.fireEvent(new CameraUpdated(cameraName), cameraEntity);
             }
         }
@@ -224,5 +224,30 @@ public class TopDownCameraController implements CameraController, ZoomCameraCont
         float resultAngle = Math.min(angleRange.y, Math.max(angle, angleRange.x));
 
         topDownCamera.setAngle(resultAngle);
+    }
+
+    public void tiltBy(String cameraName, float tilt) {
+        Entity cameraEntity = getCameraEntity(cameraName);
+
+        TopDownCameraComponent topDownCamera = topDownCameraComponentMapper.get(cameraEntity);
+
+        float tiltValue = topDownCamera.getTilt();
+        float requestedAngle = tiltValue + tilt;
+
+        Vector2 tiltRange = topDownCamera.getTiltRange();
+        float resultAngle = Math.min(tiltRange.y, Math.max(requestedAngle, tiltRange.x));
+
+        topDownCamera.setTilt(resultAngle);
+    }
+
+    public void setTilt(String cameraName, float tilt) {
+        Entity cameraEntity = getCameraEntity(cameraName);
+
+        TopDownCameraComponent topDownCamera = topDownCameraComponentMapper.get(cameraEntity);
+
+        Vector2 tiltRange = topDownCamera.getTiltRange();
+        float resultAngle = Math.min(tiltRange.y, Math.max(tilt, tiltRange.x));
+
+        topDownCamera.setTilt(resultAngle);
     }
 }
