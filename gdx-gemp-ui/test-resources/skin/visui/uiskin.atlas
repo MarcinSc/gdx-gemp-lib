@@ -738,6 +738,20 @@ tree-selection
   orig: 3, 3
   offset: 0, 0
   index: -1
+dirty-tab-label-clean
+  rotate: false
+  xy: 283, 51
+  size: 10, 10
+  orig: 14, 14
+  offset: 2, 2
+  index: -1
+dirty-tab-label-dirty
+  rotate: false
+  xy: 283, 42
+  size: 8, 8
+  orig: 14, 14
+  offset: 3, 3
+  index: -1
 vis-check-down
   rotate: false
   xy: 268, 36

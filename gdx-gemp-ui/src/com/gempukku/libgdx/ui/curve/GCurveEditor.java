@@ -38,8 +38,12 @@ public class GCurveEditor extends DisposableWidget {
     }
 
     public GCurveEditor(CurveDefinition curveDefinition, String styleName) {
+        this(curveDefinition, VisUI.getSkin().get(styleName, GCurveEditorStyle.class));
+    }
+
+    public GCurveEditor(CurveDefinition curveDefinition, GCurveEditorStyle style) {
         this.curveDefinition = curveDefinition;
-        style = VisUI.getSkin().get(styleName, GCurveEditorStyle.class);
+        this.style = style;
         addListener(new CurveEditorListener());
     }
 

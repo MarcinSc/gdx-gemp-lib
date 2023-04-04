@@ -2,17 +2,16 @@ package com.gempukku.libgdx.ui;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.gempukku.libgdx.ui.tabbedpane.GTab;
-import com.gempukku.libgdx.ui.tabbedpane.GTabControl;
-import com.gempukku.libgdx.ui.tabbedpane.GTabLabel;
+import com.gempukku.libgdx.ui.tabbedpane.*;
 
-public class TestTab extends Table implements GTab {
-    private GTabLabel<TestTab> tabActor;
+public class TestDirtyTab extends Table implements GDirtyTab {
+    private GDirtyTabLabel<TestDirtyTab> tabActor;
     private String title;
+    private boolean dirty;
 
-    public TestTab(GTabControl<TestTab> tabControl, String title, boolean closeable) {
+    public TestDirtyTab(GTabControl<TestDirtyTab> tabControl, String title, boolean closeable) {
         this.title = title;
-        tabActor = new GTabLabel<>(tabControl, this, "default", title, closeable);
+        tabActor = new GDirtyTabLabel<>(tabControl, this, "default", title, closeable);
     }
 
     @Override
@@ -34,6 +33,15 @@ public class TestTab extends Table implements GTab {
     public void setActive(boolean active) {
         tabActor.setActive(active);
         System.out.println(title + " is active: " + active);
+    }
+
+    @Override
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
     }
 
     @Override

@@ -547,6 +547,30 @@
       "disabledFontColor": "grey",
       "focusBorder": "border"
     },
+    "dirty-tab-label-clean": {
+      "focusBorder": "border",
+      "checked": "button-down",
+      "down": "button-down",
+      "up": "button",
+      "font": "default-font",
+      "fontColor": "white",
+      "over": "button-over",
+      "disabled": "button",
+      "disabledFontColor": "grey",
+      "imageUp": "dirty-tab-label-clean"
+    },
+    "dirty-tab-label-dirty": {
+      "focusBorder": "border",
+      "checked": "button-down",
+      "down": "button-down",
+      "up": "button",
+      "font": "default-font",
+      "fontColor": "white",
+      "over": "button-over",
+      "disabled": "button",
+      "disabledFontColor": "grey",
+      "imageUp": "dirty-tab-label-dirty"
+    },
     "toggle": {
       "checked": "button-down",
       "down": "button-down",
@@ -868,6 +892,16 @@
       "background": "tab-label",
       "backgroundActive": "tab-label-blue",
       "textStyle": "toggle",
+      "closeStyle": "close-tab",
+      "closeStyleActive": "close-active-tab"
+    }
+  },
+  "com.gempukku.libgdx.ui.tabbedpane.GDirtyTabLabel$GDirtyTabLabelStyle": {
+    "default": {
+      "background": "tab-label",
+      "backgroundActive": "tab-label-blue",
+      "textStyle": "dirty-tab-label-clean",
+      "dirtyTextStyle": "dirty-tab-label-dirty",
       "closeStyle": "close-tab",
       "closeStyleActive": "close-active-tab"
     }

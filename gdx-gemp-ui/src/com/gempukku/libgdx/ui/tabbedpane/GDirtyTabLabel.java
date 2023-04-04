@@ -7,38 +7,43 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisImageButton;
+import com.kotcrab.vis.ui.widget.VisImageTextButton;
 import com.kotcrab.vis.ui.widget.VisTable;
-import com.kotcrab.vis.ui.widget.VisTextButton;
 
-public class GTabLabel<T extends GTab> extends VisTable {
-    private VisTextButton tabText;
+public class GDirtyTabLabel<T extends GDirtyTab> extends VisTable {
+    private final VisImageTextButton tabText;
     private VisImageButton closeButton;
-    private GTabLabelStyle style;
 
-    public GTabLabel(GTabControl<? super T> tabControl, T tab, String title) {
+    private boolean active = false;
+    private boolean dirty = false;
+
+    private final T tab;
+    private final GDirtyTabLabelStyle style;
+
+    public GDirtyTabLabel(GTabControl<? super T> tabControl, T tab, String title) {
         this(tabControl, tab, "default", title);
     }
 
-    public GTabLabel(GTabControl<? super T> tabControl, T tab, String styleName, String title) {
+    public GDirtyTabLabel(GTabControl<? super T> tabControl, T tab, String styleName, String title) {
         this(tabControl, tab, styleName, title, false);
     }
 
-    public GTabLabel(GTabControl<? super T> tabControl, T tab, String styleName, String title, boolean closeable) {
+    public GDirtyTabLabel(GTabControl<? super T> tabControl, T tab, String styleName, String title, boolean closeable) {
         this(tabControl, tab, styleName, title, closeable, null);
     }
 
-    public GTabLabel(GTabControl<? super T> tabControl, T tab, String styleName, String title, boolean closeable, Runnable closeRunnable) {
-        this(tabControl, tab, VisUI.getSkin().get(styleName, GTabLabelStyle.class), title, closeable, closeRunnable);
+    public GDirtyTabLabel(GTabControl<? super T> tabControl, T tab, String styleName, String title, boolean closeable, Runnable closeRunnable) {
+        this(tabControl, tab, VisUI.getSkin().get(styleName, GDirtyTabLabelStyle.class), title, closeable, closeRunnable);
     }
 
-    public GTabLabel(GTabControl<? super T> tabControl, T tab, GTabLabelStyle style, String title, boolean closeable, Runnable closeRunnable) {
+    public GDirtyTabLabel(GTabControl<? super T> tabControl, T tab, GDirtyTabLabelStyle style, String title, boolean closeable, Runnable closeRunnable) {
+        this.tab = tab;
         this.style = style;
 
         setBackground(style.background);
 
-        tabText = new VisTextButton(title, style.textStyle);
+        tabText = new VisImageTextButton(title, style.textStyle);
         tabText.getLabel().setEllipsis("...");
-        tabText.getLabelCell().maxWidth(style.textMaxWidth).minWidth(1);
         tabText.addListener(
                 new ChangeListener() {
                     @Override
@@ -52,7 +57,7 @@ public class GTabLabel<T extends GTab> extends VisTable {
                 });
         tabText.setFocusBorderEnabled(false);
         tabText.setProgrammaticChangeEvents(false);
-        add(tabText);
+        add(tabText).maxWidth(style.textMaxWidth).minWidth(1);
 
         if (closeable) {
             closeButton = new VisImageButton(style.closeStyle);
@@ -72,23 +77,55 @@ public class GTabLabel<T extends GTab> extends VisTable {
         }
     }
 
+    @Override
+    public void act(float delta) {
+        super.act(delta);
+
+        boolean tabDirty = tab.isDirty();
+        if (tabDirty != dirty) {
+            setDirty(tabDirty);
+        }
+    }
+
     public void setTitle(String title) {
         tabText.setText(title);
     }
 
     public void setActive(boolean active) {
+        this.active = active;
+        updateStyles();
+    }
+
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
+        updateStyles();
+    }
+
+    private void updateStyles() {
         tabText.setChecked(active);
         if (active) {
             if (style.backgroundActive != null)
                 setBackground(style.backgroundActive);
-            if (style.textStyleActive != null)
-                tabText.setStyle(style.textStyleActive);
+            if (dirty) {
+                if (style.dirtyTextStyleActive != null)
+                    tabText.setStyle(style.dirtyTextStyleActive);
+                else
+                    tabText.setStyle(style.dirtyTextStyle);
+            } else {
+                if (style.textStyleActive != null)
+                    tabText.setStyle(style.textStyleActive);
+                else
+                    tabText.setStyle(style.textStyle);
+            }
             if (closeButton != null && style.closeStyleActive != null)
                 closeButton.setStyle(style.closeStyleActive);
             getCell(tabText).maxWidth(style.textMaxWidthActive);
         } else {
             setBackground(style.background);
-            tabText.setStyle(style.textStyle);
+            if (dirty)
+                tabText.setStyle(style.dirtyTextStyle);
+            else
+                tabText.setStyle(style.textStyle);
             if (closeButton != null) {
                 closeButton.setStyle(style.closeStyle);
             }
@@ -96,19 +133,25 @@ public class GTabLabel<T extends GTab> extends VisTable {
         }
     }
 
-    public static class GTabLabelStyle {
+    public static class GDirtyTabLabelStyle extends GTabLabel.GTabLabelStyle {
         public int textMaxWidth = 80;
         public int textMaxWidthActive = 80;
+
         public Drawable background;
         /**
          * Optional
          */
         public Drawable backgroundActive;
-        public VisTextButton.VisTextButtonStyle textStyle;
+        public VisImageTextButton.VisImageTextButtonStyle textStyle;
         /**
          * Optional
          */
-        public VisTextButton.VisTextButtonStyle textStyleActive;
+        public VisImageTextButton.VisImageTextButtonStyle textStyleActive;
+        public VisImageTextButton.VisImageTextButtonStyle dirtyTextStyle;
+        /**
+         * Optional
+         */
+        public VisImageTextButton.VisImageTextButtonStyle dirtyTextStyleActive;
         public VisImageButton.VisImageButtonStyle closeStyle;
         /**
          * Optional

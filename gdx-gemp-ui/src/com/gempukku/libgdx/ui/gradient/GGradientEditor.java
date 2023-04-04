@@ -36,9 +36,12 @@ public class GGradientEditor extends DisposableWidget {
     }
 
     public GGradientEditor(GradientDefinition gradientDefinition, String styleName) {
-        this.gradientDefinition = gradientDefinition;
-        this.style = VisUI.getSkin().get(styleName, GGradientEditorStyle.class);
+        this(gradientDefinition, VisUI.getSkin().get(styleName, GGradientEditorStyle.class));
+    }
 
+    public GGradientEditor(GradientDefinition gradientDefinition, GGradientEditorStyle style) {
+        this.gradientDefinition = gradientDefinition;
+        this.style = style;
         addListener(new GradientEditorListener());
     }
 

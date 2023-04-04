@@ -69,7 +69,7 @@ public class GTabbedPane<T extends GTab> extends Table implements GTabControl<T>
                 contentTable.clearChildren();
                 activeTab = null;
             }
-            tab.tabClosed();
         }
+        tab.tabClosed();
     }
 }

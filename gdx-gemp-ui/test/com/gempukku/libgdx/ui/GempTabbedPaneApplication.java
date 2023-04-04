@@ -5,9 +5,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.gempukku.libgdx.ui.curve.DefaultCurveDefinition;
 import com.gempukku.libgdx.ui.curve.GCurveEditor;
@@ -16,6 +18,7 @@ import com.gempukku.libgdx.ui.gradient.GGradientEditor;
 import com.gempukku.libgdx.ui.gradient.GradientDefinition;
 import com.gempukku.libgdx.ui.tabbedpane.GTabbedPane;
 import com.kotcrab.vis.ui.VisUI;
+import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.kotcrab.vis.ui.widget.VisLabel;
 
 public class GempTabbedPaneApplication extends ApplicationAdapter {
@@ -38,7 +41,7 @@ public class GempTabbedPaneApplication extends ApplicationAdapter {
                 new GradientDefinition.ColorPosition(0.3f, Color.BLUE),
                 new GradientDefinition.ColorPosition(0.8f, Color.BLACK));
 
-        GTabbedPane<TestTab> tabbedPane = new GTabbedPane<>();
+        GTabbedPane tabbedPane = new GTabbedPane<>();
         TestTab tab1 = new TestTab(tabbedPane, "Tab 1", false);
         tab1.add(new VisLabel("Top")).colspan(3).row();
         tab1.add(new VisLabel("Left"));
@@ -51,8 +54,16 @@ public class GempTabbedPaneApplication extends ApplicationAdapter {
         tab2.add(new GGradientEditor(gradientDefinition)).grow();
         tab2.add(new VisLabel("Right")).row();
         tab2.add(new VisLabel("Bottom")).colspan(3).row();
-        TestTab tab3 = new TestTab(tabbedPane, "Tab 3", false);
-        tab3.add(new VisLabel("Contents of tab 3"));
+        TestDirtyTab tab3 = new TestDirtyTab(tabbedPane, "Tab 3", true);
+        VisCheckBox dirtyCheckbox = new VisCheckBox("Dirty", false);
+        dirtyCheckbox.addListener(
+                new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        tab3.setDirty(dirtyCheckbox.isChecked());
+                    }
+                });
+        tab3.add(dirtyCheckbox);
         tabbedPane.addTab(tab1);
         tabbedPane.addTab(tab2);
         tabbedPane.addTab(tab3);
