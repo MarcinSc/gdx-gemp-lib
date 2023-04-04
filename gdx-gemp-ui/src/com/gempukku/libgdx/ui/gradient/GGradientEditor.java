@@ -42,6 +42,10 @@ public class GGradientEditor extends DisposableWidget {
         addListener(new GradientEditorListener());
     }
 
+    public GradientDefinition getGradientDefinition() {
+        return gradientDefinition;
+    }
+
     @Override
     public void draw(Batch batch, float parentAlpha) {
         if (style.background != null)
