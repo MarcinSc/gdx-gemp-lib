@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
@@ -136,6 +137,21 @@ public class GCurveEditor extends DisposableWidget {
         return (Math.max(style.pointSize, style.curveThickness) + 8) / 2f;
     }
 
+    private void addPoint(float x, float y) {
+        curveDefinition.addPoint(x, y);
+        fire(new ChangeListener.ChangeEvent());
+    }
+
+    private void updatePoint(int index, float x, float y) {
+        curveDefinition.updatePoint(index, x, y);
+        fire(new ChangeListener.ChangeEvent());
+    }
+
+    private void removePoint(int index) {
+        curveDefinition.removePoint(index);
+        fire(new ChangeListener.ChangeEvent());
+    }
+
     @Override
     protected void initializeWidget() {
         shapeRenderer = new ShapeRenderer();
@@ -170,13 +186,13 @@ public class GCurveEditor extends DisposableWidget {
                     Vector2 hitPosition = unwrapPoint(mousePosition);
                     clampPoint(hitPosition);
 
-                    curveDefinition.addPoint(hitPosition.x, hitPosition.y);
+                    addPoint(hitPosition.x, hitPosition.y);
                     draggedIndex = findPointIndex(hitPosition);
                 }
             } else if (button == Input.Buttons.RIGHT) {
                 int hitPointIndex = getHitPointIndex(mousePosition);
                 if (hitPointIndex != -1) {
-                    curveDefinition.removePoint(hitPointIndex);
+                    removePoint(hitPointIndex);
                 }
             }
             Pools.free(mousePosition);
@@ -216,7 +232,7 @@ public class GCurveEditor extends DisposableWidget {
                 if (hitPosition.x >= nextPoint.x)
                     hitPosition.x = nextPoint.x - MIN_POINT_X_DRAG_DIFFERENCE;
             }
-            curveDefinition.updatePoint(draggedIndex, hitPosition.x, hitPosition.y);
+            updatePoint(draggedIndex, hitPosition.x, hitPosition.y);
 
             Pools.free(mousePosition);
         }

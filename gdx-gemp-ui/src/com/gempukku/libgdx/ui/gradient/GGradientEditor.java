@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
@@ -166,16 +167,19 @@ public class GGradientEditor extends DisposableWidget {
     private void addColor(float position, Color color) {
         gradientDefinition.addColor(position, color);
         updateGradientTexture();
+        fire(new ChangeListener.ChangeEvent());
     }
 
     private void updateColor(int index, float position, Color color) {
         gradientDefinition.updatePoint(index, position, color);
         updateGradientTexture();
+        fire(new ChangeListener.ChangeEvent());
     }
 
     private void removeColor(int index) {
         gradientDefinition.removeColor(index);
         updateGradientTexture();
+        fire(new ChangeListener.ChangeEvent());
     }
 
     private class GradientEditorListener extends InputListener {
