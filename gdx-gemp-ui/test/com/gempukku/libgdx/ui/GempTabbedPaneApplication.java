@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.gempukku.libgdx.ui.curve.DefaultCurveDefinition;
@@ -39,9 +40,17 @@ public class GempTabbedPaneApplication extends ApplicationAdapter {
 
         GTabbedPane<TestTab> tabbedPane = new GTabbedPane<>();
         TestTab tab1 = new TestTab(tabbedPane, "Tab 1", false);
+        tab1.add(new VisLabel("Top")).colspan(3).row();
+        tab1.add(new VisLabel("Left"));
         tab1.add(new GCurveEditor(curveDefinition)).grow();
+        tab1.add(new VisLabel("Right")).row();
+        tab1.add(new VisLabel("Bottom")).colspan(3).row();
         TestTab tab2 = new TestTab(tabbedPane, "Tab 2", true);
+        tab2.add(new VisLabel("Top")).colspan(3).row();
+        tab2.add(new VisLabel("Left"));
         tab2.add(new GGradientEditor(gradientDefinition)).grow();
+        tab2.add(new VisLabel("Right")).row();
+        tab2.add(new VisLabel("Bottom")).colspan(3).row();
         TestTab tab3 = new TestTab(tabbedPane, "Tab 3", false);
         tab3.add(new VisLabel("Contents of tab 3"));
         tabbedPane.addTab(tab1);

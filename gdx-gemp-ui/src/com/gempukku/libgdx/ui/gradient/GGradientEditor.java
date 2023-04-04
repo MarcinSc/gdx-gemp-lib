@@ -49,14 +49,14 @@ public class GGradientEditor extends DisposableWidget {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         if (style.background != null)
-            style.background.draw(batch, 0, 0, getWidth(), getHeight());
+            style.background.draw(batch, getX(), getY(), getWidth(), getHeight());
 
         float sidePadding = getSidePadding();
         float bottomPadding = getBottomPadding();
         float topPadding = getTopPadding();
         float availableWidth = getWidth() - 2 * sidePadding;
         float availableHeight = getHeight() - bottomPadding - topPadding;
-        batch.draw(gradientTexture, sidePadding, bottomPadding, availableWidth, availableHeight);
+        batch.draw(gradientTexture, getX() + sidePadding, getY() + bottomPadding, availableWidth, availableHeight);
 
         drawColorTicks(batch, parentAlpha);
     }
@@ -67,7 +67,8 @@ public class GGradientEditor extends DisposableWidget {
         float availableWidth = getWidth() - 2 * sidePadding;
         for (GradientDefinition.ColorPosition colorPosition : gradientDefinition.getColorPositions()) {
             batch.setColor(colorPosition.color);
-            style.tick.draw(batch, sidePadding + availableWidth * colorPosition.position - (style.tickWidth / 2f), bottomPadding - (style.tickHeight / 2) - 2,
+            style.tick.draw(batch, getX() + sidePadding + availableWidth * colorPosition.position - (style.tickWidth / 2f),
+                    getY() + bottomPadding - (style.tickHeight / 2) - 2,
                     style.tickWidth, style.tickHeight);
         }
     }
@@ -221,24 +222,30 @@ public class GGradientEditor extends DisposableWidget {
                     colorPicker.setAllowAlphaEdit(false);
                     colorPicker.setListener(
                             new ColorPickerListener() {
+                                private boolean cancelled = false;
+
                                 @Override
                                 public void canceled(Color oldColor) {
+                                    cancelled = true;
                                     removeColor(modifiedIndex);
                                 }
 
                                 @Override
                                 public void changed(Color newColor) {
-                                    updateColor(modifiedIndex, hitX, newColor);
+                                    if (!cancelled)
+                                        updateColor(modifiedIndex, hitX, newColor);
                                 }
 
                                 @Override
                                 public void reset(Color previousColor, Color newColor) {
-                                    gradientDefinition.removeColor(modifiedIndex);
+                                    if (!cancelled)
+                                        updateColor(modifiedIndex, hitX, newColor);
                                 }
 
                                 @Override
                                 public void finished(Color newColor) {
-                                    updateColor(modifiedIndex, hitX, newColor);
+                                    if (!cancelled)
+                                        updateColor(modifiedIndex, hitX, newColor);
                                 }
                             });
                     getStage().addActor(colorPicker.fadeIn());
@@ -262,24 +269,30 @@ public class GGradientEditor extends DisposableWidget {
             colorPicker.setAllowAlphaEdit(false);
             colorPicker.setListener(
                     new ColorPickerListener() {
+                        private boolean cancelled;
+
                         @Override
                         public void canceled(Color oldColor) {
+                            cancelled = true;
                             updateColor(index, colorPosition.position, oldColor);
                         }
 
                         @Override
                         public void changed(Color newColor) {
-                            updateColor(index, colorPosition.position, newColor);
+                            if (!cancelled)
+                                updateColor(index, colorPosition.position, newColor);
                         }
 
                         @Override
                         public void reset(Color previousColor, Color newColor) {
-                            updateColor(index, colorPosition.position, oldColor);
+                            if (!cancelled)
+                                updateColor(index, colorPosition.position, newColor);
                         }
 
                         @Override
                         public void finished(Color newColor) {
-                            updateColor(index, colorPosition.position, newColor);
+                            if (!cancelled)
+                                updateColor(index, colorPosition.position, newColor);
                         }
                     });
             getStage().addActor(colorPicker.fadeIn());

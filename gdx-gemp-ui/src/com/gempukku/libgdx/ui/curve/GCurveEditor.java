@@ -49,7 +49,7 @@ public class GCurveEditor extends DisposableWidget {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         if (style.background != null) {
-            style.background.draw(batch, 0, 0, getWidth(), getHeight());
+            style.background.draw(batch, getX(), getY(), getWidth(), getHeight());
         }
 
         batch.end();
@@ -86,7 +86,8 @@ public class GCurveEditor extends DisposableWidget {
     }
 
     private void drawParameterizedLine(float x1, float y1, float x2, float y2, float lineWidth) {
-        shapeRenderer.rectLine(padding + x1 * availableWidth, padding + y1 * availableHeight, padding + x2 * availableWidth, padding + y2 * availableHeight, lineWidth);
+        shapeRenderer.rectLine(getX() + padding + x1 * availableWidth, getY() + padding + y1 * availableHeight,
+                getX() + padding + x2 * availableWidth, getY() + padding + y2 * availableHeight, lineWidth);
     }
 
     private void drawCurve(float parentAlpha) {
@@ -115,7 +116,7 @@ public class GCurveEditor extends DisposableWidget {
         Color color = style.pointsColor;
         shapeRenderer.setColor(color.r, color.g, color.b, color.a * parentAlpha);
         for (Vector2 point : curveDefinition.getPoints()) {
-            shapeRenderer.circle(padding + point.x * availableWidth, padding + point.y * availableHeight, style.pointSize);
+            shapeRenderer.circle(getX() + padding + point.x * availableWidth, getY() + padding + point.y * availableHeight, style.pointSize);
         }
     }
 
@@ -228,7 +229,7 @@ public class GCurveEditor extends DisposableWidget {
                 }
             }
             if (draggedIndex < points.size - 1) {
-                Vector2 nextPoint = points.get(draggedIndex+1);
+                Vector2 nextPoint = points.get(draggedIndex + 1);
                 if (hitPosition.x >= nextPoint.x)
                     hitPosition.x = nextPoint.x - MIN_POINT_X_DRAG_DIFFERENCE;
             }
