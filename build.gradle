@@ -22,15 +22,6 @@ allprojects {
     version = '0.1.14'
     ext {
         appName = "GDX Gemp Lib"
-        gdxVersion = '1.9.12'
-        roboVMVersion = '2.3.8'
-        box2DLightsVersion = '1.4'
-        gdxGraphVersion = '0.5.1'
-        ashleyVersion = '1.7.3'
-        aiVersion = '1.8.0'
-        artemisOdbVersion = '2.3.0'
-        junitVersion = '4.13.2'
-        mockitoVersion = '1.10.19'
     }
 
     repositories {

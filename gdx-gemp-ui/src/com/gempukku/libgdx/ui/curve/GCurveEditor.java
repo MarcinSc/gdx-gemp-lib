@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 import com.gempukku.libgdx.ui.DisposableWidget;
@@ -55,6 +56,7 @@ public class GCurveEditor extends DisposableWidget {
         batch.end();
 
         shapeRenderer.setProjectionMatrix(getStage().getCamera().combined);
+        Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -72,6 +74,8 @@ public class GCurveEditor extends DisposableWidget {
         shapeRenderer.end();
 
         batch.begin();
+        if (ScissorStack.peekScissors() != null)
+            Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
     }
 
     private void drawGrid(float parentAlpha) {
