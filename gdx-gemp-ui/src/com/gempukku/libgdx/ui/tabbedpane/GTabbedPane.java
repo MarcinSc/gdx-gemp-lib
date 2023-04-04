@@ -40,8 +40,8 @@ public class GTabbedPane<T extends GTab> extends Table implements GTabControl<T>
             throw new GdxRuntimeException("This TabbedPane does not contain this tab");
         if (activeTab != tab) {
             if (activeTab != null) {
-                activeTab.setActive(false);
                 contentTable.clearChildren();
+                activeTab.setActive(false);
             }
             activeTab = tab;
             contentTable.add(tab.getContentTable()).grow();
@@ -58,9 +58,9 @@ public class GTabbedPane<T extends GTab> extends Table implements GTabControl<T>
         if (!tabs.contains(tab, true))
             throw new GdxRuntimeException("This TabbedPane does not contain this tab");
         tabGroup.removeActor(tab.getTabActor());
+        int tabIndex = tabs.indexOf(tab, true);
+        tabs.removeValue(tab, true);
         if (activeTab == tab) {
-            int tabIndex = tabs.indexOf(tab, true);
-            tabs.removeValue(tab, true);
             int newActiveIndex = Math.min(tabIndex, tabs.size - 1);
             if (newActiveIndex != -1) {
                 setTabActive(tabs.get(newActiveIndex));
