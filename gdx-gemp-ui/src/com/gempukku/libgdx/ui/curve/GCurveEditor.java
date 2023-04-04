@@ -56,7 +56,6 @@ public class GCurveEditor extends DisposableWidget {
         batch.end();
 
         shapeRenderer.setProjectionMatrix(getStage().getCamera().combined);
-        Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -74,8 +73,6 @@ public class GCurveEditor extends DisposableWidget {
         shapeRenderer.end();
 
         batch.begin();
-        if (ScissorStack.peekScissors() != null)
-            Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
     }
 
     private void drawGrid(float parentAlpha) {
@@ -90,8 +87,11 @@ public class GCurveEditor extends DisposableWidget {
     }
 
     private void drawParameterizedLine(float x1, float y1, float x2, float y2, float lineWidth) {
-        shapeRenderer.rectLine(getX() + padding + x1 * availableWidth, getY() + padding + y1 * availableHeight,
-                getX() + padding + x2 * availableWidth, getY() + padding + y2 * availableHeight, lineWidth);
+        Vector2 start = Pools.obtain(Vector2.class);
+        localToStageCoordinates(start.set(0, 0));
+        shapeRenderer.rectLine(start.x + padding + x1 * availableWidth, start.y + padding + y1 * availableHeight,
+                start.x + padding + x2 * availableWidth, start.y + padding + y2 * availableHeight, lineWidth);
+        Pools.free(start);
     }
 
     private void drawCurve(float parentAlpha) {
@@ -117,11 +117,14 @@ public class GCurveEditor extends DisposableWidget {
     }
 
     private void drawPoints(float parentAlpha) {
+        Vector2 start = Pools.obtain(Vector2.class);
+        localToStageCoordinates(start.set(0, 0));
         Color color = style.pointsColor;
         shapeRenderer.setColor(color.r, color.g, color.b, color.a * parentAlpha);
         for (Vector2 point : curveDefinition.getPoints()) {
-            shapeRenderer.circle(getX() + padding + point.x * availableWidth, getY() + padding + point.y * availableHeight, style.pointSize);
+            shapeRenderer.circle(start.x + padding + point.x * availableWidth, start.y + padding + point.y * availableHeight, style.pointSize);
         }
+        Pools.free(start);
     }
 
     private Vector2 wrapPoint(Vector2 vector) {
