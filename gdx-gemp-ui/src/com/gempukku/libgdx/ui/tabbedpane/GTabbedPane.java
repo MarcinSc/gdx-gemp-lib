@@ -30,6 +30,10 @@ public class GTabbedPane<T extends GTab> extends Table implements GTabControl<T>
         }
     }
 
+    public Array<T> getTabs() {
+        return tabs;
+    }
+
     @Override
     public void setTabActive(T tab) {
         if (!tabs.contains(tab, true))

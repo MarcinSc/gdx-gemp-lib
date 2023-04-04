@@ -10,7 +10,7 @@ import com.gempukku.libgdx.ui.tabbedpane.GTabLabel;
 import com.kotcrab.vis.ui.widget.VisLabel;
 
 public class TestTab extends Table implements GTab {
-    private Actor tabActor;
+    private GTabLabel<TestTab> tabActor;
     private String title;
 
     public TestTab(GTabControl<TestTab> tabControl, String title, boolean closeable) {
@@ -35,10 +35,7 @@ public class TestTab extends Table implements GTab {
 
     @Override
     public void setActive(boolean active) {
-        if (tabActor instanceof GTabLabel)
-            ((GTabLabel) tabActor).setActive(active);
-        else
-            ((GTabLabel) tabActor).setActive(active);
+        tabActor.setActive(active);
         System.out.println(title + " is active: " + active);
     }
 
