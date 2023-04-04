@@ -507,12 +507,19 @@
       "imageUp": "icon-close",
       "disabled": "button"
     },
+    "close-tab": {
+      "imageUp": "icon-close-tab",
+      "down": "tab-label-red",
+      "up": "tab-label",
+      "over": "tab-label-over",
+      "disabled": "tab-label"
+    },
     "close-active-tab": {
-      "down": "button-red",
-      "imageUp": "icon-close",
-      "up": "button-blue",
-      "over": "button-blue-over",
-      "disabled": "button-blue"
+      "imageUp": "icon-close-tab",
+      "down": "tab-label-red",
+      "up": "tab-label-blue",
+      "over": "tab-label-blue-over",
+      "disabled": "tab-label-blue"
     },
     "close-window": {
       "up": "button-window-bg",
@@ -858,9 +865,10 @@
   },
   "com.gempukku.libgdx.ui.tabbedpane.GTabLabel$GTabLabelStyle": {
     "default": {
-      "background": "menu-bg",
+      "background": "tab-label",
+      "backgroundActive": "tab-label-blue",
       "textStyle": "toggle",
-      "closeStyle": "close",
+      "closeStyle": "close-tab",
       "closeStyleActive": "close-active-tab"
     }
   },

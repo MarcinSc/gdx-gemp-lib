@@ -42,6 +42,69 @@ border-error
   orig: 3, 3
   offset: 0, 0
   index: -1
+tab-label
+  rotate: false
+  xy: 308, 162
+  size: 12, 20
+  split: 5, 5, 5, 4
+  pad: 0, 0, 0, 0
+  orig: 12, 20
+  offset: 0, 0
+  index: -1
+tab-label-blue
+  rotate: false
+  xy: 255, 50
+  size: 12, 20
+  split: 5, 5, 5, 4
+  pad: 0, 0, 0, 0
+  orig: 12, 20
+  offset: 0, 0
+  index: -1
+tab-label-down
+  rotate: false
+  xy: 255, 50
+  size: 12, 20
+  split: 5, 5, 5, 4
+  pad: 0, 0, 0, 0
+  orig: 12, 20
+  offset: 0, 0
+  index: -1
+tab-label-blue-down
+  rotate: false
+  xy: 255, 92
+  size: 12, 20
+  split: 5, 5, 5, 4
+  pad: 0, 0, 0, 0
+  orig: 12, 20
+  offset: 0, 0
+  index: -1
+tab-label-blue-over
+  rotate: false
+  xy: 255, 71
+  size: 12, 20
+  split: 5, 5, 5, 4
+  pad: 0, 0, 0, 0
+  orig: 12, 20
+  offset: 0, 0
+  index: -1
+tab-label-over
+  rotate: false
+  xy: 255, 29
+  size: 12, 20
+  split: 5, 5, 5, 4
+  pad: 0, 0, 0, 0
+  orig: 12, 20
+  offset: 0, 0
+  index: -1
+tab-label-red
+  rotate: false
+  xy: 255, 8
+  size: 12, 20
+  split: 5, 5, 5, 4
+  pad: 0, 0, 0, 0
+  orig: 12, 20
+  offset: 0, 0
+  index: -1
 button
   rotate: false
   xy: 308, 162
@@ -258,6 +321,13 @@ icon-close
   size: 10, 10
   orig: 22, 22
   offset: 6, 6
+  index: -1
+icon-close-tab
+  rotate: false
+  xy: 283, 84
+  size: 10, 10
+  orig: 10, 10
+  offset: 0, 0
   index: -1
 icon-close-titlebar
   rotate: false
