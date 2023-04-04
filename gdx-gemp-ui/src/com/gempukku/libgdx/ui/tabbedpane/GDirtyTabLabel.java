@@ -44,6 +44,7 @@ public class GDirtyTabLabel<T extends GDirtyTab> extends VisTable {
 
         tabText = new VisImageTextButton(title, style.textStyle);
         tabText.getLabel().setEllipsis("...");
+        tabText.getLabelCell().maxWidth(style.textMaxWidth).minWidth(1);
         tabText.addListener(
                 new ChangeListener() {
                     @Override
@@ -57,7 +58,7 @@ public class GDirtyTabLabel<T extends GDirtyTab> extends VisTable {
                 });
         tabText.setFocusBorderEnabled(false);
         tabText.setProgrammaticChangeEvents(false);
-        add(tabText).maxWidth(style.textMaxWidth).minWidth(1);
+        add(tabText);
 
         if (closeable) {
             closeButton = new VisImageButton(style.closeStyle);
