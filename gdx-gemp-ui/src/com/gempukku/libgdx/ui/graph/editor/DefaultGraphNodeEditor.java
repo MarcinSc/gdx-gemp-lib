@@ -143,6 +143,12 @@ public class DefaultGraphNodeEditor implements GraphNodeEditor {
         return table;
     }
 
+    public void initialize(JsonValue data) {
+        for (GraphNodeEditorPart editorPart : editorParts) {
+            editorPart.initialize(data);
+        }
+    }
+
     @Override
     public JsonValue getData() {
         JsonValue result = new JsonValue(JsonValue.ValueType.object);

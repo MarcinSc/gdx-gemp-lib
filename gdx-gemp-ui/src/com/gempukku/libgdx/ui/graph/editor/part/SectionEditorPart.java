@@ -39,6 +39,11 @@ public class SectionEditorPart extends VisTable implements GraphNodeEditorPart {
     }
 
     @Override
+    public void initialize(JsonValue data) {
+
+    }
+
+    @Override
     public void serializePart(JsonValue object) {
 
     }

@@ -46,6 +46,11 @@ public class DefaultGraphNodeEditorPart implements GraphNodeEditorPart {
     }
 
     @Override
+    public void initialize(JsonValue data) {
+
+    }
+
+    @Override
     public void serializePart(JsonValue object) {
         if (callback != null)
             callback.serialize(object);

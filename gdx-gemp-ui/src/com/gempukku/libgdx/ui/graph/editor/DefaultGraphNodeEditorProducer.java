@@ -31,11 +31,18 @@ public class DefaultGraphNodeEditorProducer implements GraphNodeEditorProducer {
     }
 
     @Override
-    public DefaultGraphNodeEditor createNodeEditor(Skin skin, JsonValue data) {
-        DefaultGraphNodeEditor start = new DefaultGraphNodeEditor(configuration);
-        addConfigurationInputsAndOutputs(start);
+    public final DefaultGraphNodeEditor createNodeEditor(Skin skin, JsonValue data) {
+        DefaultGraphNodeEditor nodeEditor = createNodeEditor(skin);
+        if (data != null)
+            nodeEditor.initialize(data);
 
-        return start;
+        return nodeEditor;
+    }
+
+    public DefaultGraphNodeEditor createNodeEditor(Skin skin) {
+        DefaultGraphNodeEditor nodeEditor = new DefaultGraphNodeEditor(configuration);
+        addConfigurationInputsAndOutputs(nodeEditor);
+        return nodeEditor;
     }
 
     protected void addConfigurationInputsAndOutputs(DefaultGraphNodeEditor nodeEditor) {

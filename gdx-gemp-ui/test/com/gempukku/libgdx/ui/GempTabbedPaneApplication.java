@@ -127,8 +127,8 @@ public class GempTabbedPaneApplication extends ApplicationAdapter {
                 if (s.equals("intOut")) {
                     DefaultGraphNodeEditorProducer producer = new DefaultGraphNodeEditorProducer(intOut) {
                         @Override
-                        public DefaultGraphNodeEditor createNodeEditor(Skin skin, JsonValue data) {
-                            DefaultGraphNodeEditor result = super.createNodeEditor(skin, data);
+                        public DefaultGraphNodeEditor createNodeEditor(Skin skin) {
+                            DefaultGraphNodeEditor result = super.createNodeEditor(skin);
                             result.addGraphBoxPart(new IntegerEditorPart("Value", "prop", 0, new Validators.IntegerValidator()));
                             return result;
                         }

@@ -15,6 +15,8 @@ public interface GraphNodeEditorPart extends Disposable {
 
     Actor getActor();
 
+    void initialize(JsonValue data);
+
     void serializePart(JsonValue value);
 
     void graphChanged(GraphChangedEvent event, boolean hasErrors, Graph graph);
