@@ -70,6 +70,7 @@ public class EnumSelectEditorPart<T extends Enum> extends VisTable implements Gr
         return null;
     }
 
+    @Override
     public void initialize(JsonValue data) {
         if (data != null) {
             String value = data.getString(property, null);

@@ -66,6 +66,7 @@ public class FileSelectorEditorPart extends VisTable implements GraphNodeEditorP
         return null;
     }
 
+    @Override
     public void initialize(JsonValue data) {
         if (data != null) {
             selectedPath = data.getString(property);

@@ -82,6 +82,7 @@ public class Vector3EditorPart extends VisTable implements GraphNodeEditorPart {
         return null;
     }
 
+    @Override
     public void initialize(JsonValue data) {
         if (data != null) {
             float valueX = data.getFloat(propertyX);

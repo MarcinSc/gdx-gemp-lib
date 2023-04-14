@@ -42,6 +42,7 @@ public class CheckboxEditorPart extends VisTable implements GraphNodeEditorPart 
         return null;
     }
 
+    @Override
     public void initialize(JsonValue data) {
         if (data != null) {
             input.setChecked(data.getBoolean(property, false));

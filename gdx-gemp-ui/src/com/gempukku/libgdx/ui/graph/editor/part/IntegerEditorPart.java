@@ -57,6 +57,7 @@ public class IntegerEditorPart extends VisTable implements GraphNodeEditorPart {
         return null;
     }
 
+    @Override
     public void initialize(JsonValue data) {
         if (data != null) {
             int value = data.getInt(property);
