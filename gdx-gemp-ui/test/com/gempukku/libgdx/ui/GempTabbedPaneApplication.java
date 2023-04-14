@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.gempukku.libgdx.common.Function;
 import com.gempukku.libgdx.ui.curve.DefaultCurveDefinition;
 import com.gempukku.libgdx.ui.curve.GCurveEditor;
 import com.gempukku.libgdx.ui.gradient.DefaultGradientDefinition;
@@ -23,7 +24,6 @@ import com.gempukku.libgdx.ui.graph.data.impl.*;
 import com.gempukku.libgdx.ui.graph.GraphEditor;
 import com.gempukku.libgdx.ui.graph.editor.DefaultGraphNodeEditor;
 import com.gempukku.libgdx.ui.graph.editor.DefaultGraphNodeEditorProducer;
-import com.gempukku.libgdx.ui.graph.editor.GraphNodeEditor;
 import com.gempukku.libgdx.ui.graph.editor.GraphNodeEditorProducer;
 import com.gempukku.libgdx.ui.graph.PopupMenuProducer;
 import com.gempukku.libgdx.ui.graph.editor.part.IntegerEditorPart;
@@ -34,8 +34,6 @@ import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.util.Validators;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.kotcrab.vis.ui.widget.VisLabel;
-
-import java.util.function.Function;
 
 public class GempTabbedPaneApplication extends ApplicationAdapter {
     private Skin skin;
@@ -57,7 +55,7 @@ public class GempTabbedPaneApplication extends ApplicationAdapter {
                 new GradientDefinition.ColorPosition(0.3f, Color.BLUE),
                 new GradientDefinition.ColorPosition(0.8f, Color.BLACK));
 
-        GTabbedPane tabbedPane = new GTabbedPane<>();
+        GTabbedPane tabbedPane = new GTabbedPane();
         TestTab tab1 = new TestTab(tabbedPane, "Curve", false);
         tab1.add(new VisLabel("Top")).colspan(3).row();
         tab1.add(new VisLabel("Left"));
@@ -70,8 +68,9 @@ public class GempTabbedPaneApplication extends ApplicationAdapter {
         tab2.add(new GGradientEditor(gradientDefinition)).grow();
         tab2.add(new VisLabel("Right")).row();
         tab2.add(new VisLabel("Bottom")).colspan(3).row();
-        TestDirtyTab tab3 = new TestDirtyTab(tabbedPane, "Dirty", true);
-        VisCheckBox dirtyCheckbox = new VisCheckBox("Dirty", false);
+
+        final TestDirtyTab tab3 = new TestDirtyTab(tabbedPane, "Dirty", true);
+        final VisCheckBox dirtyCheckbox = new VisCheckBox("Dirty", false);
         dirtyCheckbox.addListener(
                 new ChangeListener() {
                     @Override
@@ -109,10 +108,10 @@ public class GempTabbedPaneApplication extends ApplicationAdapter {
     private static GraphEditor createGraphEditor() {
         DefaultGraph<DefaultGraphNode, DefaultGraphConnection, DefaultNodeGroup> graph = new DefaultGraph<>();
 
-        DefaultNodeConfiguration intOut = new DefaultNodeConfiguration("Integer Out");
+        final DefaultNodeConfiguration intOut = new DefaultNodeConfiguration("Integer Out");
         intOut.addNodeOutput(new DefaultGraphNodeOutput("0", "Value", "Int"));
 
-        DefaultNodeConfiguration intIn = new DefaultNodeConfiguration("Integer In");
+        final DefaultNodeConfiguration intIn = new DefaultNodeConfiguration("Integer In");
         intIn.addNodeInput(new DefaultGraphNodeInput("0", "Value", "Int"));
 
         graph.addGraphNode(new DefaultGraphNode("1", "intOut", 0, 0, null, intOut));
@@ -124,7 +123,7 @@ public class GempTabbedPaneApplication extends ApplicationAdapter {
 
         Function<String, GraphNodeEditorProducer> graphNodeEditorProducers = new Function<String, GraphNodeEditorProducer>() {
             @Override
-            public GraphNodeEditorProducer apply(String s) {
+            public GraphNodeEditorProducer evaluate(String s) {
                 if (s.equals("intOut")) {
                     DefaultGraphNodeEditorProducer producer = new DefaultGraphNodeEditorProducer(intOut) {
                         @Override
@@ -167,49 +166,5 @@ public class GempTabbedPaneApplication extends ApplicationAdapter {
         stage.dispose();
         VisUI.dispose();
         skin.dispose();
-    }
-
-    private static class TempNavigableCanvas implements NavigableCanvas {
-        private Vector2 canvasPosition = new Vector2();
-        private Vector2 canvasSize = new Vector2();
-        private Vector2 visibleSize = new Vector2();
-
-        private Array<Rectangle> elements = new Array<>();
-
-        public TempNavigableCanvas(Vector2 canvasSize, Vector2 visibleSize) {
-            this.canvasSize.set(canvasSize);
-            this.visibleSize.set(visibleSize);
-        }
-
-        public void addElement(Rectangle element) {
-            elements.add(element);
-        }
-
-        @Override
-        public void getCanvasPosition(Vector2 result) {
-            result.set(canvasPosition);
-        }
-
-        @Override
-        public void getCanvasSize(Vector2 result) {
-            result.set(canvasSize);
-        }
-
-        @Override
-        public void getVisibleSize(Vector2 result) {
-            result.set(visibleSize);
-        }
-
-        @Override
-        public void navigateTo(float x, float y) {
-            canvasPosition.set(x, y);
-        }
-
-        @Override
-        public void processElements(Callback callback) {
-            for (Rectangle element : elements) {
-                callback.processElement(element.x, element.y, element.width, element.height);
-            }
-        }
     }
 }

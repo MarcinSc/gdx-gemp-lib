@@ -214,10 +214,10 @@ public class GGradientEditor extends DisposableWidget {
 
                     lastClickTime = now;
                 } else {
-                    float hitX = clampValue(unwrapPosition(x));
+                    final float hitX = clampValue(unwrapPosition(x));
                     Color startColor = calculateColorAt(hitX).cpy();
                     addColor(hitX, startColor);
-                    int modifiedIndex = findPointIndex(hitX);
+                    final int modifiedIndex = findPointIndex(hitX);
 
                     ColorPicker colorPicker = new ColorPicker();
                     colorPicker.setColor(startColor);
@@ -262,8 +262,8 @@ public class GGradientEditor extends DisposableWidget {
             return true;
         }
 
-        private void editColor(int index) {
-            GradientDefinition.ColorPosition colorPosition = gradientDefinition.getColorPositions().get(index);
+        private void editColor(final int index) {
+            final GradientDefinition.ColorPosition colorPosition = gradientDefinition.getColorPositions().get(index);
             Color oldColor = colorPosition.color.cpy();
 
             ColorPicker colorPicker = new ColorPicker();

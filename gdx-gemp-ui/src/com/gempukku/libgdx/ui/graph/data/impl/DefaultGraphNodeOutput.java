@@ -2,9 +2,8 @@ package com.gempukku.libgdx.ui.graph.data.impl;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.gempukku.libgdx.common.Function;
 import com.gempukku.libgdx.ui.graph.data.GraphNodeOutput;
-
-import java.util.function.Function;
 
 public class DefaultGraphNodeOutput implements GraphNodeOutput {
     private final String id;
@@ -32,7 +31,7 @@ public class DefaultGraphNodeOutput implements GraphNodeOutput {
         if (outputTypeFunction == null) {
             outputTypeFunction = new Function<ObjectMap<String, Array<String>>, String>() {
                 @Override
-                public String apply(ObjectMap<String, Array<String>> stringTMap) {
+                public String evaluate(ObjectMap<String, Array<String>> value) {
                     return producedType[0];
                 }
             };
@@ -68,7 +67,7 @@ public class DefaultGraphNodeOutput implements GraphNodeOutput {
 
     @Override
     public String determineFieldType(ObjectMap<String, Array<String>> inputs) {
-        return outputTypeFunction.apply(inputs);
+        return outputTypeFunction.evaluate(inputs);
     }
 }
 

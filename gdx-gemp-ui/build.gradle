@@ -5,6 +5,7 @@ archivesBaseName = "gdx-gemp-ui"
 eclipse.project.name = "gdx-gemp-ui"
 
 dependencies {
+    api project(":gdx-gemp-common")
     api "com.badlogicgames.gdx:gdx:$gdxVersion"
     api "com.kotcrab.vis:vis-ui:$visUiVersion"
 

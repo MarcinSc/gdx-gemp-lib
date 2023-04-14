@@ -1,6 +1,6 @@
 package com.gempukku.libgdx.ui.graph.editor;
 
-import java.util.function.Supplier;
+import com.gempukku.libgdx.common.Supplier;
 
 public class DefaultGraphNodeEditorInput implements GraphNodeEditorInput {
     private Side side;

@@ -31,7 +31,7 @@ public class GTabLabel<T extends GTab> extends VisTable {
         this(tabControl, tab, VisUI.getSkin().get(styleName, GTabLabelStyle.class), title, closeable, closeRunnable);
     }
 
-    public GTabLabel(GTabControl<? super T> tabControl, T tab, GTabLabelStyle style, String title, boolean closeable, Runnable closeRunnable) {
+    public GTabLabel(final GTabControl<? super T> tabControl, final T tab, GTabLabelStyle style, String title, boolean closeable, final Runnable closeRunnable) {
         this.style = style;
 
         setBackground(style.background);

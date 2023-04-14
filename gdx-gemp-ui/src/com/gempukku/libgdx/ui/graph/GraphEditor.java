@@ -22,6 +22,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectSet;
+import com.gempukku.libgdx.common.Function;
 import com.gempukku.libgdx.ui.graph.data.*;
 import com.gempukku.libgdx.ui.graph.data.impl.DefaultGraph;
 import com.gempukku.libgdx.ui.graph.data.impl.DefaultNodeGroup;
@@ -44,7 +45,6 @@ import java.awt.*;
 import java.awt.geom.CubicCurve2D;
 import java.awt.geom.Rectangle2D;
 import java.util.*;
-import java.util.function.Function;
 
 public class GraphEditor extends VisTable implements NavigableCanvas {
     private static final float CANVAS_GAP = 50f;
@@ -91,7 +91,7 @@ public class GraphEditor extends VisTable implements NavigableCanvas {
     }
 
     public GraphEditor(Graph graph, Function<String, GraphNodeEditorProducer> graphNodeEditorProducers, final PopupMenuProducer popupMenuProducer,
-                       Skin skin, GraphEditorStyle style) {
+                       Skin skin, final GraphEditorStyle style) {
         this.skin = skin;
         this.style = style;
         this.graphNodeEditorProducers = graphNodeEditorProducers;
@@ -187,7 +187,7 @@ public class GraphEditor extends VisTable implements NavigableCanvas {
     }
 
     public void addGraphNode(String nodeId, String type, JsonValue data, float x, float y) {
-        GraphNodeEditorProducer graphNodeEditorProducer = graphNodeEditorProducers.apply(type);
+        GraphNodeEditorProducer graphNodeEditorProducer = graphNodeEditorProducers.evaluate(type);
         GraphNodeEditor pipelineGraphBox = graphNodeEditorProducer.createNodeEditor(skin, data);
         GraphNodeWindow graphNodeWindow = new GraphNodeWindow(nodeId, type, pipelineGraphBox,
                 graphNodeEditorProducer.getName(), skin.get(style.windowStyle, Window.WindowStyle.class)) {

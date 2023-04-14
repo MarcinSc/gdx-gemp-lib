@@ -36,7 +36,7 @@ public class GDirtyTabLabel<T extends GDirtyTab> extends VisTable {
         this(tabControl, tab, VisUI.getSkin().get(styleName, GDirtyTabLabelStyle.class), title, closeable, closeRunnable);
     }
 
-    public GDirtyTabLabel(GTabControl<? super T> tabControl, T tab, GDirtyTabLabelStyle style, String title, boolean closeable, Runnable closeRunnable) {
+    public GDirtyTabLabel(final GTabControl<? super T> tabControl, final T tab, GDirtyTabLabelStyle style, String title, boolean closeable, final Runnable closeRunnable) {
         this.tab = tab;
         this.style = style;
 

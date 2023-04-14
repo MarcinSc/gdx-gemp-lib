@@ -3,6 +3,7 @@ package com.gempukku.libgdx.ui.graph.editor;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.JsonValue;
+import com.gempukku.libgdx.common.Supplier;
 import com.gempukku.libgdx.ui.graph.GraphChangedEvent;
 import com.gempukku.libgdx.ui.graph.data.Graph;
 import com.gempukku.libgdx.ui.graph.data.GraphNodeInput;
@@ -17,7 +18,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 
 public class DefaultGraphNodeEditor implements GraphNodeEditor {
     private NodeConfiguration configuration;

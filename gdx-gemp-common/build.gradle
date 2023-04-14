@@ -1,0 +1,9 @@
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+archivesBaseName = "gdx-gemp-common"
+
+eclipse.project.name = "gdx-gemp-common"
+
+dependencies {
+    api "com.badlogicgames.gdx:gdx:$gdxVersion"
+}

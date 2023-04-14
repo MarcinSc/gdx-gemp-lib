@@ -1,4 +1,4 @@
-include 'gdx-gemp-lib-artemis', 'gdx-gemp-box2d-artemis',
+include 'gdx-gemp-common', 'gdx-gemp-lib-artemis', 'gdx-gemp-box2d-artemis',
         'gdx-gemp-network-artemis',
         'gdx-gemp-ai', 'gdx-gemp-camera2d',
         'gdx-gemp-template', 'gdx-gemp-template-ashley', 'gdx-gemp-template-artemis',

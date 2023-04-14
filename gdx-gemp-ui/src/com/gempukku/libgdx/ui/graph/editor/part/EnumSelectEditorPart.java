@@ -4,6 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.JsonValue;
+import com.gempukku.libgdx.common.Function;
 import com.gempukku.libgdx.ui.graph.GraphChangedEvent;
 import com.gempukku.libgdx.ui.graph.data.Graph;
 import com.gempukku.libgdx.ui.graph.editor.GraphNodeEditorInput;
@@ -11,8 +12,6 @@ import com.gempukku.libgdx.ui.graph.editor.GraphNodeEditorOutput;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTable;
-
-import java.util.function.Function;
 
 public class EnumSelectEditorPart<T extends Enum> extends VisTable implements GraphNodeEditorPart {
     private final VisSelectBox<String> selectBox;
@@ -32,7 +31,7 @@ public class EnumSelectEditorPart<T extends Enum> extends VisTable implements Gr
     private static <T extends Enum<T>> String[] convertToDisplayText(Function<T, String> displayTextFunction, T[] values) {
         String[] result = new String[values.length];
         for (int i = 0; i < values.length; i++) {
-            result[i] = displayTextFunction.apply(values[i]);
+            result[i] = displayTextFunction.evaluate(values[i]);
         }
         return result;
     }
@@ -85,7 +84,7 @@ public class EnumSelectEditorPart<T extends Enum> extends VisTable implements Gr
     }
 
     public void setSelected(T value) {
-        selectBox.setSelected(displayTextFunction.apply(value));
+        selectBox.setSelected(displayTextFunction.evaluate(value));
     }
 
     public String getSelected() {
