@@ -20,6 +20,7 @@ import com.gempukku.libgdx.ui.curve.GCurveEditor;
 import com.gempukku.libgdx.ui.gradient.DefaultGradientDefinition;
 import com.gempukku.libgdx.ui.gradient.GGradientEditor;
 import com.gempukku.libgdx.ui.gradient.GradientDefinition;
+import com.gempukku.libgdx.ui.graph.data.NodeConfiguration;
 import com.gempukku.libgdx.ui.graph.data.impl.*;
 import com.gempukku.libgdx.ui.graph.GraphEditor;
 import com.gempukku.libgdx.ui.graph.editor.DefaultGraphNodeEditor;
@@ -127,8 +128,8 @@ public class GempTabbedPaneApplication extends ApplicationAdapter {
                 if (s.equals("intOut")) {
                     DefaultGraphNodeEditorProducer producer = new DefaultGraphNodeEditorProducer(intOut) {
                         @Override
-                        public DefaultGraphNodeEditor createNodeEditor(Skin skin) {
-                            DefaultGraphNodeEditor result = super.createNodeEditor(skin);
+                        protected DefaultGraphNodeEditor createNodeEditor(Skin skin, NodeConfiguration configuration) {
+                            DefaultGraphNodeEditor result = new DefaultGraphNodeEditor(configuration);
                             result.addGraphBoxPart(new IntegerEditorPart("Value", "prop", 0, new Validators.IntegerValidator()));
                             return result;
                         }
@@ -136,7 +137,12 @@ public class GempTabbedPaneApplication extends ApplicationAdapter {
 
                     return producer;
                 } else if (s.equals("intIn")) {
-                    DefaultGraphNodeEditorProducer producer = new DefaultGraphNodeEditorProducer(intIn);
+                    DefaultGraphNodeEditorProducer producer = new DefaultGraphNodeEditorProducer(intIn) {
+                        @Override
+                        protected DefaultGraphNodeEditor createNodeEditor(Skin skin, NodeConfiguration configuration) {
+                            return new DefaultGraphNodeEditor(configuration);
+                        }
+                    };
 
                     return producer;
                 }
