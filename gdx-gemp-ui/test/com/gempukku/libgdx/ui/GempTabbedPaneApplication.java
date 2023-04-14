@@ -108,14 +108,14 @@ public class GempTabbedPaneApplication extends ApplicationAdapter {
     private static GraphEditor createGraphEditor() {
         DefaultGraph<DefaultGraphNode, DefaultGraphConnection, DefaultNodeGroup> graph = new DefaultGraph<>();
 
-        final DefaultNodeConfiguration intOut = new DefaultNodeConfiguration("Integer Out");
+        final DefaultNodeConfiguration intOut = new DefaultNodeConfiguration("intOut", "Integer Out");
         intOut.addNodeOutput(new DefaultGraphNodeOutput("0", "Value", "Int"));
 
-        final DefaultNodeConfiguration intIn = new DefaultNodeConfiguration("Integer In");
+        final DefaultNodeConfiguration intIn = new DefaultNodeConfiguration("intIn", "Integer In");
         intIn.addNodeInput(new DefaultGraphNodeInput("0", "Value", "Int"));
 
-        graph.addGraphNode(new DefaultGraphNode("1", "intOut", 0, 0, null, intOut));
-        graph.addGraphNode(new DefaultGraphNode("2", "intIn", 100, 0, null, intIn));
+        graph.addGraphNode(new DefaultGraphNode("1", 0, 0, null, intOut));
+        graph.addGraphNode(new DefaultGraphNode("2", 100, 0, null, intIn));
 
         ObjectSet<String> nodeIds = new ObjectSet<>();
         nodeIds.addAll("1", "2");

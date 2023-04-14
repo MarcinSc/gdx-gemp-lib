@@ -7,11 +7,13 @@ import com.gempukku.libgdx.ui.graph.data.GraphNodeOutput;
 import com.gempukku.libgdx.ui.graph.data.NodeConfiguration;
 
 public class DefaultNodeConfiguration implements NodeConfiguration {
+    private final String type;
     private final String name;
     private final ObjectMap<String, GraphNodeInput> nodeInputs = new OrderedMap<>();
     private final ObjectMap<String, GraphNodeOutput> nodeOutputs = new OrderedMap<>();
 
-    public DefaultNodeConfiguration(String name) {
+    public DefaultNodeConfiguration(String type, String name) {
+        this.type = type;
         this.name = name;
     }
 
@@ -21,6 +23,11 @@ public class DefaultNodeConfiguration implements NodeConfiguration {
 
     public void addNodeOutput(GraphNodeOutput output) {
         nodeOutputs.put(output.getFieldId(), output);
+    }
+
+    @Override
+    public String getType() {
+        return type;
     }
 
     @Override

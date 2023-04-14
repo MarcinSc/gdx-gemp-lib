@@ -98,7 +98,7 @@ public class GraphEditor extends VisTable implements NavigableCanvas {
         this.popupMenuProducer = popupMenuProducer;
 
         for (GraphNode node : graph.getNodes()) {
-            addGraphNode(node.getId(), node.getType(), node.getData(), node.getX(), node.getY());
+            addGraphNode(node.getId(), node.getConfiguration().getType(), node.getData(), node.getX(), node.getY());
         }
 
         for (GraphConnection connection : graph.getConnections()) {
@@ -189,7 +189,7 @@ public class GraphEditor extends VisTable implements NavigableCanvas {
     public void addGraphNode(String nodeId, String type, JsonValue data, float x, float y) {
         GraphNodeEditorProducer graphNodeEditorProducer = graphNodeEditorProducers.evaluate(type);
         GraphNodeEditor pipelineGraphBox = graphNodeEditorProducer.createNodeEditor(skin, data);
-        GraphNodeWindow graphNodeWindow = new GraphNodeWindow(nodeId, type, pipelineGraphBox,
+        GraphNodeWindow graphNodeWindow = new GraphNodeWindow(nodeId, pipelineGraphBox,
                 graphNodeEditorProducer.getName(), skin.get(style.windowStyle, Window.WindowStyle.class)) {
             @Override
             protected void positionChanged(float fromX, float fromY, float toX, float toY) {

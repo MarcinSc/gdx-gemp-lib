@@ -11,16 +11,13 @@ import com.kotcrab.vis.ui.widget.VisWindow;
 
 public class GraphNodeWindow extends VisWindow implements GraphNode, Disposable {
     private String nodeId;
-    private String type;
     private GraphNodeEditor graphNodeEditor;
     private ObjectSet<String> connectorsWithError = new ObjectSet<>();
     private Vector2 position;
 
-    public GraphNodeWindow(String nodeId, String type, GraphNodeEditor graphNodeEditor,
-                           String title, WindowStyle windowStyle) {
+    public GraphNodeWindow(String nodeId, GraphNodeEditor graphNodeEditor, String title, WindowStyle windowStyle) {
         super(title, windowStyle);
         this.nodeId = nodeId;
-        this.type = type;
         this.graphNodeEditor = graphNodeEditor;
         add(graphNodeEditor.getActor()).grow().row();
     }
@@ -58,11 +55,6 @@ public class GraphNodeWindow extends VisWindow implements GraphNode, Disposable 
     @Override
     public String getId() {
         return nodeId;
-    }
-
-    @Override
-    public String getType() {
-        return type;
     }
 
     @Override
