@@ -8,7 +8,9 @@ public class GraphValidationResult {
     private final ObjectSet<String> errorNodes = new ObjectSet<>();
     private final ObjectSet<String> warningNodes = new ObjectSet<>();
     private final ObjectSet<GraphConnection> errorConnections = new ObjectSet<>();
+    private final ObjectSet<GraphConnection> warningConnections = new ObjectSet<>();
     private final ObjectSet<NodeConnector> errorConnectors = new ObjectSet<>();
+    private final ObjectSet<NodeConnector> warningConnectors = new ObjectSet<>();
 
     public void addErrorNode(String nodeId) {
         errorNodes.add(nodeId);
@@ -22,8 +24,16 @@ public class GraphValidationResult {
         errorConnections.add(connection);
     }
 
+    public void addWarningConnection(GraphConnection connection) {
+        warningConnections.add(connection);
+    }
+
     public void addErrorConnector(NodeConnector nodeConnector) {
         errorConnectors.add(nodeConnector);
+    }
+
+    public void addWarningConnector(NodeConnector nodeConnector) {
+        warningConnectors.add(nodeConnector);
     }
 
     public ObjectSet<String> getErrorNodes() {
@@ -38,8 +48,16 @@ public class GraphValidationResult {
         return errorConnections;
     }
 
+    public ObjectSet<GraphConnection> getWarningConnections() {
+        return warningConnections;
+    }
+
     public ObjectSet<NodeConnector> getErrorConnectors() {
         return errorConnectors;
+    }
+
+    public ObjectSet<NodeConnector> getWarningConnectors() {
+        return warningConnectors;
     }
 
     public boolean hasErrors() {
@@ -47,6 +65,6 @@ public class GraphValidationResult {
     }
 
     public boolean hasWarnings() {
-        return !warningNodes.isEmpty();
+        return !warningNodes.isEmpty() || !warningConnections.isEmpty() || !warningConnectors.isEmpty();
     }
 }

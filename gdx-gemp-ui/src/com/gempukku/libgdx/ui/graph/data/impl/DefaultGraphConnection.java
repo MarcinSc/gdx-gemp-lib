@@ -2,6 +2,8 @@ package com.gempukku.libgdx.ui.graph.data.impl;
 
 import com.gempukku.libgdx.ui.graph.data.GraphConnection;
 
+import java.util.Objects;
+
 public class DefaultGraphConnection implements GraphConnection {
     private final String nodeFrom;
     private final String fieldFrom;
@@ -33,5 +35,18 @@ public class DefaultGraphConnection implements GraphConnection {
     @Override
     public String getFieldTo() {
         return fieldTo;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DefaultGraphConnection that = (DefaultGraphConnection) o;
+        return Objects.equals(nodeFrom, that.nodeFrom) && Objects.equals(fieldFrom, that.fieldFrom) && Objects.equals(nodeTo, that.nodeTo) && Objects.equals(fieldTo, that.fieldTo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nodeFrom, fieldFrom, nodeTo, fieldTo);
     }
 }

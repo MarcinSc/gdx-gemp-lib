@@ -6,6 +6,7 @@ import com.gempukku.libgdx.ui.graph.data.Graph;
 import com.gempukku.libgdx.ui.graph.data.GraphConnection;
 import com.gempukku.libgdx.ui.graph.data.GraphNode;
 
+// Checks that the graph is acyclic, starting from the specified end node id
 public class DAGValidatorWithEndNode implements GraphValidator {
     private final String endNodeId;
 
