@@ -74,6 +74,7 @@ public class GraphEditor extends VisTable implements NavigableCanvas {
 
     private ObjectSet<String> selectedNodes = new ObjectSet<>();
     private boolean movingSelected = false;
+    private boolean hasErrors = false;
 
     private final DefaultGraph<GraphNodeWindow, DrawnGraphConnection, RectangleNodeGroup> editedGraph = new DefaultGraph<>();
 
@@ -115,6 +116,16 @@ public class GraphEditor extends VisTable implements NavigableCanvas {
         setClip(true);
         setTouchable(Touchable.enabled);
 
+        addListener(
+                new GraphChangedListener() {
+                    @Override
+                    protected boolean graphChanged(GraphChangedEvent event) {
+                        for (GraphNodeWindow node : editedGraph.getNodes()) {
+                            node.getGraphNodeEditor().graphChanged(event, hasErrors, editedGraph);
+                        }
+                        return true;
+                    }
+                });
         addListener(
                 new ClickListener(Input.Buttons.RIGHT) {
                     @Override
@@ -327,6 +338,7 @@ public class GraphEditor extends VisTable implements NavigableCanvas {
     }
 
     public void setValidationResult(GraphValidationResult validationResult) {
+        hasErrors = validationResult.hasErrors();
         for (GraphNodeWindow window : editedGraph.getNodes()) {
             window.clearConnectorErrors();
             if (validationResult.getErrorNodes().contains(window.getId())) {
