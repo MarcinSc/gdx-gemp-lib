@@ -31,7 +31,7 @@ public class DefaultGraphNodeEditorProducer implements GraphNodeEditorProducer {
     }
 
     @Override
-    public final DefaultGraphNodeEditor createNodeEditor(Skin skin, JsonValue data) {
+    public DefaultGraphNodeEditor createNodeEditor(Skin skin, JsonValue data) {
         DefaultGraphNodeEditor nodeEditor = createNodeEditor(skin);
         if (data != null)
             nodeEditor.initialize(data);
