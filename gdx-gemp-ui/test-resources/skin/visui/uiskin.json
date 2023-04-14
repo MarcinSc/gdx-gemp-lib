@@ -96,6 +96,15 @@
         "b": 0,
         "a": 0.45
       }
+    },
+    "dimmedWhite": {
+      "name": "white",
+      "color": {
+        "r": 1,
+        "g": 1,
+        "b": 1,
+        "a": 0.5
+      }
     }
   },
   "com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle": {
@@ -915,6 +924,26 @@
     "default": {
       "background": "darkGrey",
       "tick": "white"
+    }
+  },
+  "com.gempukku.libgdx.ui.preview.PreviewWidget$PreviewWidgetStyle": {
+    "default": {
+      "background": "darkGrey",
+      "canvas": "dimmedWhite",
+      "element": "dimmedWhite",
+      "visible": "dimmedWhite"
+    }
+  },
+  "com.gempukku.libgdx.ui.graph.GraphEditor$GraphEditorStyle": {
+    "default": {
+      "background": "darkGrey",
+      "windowStyle": "noborder",
+      "windowSelectedStyle": "default",
+      "groupBackground": "dialogDim",
+      "groupNameFont": "default-font",
+      "groupNameColor": "white",
+      "connectorLength": 10,
+      "connectorRadius": 5
     }
   }
 }
