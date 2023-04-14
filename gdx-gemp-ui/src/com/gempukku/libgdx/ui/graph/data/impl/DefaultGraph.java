@@ -36,6 +36,7 @@ public class DefaultGraph<T extends GraphNode, U extends GraphConnection, V exte
         nodeGroups.removeValue(nodeGroup, false);
     }
 
+    @Override
     public T getNodeById(String id) {
         return graphNodes.get(id);
     }
