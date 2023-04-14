@@ -8,7 +8,7 @@ import com.gempukku.libgdx.ui.graph.data.NodeConfiguration;
 
 import java.util.Iterator;
 
-public abstract class DefaultGraphNodeEditorProducer implements GraphNodeEditorProducer {
+public class DefaultGraphNodeEditorProducer implements GraphNodeEditorProducer {
     private final NodeConfiguration configuration;
 
     public DefaultGraphNodeEditorProducer(NodeConfiguration configuration) {
@@ -40,7 +40,9 @@ public abstract class DefaultGraphNodeEditorProducer implements GraphNodeEditorP
         return nodeEditor;
     }
 
-    protected abstract DefaultGraphNodeEditor createNodeEditor(Skin skin, NodeConfiguration configuration);
+    protected DefaultGraphNodeEditor createNodeEditor(Skin skin, NodeConfiguration configuration) {
+        return new DefaultGraphNodeEditor(configuration);
+    }
 
     protected void addConfigurationInputsAndOutputs(DefaultGraphNodeEditor nodeEditor) {
         Iterator<GraphNodeInput> inputIterator = configuration.getNodeInputs().values().iterator();
