@@ -8,9 +8,14 @@ import com.gempukku.libgdx.ui.graph.data.GraphNode;
 import com.gempukku.libgdx.ui.graph.data.NodeGroup;
 
 public class DefaultGraph<T extends GraphNode, U extends GraphConnection, V extends NodeGroup> implements Graph {
+    private String type;
     private ObjectMap<String, T> graphNodes = new ObjectMap<>();
     private Array<U> graphConnections = new Array<>();
     private Array<V> nodeGroups = new Array<>();
+
+    public DefaultGraph(String type) {
+        this.type = type;
+    }
 
     public void addGraphNode(T graphNode) {
         graphNodes.put(graphNode.getId(), graphNode);
@@ -34,6 +39,11 @@ public class DefaultGraph<T extends GraphNode, U extends GraphConnection, V exte
 
     public void removeNodeGroup(V nodeGroup) {
         nodeGroups.removeValue(nodeGroup, false);
+    }
+
+    @Override
+    public String getType() {
+        return type;
     }
 
     @Override

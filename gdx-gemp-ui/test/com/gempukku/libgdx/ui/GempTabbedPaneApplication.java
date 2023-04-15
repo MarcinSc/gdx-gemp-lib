@@ -84,7 +84,7 @@ public class GempTabbedPaneApplication extends ApplicationAdapter {
         TestTab tab4 = new TestTab(tabbedPane, "Graph", true);
         tab4.add(new VisLabel("Top")).colspan(3).row();
         tab4.add(new VisLabel("Left"));
-        GraphEditor graphEditor = createGraphEditor();
+        GraphEditor graphEditor = createGraphEditor("Whatever");
         tab4.add(graphEditor).grow();
         tab4.add(new VisLabel("Right")).row();
         tab4.add(new VisLabel("Bottom")).colspan(3).row();
@@ -106,8 +106,8 @@ public class GempTabbedPaneApplication extends ApplicationAdapter {
         stage.addActor(tabbedPane);
     }
 
-    private static GraphEditor createGraphEditor() {
-        DefaultGraph<DefaultGraphNode, DefaultGraphConnection, DefaultNodeGroup> graph = new DefaultGraph<>();
+    private static GraphEditor createGraphEditor(String type) {
+        DefaultGraph<DefaultGraphNode, DefaultGraphConnection, DefaultNodeGroup> graph = new DefaultGraph<>(type);
 
         final DefaultNodeConfiguration intOut = new DefaultNodeConfiguration("intOut", "Integer Out");
         intOut.addNodeOutput(new DefaultGraphNodeOutput("0", "Value", "Int"));

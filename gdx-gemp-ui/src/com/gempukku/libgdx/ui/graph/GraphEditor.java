@@ -76,7 +76,7 @@ public class GraphEditor extends VisTable implements NavigableCanvas {
     private boolean movingSelected = false;
     private boolean hasErrors = false;
 
-    private final DefaultGraph<GraphNodeWindow, DrawnGraphConnection, RectangleNodeGroup> editedGraph = new DefaultGraph<>();
+    private final DefaultGraph<GraphNodeWindow, DrawnGraphConnection, RectangleNodeGroup> editedGraph;
 
     public GraphEditor(Graph graph, Function<String, GraphNodeEditorProducer> graphNodeEditorProducers, final PopupMenuProducer popupMenuProducer) {
         this(graph, graphNodeEditorProducers, popupMenuProducer, VisUI.getSkin());
@@ -97,6 +97,8 @@ public class GraphEditor extends VisTable implements NavigableCanvas {
         this.style = style;
         this.graphNodeEditorProducers = graphNodeEditorProducers;
         this.popupMenuProducer = popupMenuProducer;
+
+        editedGraph = new DefaultGraph<>(graph.getType());
 
         for (GraphNode node : graph.getNodes()) {
             addGraphNode(node.getId(), node.getConfiguration().getType(), node.getData(), node.getX(), node.getY());
