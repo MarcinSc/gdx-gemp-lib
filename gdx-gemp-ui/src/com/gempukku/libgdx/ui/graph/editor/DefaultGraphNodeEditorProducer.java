@@ -26,11 +26,6 @@ public class DefaultGraphNodeEditorProducer implements GraphNodeEditorProducer {
     }
 
     @Override
-    public NodeConfiguration getConfiguration(JsonValue data) {
-        return configuration;
-    }
-
-    @Override
     public DefaultGraphNodeEditor createNodeEditor(Skin skin, JsonValue data) {
         DefaultGraphNodeEditor nodeEditor = createNodeEditor(skin, configuration);
         addConfigurationInputsAndOutputs(nodeEditor);

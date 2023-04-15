@@ -8,8 +8,6 @@ import com.gempukku.libgdx.ui.graph.data.NodeConfiguration;
 public interface GraphNodeEditorProducer {
     String getName();
 
-    NodeConfiguration getConfiguration(JsonValue data);
-
     boolean isCloseable();
 
     GraphNodeEditor createNodeEditor(Skin skin, JsonValue data);
