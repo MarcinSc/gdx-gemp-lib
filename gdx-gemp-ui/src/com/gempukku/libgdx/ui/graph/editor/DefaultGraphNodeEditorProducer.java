@@ -26,7 +26,7 @@ public class DefaultGraphNodeEditorProducer implements GraphNodeEditorProducer {
     }
 
     @Override
-    public NodeConfiguration getConfiguration() {
+    public NodeConfiguration getConfiguration(JsonValue data) {
         return configuration;
     }
 
