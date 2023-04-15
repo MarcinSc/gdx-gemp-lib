@@ -2,6 +2,7 @@ package com.gempukku.libgdx.ui.graph.editor;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.JsonValue;
 import com.gempukku.libgdx.common.Supplier;
 import com.gempukku.libgdx.ui.graph.GraphChangedEvent;
@@ -29,13 +30,6 @@ public class DefaultGraphNodeEditor implements GraphNodeEditor {
     public DefaultGraphNodeEditor(NodeConfiguration configuration) {
         this.configuration = configuration;
         table = new VisTable();
-    }
-
-    @Override
-    public void graphChanged(GraphChangedEvent event, boolean hasErrors, Graph graph) {
-        for (GraphNodeEditorPart editorPart : editorParts) {
-            editorPart.graphChanged(event, hasErrors, graph);
-        }
     }
 
     @Override
@@ -164,7 +158,9 @@ public class DefaultGraphNodeEditor implements GraphNodeEditor {
     @Override
     public void dispose() {
         for (GraphNodeEditorPart part : editorParts) {
-            part.dispose();
+            if (part instanceof Disposable) {
+                ((Disposable) part).dispose();
+            }
         }
     }
 }

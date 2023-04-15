@@ -81,14 +81,4 @@ public class FloatEditorPart extends VisTable implements GraphNodeEditorPart {
     public void serializePart(JsonValue object) {
         object.addChild(property, new JsonValue(Float.parseFloat(v1Input.getText())));
     }
-
-    @Override
-    public void graphChanged(GraphChangedEvent event, boolean hasErrors, Graph graph) {
-
-    }
-
-    @Override
-    public void dispose() {
-
-    }
 }

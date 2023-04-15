@@ -77,14 +77,4 @@ public class FileSelectorEditorPart extends VisTable implements GraphNodeEditorP
     public void serializePart(JsonValue object) {
         object.addChild(property, new JsonValue(selectedPath));
     }
-
-    @Override
-    public void graphChanged(GraphChangedEvent event, boolean hasErrors, Graph graph) {
-
-    }
-
-    @Override
-    public void dispose() {
-
-    }
 }

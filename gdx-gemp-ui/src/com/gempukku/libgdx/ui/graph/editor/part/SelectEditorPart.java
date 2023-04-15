@@ -75,14 +75,4 @@ public class SelectEditorPart extends VisTable implements GraphNodeEditorPart {
     public void serializePart(JsonValue object) {
         object.addChild(property, new JsonValue(getSelected()));
     }
-
-    @Override
-    public void graphChanged(GraphChangedEvent event, boolean hasErrors, Graph graph) {
-
-    }
-
-    @Override
-    public void dispose() {
-
-    }
 }

@@ -8,7 +8,7 @@ import com.gempukku.libgdx.ui.graph.data.Graph;
 import com.gempukku.libgdx.ui.graph.editor.GraphNodeEditorInput;
 import com.gempukku.libgdx.ui.graph.editor.GraphNodeEditorOutput;
 
-public interface GraphNodeEditorPart extends Disposable {
+public interface GraphNodeEditorPart {
     GraphNodeEditorOutput getOutputConnector();
 
     GraphNodeEditorInput getInputConnector();
@@ -18,6 +18,4 @@ public interface GraphNodeEditorPart extends Disposable {
     void initialize(JsonValue data);
 
     void serializePart(JsonValue value);
-
-    void graphChanged(GraphChangedEvent event, boolean hasErrors, Graph graph);
 }

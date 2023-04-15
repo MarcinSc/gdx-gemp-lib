@@ -115,14 +115,4 @@ public class Vector4EditorPart extends VisTable implements GraphNodeEditorPart {
         object.addChild(propertyZ, new JsonValue(Float.parseFloat(zInput.getText())));
         object.addChild(propertyW, new JsonValue(Float.parseFloat(wInput.getText())));
     }
-
-    @Override
-    public void graphChanged(GraphChangedEvent event, boolean hasErrors, Graph graph) {
-
-    }
-
-    @Override
-    public void dispose() {
-
-    }
 }

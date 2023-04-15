@@ -62,14 +62,4 @@ public class StringEditorPart extends VisTable implements GraphNodeEditorPart {
     public void serializePart(JsonValue object) {
         object.addChild(property, new JsonValue(input.getText()));
     }
-
-    @Override
-    public void graphChanged(GraphChangedEvent event, boolean hasErrors, Graph graph) {
-
-    }
-
-    @Override
-    public void dispose() {
-
-    }
 }

@@ -96,14 +96,4 @@ public class EnumSelectEditorPart<T extends Enum> extends VisTable implements Gr
     public void serializePart(JsonValue object) {
         object.addChild(property, new JsonValue(getSelected()));
     }
-
-    @Override
-    public void graphChanged(GraphChangedEvent event, boolean hasErrors, Graph graph) {
-
-    }
-
-    @Override
-    public void dispose() {
-
-    }
 }

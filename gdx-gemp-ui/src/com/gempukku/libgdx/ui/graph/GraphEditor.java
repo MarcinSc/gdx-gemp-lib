@@ -119,16 +119,6 @@ public class GraphEditor extends VisTable implements NavigableCanvas {
         setTouchable(Touchable.enabled);
 
         addListener(
-                new GraphChangedListener() {
-                    @Override
-                    protected boolean graphChanged(GraphChangedEvent event) {
-                        for (GraphNodeWindow node : editedGraph.getNodes()) {
-                            node.getGraphNodeEditor().graphChanged(event, hasErrors, editedGraph);
-                        }
-                        return true;
-                    }
-                });
-        addListener(
                 new ClickListener(Input.Buttons.RIGHT) {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {

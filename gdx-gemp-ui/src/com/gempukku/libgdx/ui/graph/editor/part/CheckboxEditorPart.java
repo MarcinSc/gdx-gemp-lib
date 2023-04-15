@@ -1,6 +1,7 @@
 package com.gempukku.libgdx.ui.graph.editor.part;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.JsonValue;
 import com.gempukku.libgdx.ui.graph.GraphChangedEvent;
 import com.gempukku.libgdx.ui.graph.data.Graph;
@@ -22,6 +23,13 @@ public class CheckboxEditorPart extends VisTable implements GraphNodeEditorPart 
 
         input = new VisCheckBox(label);
         input.setChecked(selected);
+        input.addListener(
+                new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        input.fire(new GraphChangedEvent(false, true));
+                    }
+                });
 
         add(input).left().grow();
         row();
@@ -56,15 +64,5 @@ public class CheckboxEditorPart extends VisTable implements GraphNodeEditorPart 
     @Override
     public void serializePart(JsonValue object) {
         object.addChild(property, new JsonValue(input.isChecked()));
-    }
-
-    @Override
-    public void graphChanged(GraphChangedEvent event, boolean hasErrors, Graph graph) {
-
-    }
-
-    @Override
-    public void dispose() {
-
     }
 }

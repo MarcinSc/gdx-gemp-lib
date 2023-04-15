@@ -56,16 +56,6 @@ public class DefaultGraphNodeEditorPart implements GraphNodeEditorPart {
             callback.serialize(object);
     }
 
-    @Override
-    public void graphChanged(GraphChangedEvent event, boolean hasErrors, Graph graph) {
-
-    }
-
-    @Override
-    public void dispose() {
-
-    }
-
     public interface Callback {
         void serialize(JsonValue object);
     }
