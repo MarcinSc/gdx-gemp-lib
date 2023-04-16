@@ -41,7 +41,7 @@ public class FieldTypeValidator implements GraphValidator {
     }
 
     private void cacheNodeInputs(Graph graph, BiFunction<String, JsonValue, NodeConfiguration> nodeConfigurationResolver,
-                                                           ObjectMap<String, ObjectMap<String, Array<String>>> inputsCache, GraphNode node) {
+                                 ObjectMap<String, ObjectMap<String, Array<String>>> inputsCache, GraphNode node) {
         ObjectMap<String, Array<String>> nodeInputs = inputsCache.get(node.getId());
         if (nodeInputs == null) {
             nodeInputs = new ObjectMap<>();
@@ -49,11 +49,14 @@ public class FieldTypeValidator implements GraphValidator {
 
             NodeConfiguration nodeConfiguration = nodeConfigurationResolver.evaluate(node.getType(), node.getData());
 
-            for (ObjectMap.Entry<String, GraphNodeInput> nodeInput : nodeConfiguration.getNodeInputs()) {
+            // Doing weird stuff, to avoid errors in Gdx with iterators being called nested
+            for (ObjectMap.Entry<String, GraphNodeInput> nodeInput : new ObjectMap.Entries<>(nodeConfiguration.getNodeInputs())) {
                 Array<GraphConnection> incomingConnections = getConnectionsTo(graph, node.getId(), nodeInput.value.getFieldId());
 
                 Array<String> types = new Array<>();
-                for (GraphConnection incomingConnection : incomingConnections) {
+                // Doing weird stuff, to avoid errors in Gdx with iterators being called nested
+                for (int i = 0; i < incomingConnections.size; i++) {
+                    GraphConnection incomingConnection = incomingConnections.get(i);
                     GraphNode nodeFrom = graph.getNodeById(incomingConnection.getNodeFrom());
                     NodeConfiguration nodeFromConfiguration = nodeConfigurationResolver.evaluate(nodeFrom.getType(), nodeFrom.getData());
                     GraphNodeOutput output = nodeFromConfiguration.getNodeOutputs().get(incomingConnection.getFieldFrom());
