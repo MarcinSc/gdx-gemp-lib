@@ -5,8 +5,9 @@ archivesBaseName = "gdx-gemp-lib-artemis"
 eclipse.project.name = "gdx-gemp-lib-artemis"
 
 dependencies {
-    implementation project(":gdx-gemp-template-artemis")
-    implementation project(":gdx-gemp-camera2d")
-    api "net.onedaybeard.artemis:artemis-odb:$artemisOdbVersion"
+    api project(":gdx-gemp-template-artemis")
+    api project(":gdx-gemp-camera2d")
+    implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+    implementation "net.onedaybeard.artemis:artemis-odb:$artemisOdbVersion"
     testImplementation "junit:junit:$junitVersion"
 }

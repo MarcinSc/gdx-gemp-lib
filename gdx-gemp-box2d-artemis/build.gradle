@@ -5,8 +5,8 @@ archivesBaseName = "gdx-gemp-box2d-artemis"
 eclipse.project.name = "gdx-gemp-box2d-artemis"
 
 dependencies {
-    implementation project(":gdx-gemp-lib-artemis")
-    api "com.badlogicgames.gdx:gdx:$gdxVersion"
-    api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
-    api "net.onedaybeard.artemis:artemis-odb:$artemisOdbVersion"
+    api project(":gdx-gemp-lib-artemis")
+    implementation "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+    implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+    implementation "net.onedaybeard.artemis:artemis-odb:$artemisOdbVersion"
 }

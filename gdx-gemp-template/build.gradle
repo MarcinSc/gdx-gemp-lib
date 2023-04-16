@@ -5,7 +5,7 @@ archivesBaseName = "gdx-gemp-template"
 eclipse.project.name = "gdx-gemp-template"
 
 dependencies {
-    api "com.badlogicgames.gdx:gdx:$gdxVersion"
+    implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
 
     testImplementation "junit:junit:$junitVersion"
     testImplementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"

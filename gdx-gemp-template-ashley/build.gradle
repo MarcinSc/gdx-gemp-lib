@@ -5,8 +5,8 @@ archivesBaseName = "gdx-gemp-template-ashley"
 eclipse.project.name = "gdx-gemp-template-ashley"
 
 dependencies {
-    implementation project(":gdx-gemp-template")
-    api 'com.github.libgdx:ashley:d4dc6d4f9c'
+    api project(":gdx-gemp-template")
+    implementation 'com.github.libgdx:ashley:d4dc6d4f9c'
 
     testImplementation "junit:junit:$junitVersion"
     testImplementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
