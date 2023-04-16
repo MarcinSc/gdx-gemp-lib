@@ -10,10 +10,10 @@ import com.gempukku.libgdx.ui.graph.editor.GraphNodeEditor;
 import com.kotcrab.vis.ui.widget.VisWindow;
 
 public class GraphNodeWindow extends VisWindow implements GraphNode, Disposable {
-    private String nodeId;
-    private GraphNodeEditor graphNodeEditor;
-    private ObjectSet<String> connectorsWithError = new ObjectSet<>();
-    private Vector2 position;
+    private final String nodeId;
+    private final GraphNodeEditor graphNodeEditor;
+    private final ObjectSet<String> connectorsWithError = new ObjectSet<>();
+    private Vector2 lastPosition;
 
     public GraphNodeWindow(String nodeId, GraphNodeEditor graphNodeEditor, String title, WindowStyle windowStyle) {
         super(title, windowStyle);
@@ -36,12 +36,12 @@ public class GraphNodeWindow extends VisWindow implements GraphNode, Disposable 
 
     @Override
     protected final void positionChanged() {
-        if (position != null) {
-            positionChanged(position.x, position.y, getX(), getY());
+        if (lastPosition != null) {
+            positionChanged(lastPosition.x, lastPosition.y, getX(), getY());
         } else {
-            position = new Vector2();
+            lastPosition = new Vector2();
         }
-        position.set(getX(), getY());
+        lastPosition.set(getX(), getY());
     }
 
     protected void positionChanged(float fromX, float fromY, float toX, float toY) {
@@ -69,6 +69,7 @@ public class GraphNodeWindow extends VisWindow implements GraphNode, Disposable 
 
     @Override
     public void dispose() {
-        graphNodeEditor.dispose();
+        if (graphNodeEditor instanceof Disposable)
+            ((Disposable) graphNodeEditor).dispose();
     }
 }

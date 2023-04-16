@@ -154,13 +154,4 @@ public class DefaultGraphNodeEditor implements GraphNodeEditor {
             return null;
         return result;
     }
-
-    @Override
-    public void dispose() {
-        for (GraphNodeEditorPart part : editorParts) {
-            if (part instanceof Disposable) {
-                ((Disposable) part).dispose();
-            }
-        }
-    }
 }

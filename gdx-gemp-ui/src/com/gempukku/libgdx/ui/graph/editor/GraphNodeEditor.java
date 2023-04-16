@@ -1,13 +1,12 @@
 package com.gempukku.libgdx.ui.graph.editor;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.JsonValue;
 import com.gempukku.libgdx.ui.graph.data.NodeConfiguration;
 
 import java.util.Map;
 
-public interface GraphNodeEditor extends Disposable {
+public interface GraphNodeEditor {
     Actor getActor();
 
     JsonValue getData();

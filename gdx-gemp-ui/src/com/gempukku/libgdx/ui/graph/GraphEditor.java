@@ -74,7 +74,6 @@ public class GraphEditor extends VisTable implements NavigableCanvas {
 
     private ObjectSet<String> selectedNodes = new ObjectSet<>();
     private boolean movingSelected = false;
-    private boolean hasErrors = false;
 
     private final DefaultGraph<GraphNodeWindow, DrawnGraphConnection, RectangleNodeGroup> editedGraph;
 
@@ -330,7 +329,6 @@ public class GraphEditor extends VisTable implements NavigableCanvas {
     }
 
     public void setValidationResult(GraphValidationResult validationResult) {
-        hasErrors = validationResult.hasErrors();
         for (GraphNodeWindow window : editedGraph.getNodes()) {
             window.clearConnectorErrors();
             if (validationResult.getErrorNodes().contains(window.getId())) {
