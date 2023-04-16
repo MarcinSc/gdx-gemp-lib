@@ -16,10 +16,10 @@ public class SerialGraphValidator implements GraphValidator {
     }
 
     @Override
-    public GraphValidationResult validateGraph(Graph graph, BiFunction<String, JsonValue, NodeConfiguration> nodeConfigurationResolver) {
+    public GraphValidationResult validateGraph(Graph graph) {
         GraphValidationResult result = new GraphValidationResult();
         for (GraphValidator graphValidator : graphValidators) {
-            GraphValidationResult validationResult = graphValidator.validateGraph(graph, nodeConfigurationResolver);
+            GraphValidationResult validationResult = graphValidator.validateGraph(graph);
             if (validationResult.hasErrors()) {
                 // If it has error, stop validating, and just move existing warnings to this one to return
                 moveWarnings(result, validationResult);

@@ -18,7 +18,7 @@ public class DAGValidatorWithEndNode implements GraphValidator {
     }
 
     @Override
-    public GraphValidationResult validateGraph(Graph graph, BiFunction<String, JsonValue, NodeConfiguration> nodeConfigurationResolver) {
+    public GraphValidationResult validateGraph(Graph graph) {
         GraphValidationResult result = new GraphValidationResult();
         checkCyclic(result, graph, endNodeId);
         return result;

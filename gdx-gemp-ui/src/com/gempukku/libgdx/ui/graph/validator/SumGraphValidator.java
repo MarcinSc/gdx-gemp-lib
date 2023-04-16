@@ -17,10 +17,10 @@ public class SumGraphValidator implements GraphValidator {
     }
 
     @Override
-    public GraphValidationResult validateGraph(Graph graph, BiFunction<String, JsonValue, NodeConfiguration> nodeConfigurationResolver) {
+    public GraphValidationResult validateGraph(Graph graph) {
         GraphValidationResult result = new GraphValidationResult();
         for (GraphValidator graphValidator : graphValidators) {
-            GraphValidationResult validationResult = graphValidator.validateGraph(graph, nodeConfigurationResolver);
+            GraphValidationResult validationResult = graphValidator.validateGraph(graph);
             for (String errorNode : validationResult.getErrorNodes()) {
                 result.addErrorNode(errorNode);
             }

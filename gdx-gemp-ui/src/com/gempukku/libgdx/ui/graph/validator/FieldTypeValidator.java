@@ -7,8 +7,14 @@ import com.gempukku.libgdx.common.BiFunction;
 import com.gempukku.libgdx.ui.graph.data.*;
 
 public class FieldTypeValidator implements GraphValidator {
+    private BiFunction<String, JsonValue, NodeConfiguration> nodeConfigurationResolver;
+
+    public FieldTypeValidator(BiFunction<String, JsonValue, NodeConfiguration> nodeConfigurationResolver) {
+        this.nodeConfigurationResolver = nodeConfigurationResolver;
+    }
+
     @Override
-    public GraphValidationResult validateGraph(Graph graph, BiFunction<String, JsonValue, NodeConfiguration> nodeConfigurationResolver) {
+    public GraphValidationResult validateGraph(Graph graph) {
         GraphValidationResult result = new GraphValidationResult();
 
         ObjectMap<String, ObjectMap<String, Array<String>>> nodeInputsCache = new ObjectMap<>();

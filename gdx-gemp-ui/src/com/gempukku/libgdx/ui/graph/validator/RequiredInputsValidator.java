@@ -7,8 +7,14 @@ import com.gempukku.libgdx.ui.graph.NodeConnector;
 import com.gempukku.libgdx.ui.graph.data.*;
 
 public class RequiredInputsValidator implements GraphValidator {
+    private BiFunction<String, JsonValue, NodeConfiguration> nodeConfigurationResolver;
+
+    public RequiredInputsValidator(BiFunction<String, JsonValue, NodeConfiguration> nodeConfigurationResolver) {
+        this.nodeConfigurationResolver = nodeConfigurationResolver;
+    }
+
     @Override
-    public GraphValidationResult validateGraph(Graph graph, BiFunction<String, JsonValue, NodeConfiguration> nodeConfigurationResolver) {
+    public GraphValidationResult validateGraph(Graph graph) {
         GraphValidationResult result = new GraphValidationResult();
 
         for (GraphNode node : graph.getNodes()) {
