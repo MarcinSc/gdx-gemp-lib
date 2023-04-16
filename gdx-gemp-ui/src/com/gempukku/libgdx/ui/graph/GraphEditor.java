@@ -100,7 +100,7 @@ public class GraphEditor extends VisTable implements NavigableCanvas {
         editedGraph = new DefaultGraph<>(graph.getType());
 
         for (GraphNode node : graph.getNodes()) {
-            addGraphNode(node.getId(), node.getConfiguration().getType(), node.getData(), node.getX(), node.getY());
+            addGraphNode(node.getId(), node.getType(), node.getData(), node.getX(), node.getY());
         }
 
         for (GraphConnection connection : graph.getConnections()) {

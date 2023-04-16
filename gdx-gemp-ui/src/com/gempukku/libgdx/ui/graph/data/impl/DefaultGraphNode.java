@@ -6,22 +6,27 @@ import com.gempukku.libgdx.ui.graph.data.NodeConfiguration;
 
 public class DefaultGraphNode implements GraphNode {
     private String nodeId;
+    private String type;
     private float x;
     private float y;
     private JsonValue data;
-    private NodeConfiguration nodeConfiguration;
 
-    public DefaultGraphNode(String nodeId, float x, float y, JsonValue data, NodeConfiguration nodeConfiguration) {
+    public DefaultGraphNode(String nodeId, String type, float x, float y, JsonValue data) {
         this.nodeId = nodeId;
+        this.type = type;
         this.x = x;
         this.y = y;
         this.data = data;
-        this.nodeConfiguration = nodeConfiguration;
     }
 
     @Override
     public String getId() {
         return nodeId;
+    }
+
+    @Override
+    public String getType() {
+        return type;
     }
 
     @Override
@@ -37,10 +42,5 @@ public class DefaultGraphNode implements GraphNode {
     @Override
     public JsonValue getData() {
         return data;
-    }
-
-    @Override
-    public NodeConfiguration getConfiguration() {
-        return nodeConfiguration;
     }
 }

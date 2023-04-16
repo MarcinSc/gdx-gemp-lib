@@ -58,13 +58,13 @@ public class GraphNodeWindow extends VisWindow implements GraphNode, Disposable 
     }
 
     @Override
-    public JsonValue getData() {
-        return graphNodeEditor.getData();
+    public String getType() {
+        return graphNodeEditor.getConfiguration().getType();
     }
 
     @Override
-    public NodeConfiguration getConfiguration() {
-        return graphNodeEditor.getConfiguration();
+    public JsonValue getData() {
+        return graphNodeEditor.getData();
     }
 
     @Override

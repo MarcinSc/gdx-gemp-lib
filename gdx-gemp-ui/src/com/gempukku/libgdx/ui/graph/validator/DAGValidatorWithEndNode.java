@@ -1,10 +1,13 @@
 package com.gempukku.libgdx.ui.graph.validator;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectSet;
+import com.gempukku.libgdx.common.BiFunction;
 import com.gempukku.libgdx.ui.graph.data.Graph;
 import com.gempukku.libgdx.ui.graph.data.GraphConnection;
 import com.gempukku.libgdx.ui.graph.data.GraphNode;
+import com.gempukku.libgdx.ui.graph.data.NodeConfiguration;
 
 // Checks that the graph is acyclic, starting from the specified end node id
 public class DAGValidatorWithEndNode implements GraphValidator {
@@ -15,7 +18,7 @@ public class DAGValidatorWithEndNode implements GraphValidator {
     }
 
     @Override
-    public GraphValidationResult validateGraph(Graph graph) {
+    public GraphValidationResult validateGraph(Graph graph, BiFunction<String, JsonValue, NodeConfiguration> nodeConfigurationResolver) {
         GraphValidationResult result = new GraphValidationResult();
         checkCyclic(result, graph, endNodeId);
         return result;

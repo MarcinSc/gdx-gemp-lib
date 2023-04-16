@@ -1,19 +1,19 @@
 package com.gempukku.libgdx.ui.graph.validator;
 
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.gempukku.libgdx.common.BiFunction;
 import com.gempukku.libgdx.ui.graph.NodeConnector;
-import com.gempukku.libgdx.ui.graph.data.Graph;
-import com.gempukku.libgdx.ui.graph.data.GraphConnection;
-import com.gempukku.libgdx.ui.graph.data.GraphNode;
-import com.gempukku.libgdx.ui.graph.data.GraphNodeInput;
+import com.gempukku.libgdx.ui.graph.data.*;
 
 public class RequiredInputsValidator implements GraphValidator {
     @Override
-    public GraphValidationResult validateGraph(Graph graph) {
+    public GraphValidationResult validateGraph(Graph graph, BiFunction<String, JsonValue, NodeConfiguration> nodeConfigurationResolver) {
         GraphValidationResult result = new GraphValidationResult();
 
         for (GraphNode node : graph.getNodes()) {
-            for (ObjectMap.Entry<String, GraphNodeInput> entry : node.getConfiguration().getNodeInputs().entries()) {
+            NodeConfiguration nodeConfiguration = nodeConfigurationResolver.evaluate(node.getType(), node.getData());
+            for (ObjectMap.Entry<String, GraphNodeInput> entry : nodeConfiguration.getNodeInputs().entries()) {
                 if (entry.value.isRequired() && !hasConnectionToInput(graph, node.getId(), entry.key))
                     result.addErrorConnector(new NodeConnector(node.getId(), entry.key));
             }

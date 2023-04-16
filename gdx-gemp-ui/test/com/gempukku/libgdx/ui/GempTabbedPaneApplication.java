@@ -115,8 +115,8 @@ public class GempTabbedPaneApplication extends ApplicationAdapter {
         final DefaultNodeConfiguration intIn = new DefaultNodeConfiguration("intIn", "Integer In");
         intIn.addNodeInput(new DefaultGraphNodeInput("0", "Value", "Int"));
 
-        graph.addGraphNode(new DefaultGraphNode("1", 0, 0, null, intOut));
-        graph.addGraphNode(new DefaultGraphNode("2", 100, 0, null, intIn));
+        graph.addGraphNode(new DefaultGraphNode("1", "intOut", 0, 0, null));
+        graph.addGraphNode(new DefaultGraphNode("2", "intIn", 100, 0, null));
 
         ObjectSet<String> nodeIds = new ObjectSet<>();
         nodeIds.addAll("1", "2");

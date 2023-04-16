@@ -1,23 +1,27 @@
 package com.gempukku.libgdx.ui.graph.validator;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.gempukku.libgdx.common.BiFunction;
 import com.gempukku.libgdx.ui.graph.data.*;
 
 public class FieldTypeValidator implements GraphValidator {
     @Override
-    public GraphValidationResult validateGraph(Graph graph) {
+    public GraphValidationResult validateGraph(Graph graph, BiFunction<String, JsonValue, NodeConfiguration> nodeConfigurationResolver) {
         GraphValidationResult result = new GraphValidationResult();
 
         ObjectMap<String, ObjectMap<String, Array<String>>> nodeInputsCache = new ObjectMap<>();
 
         for (GraphConnection connection : graph.getConnections()) {
             GraphNode nodeFrom = graph.getNodeById(connection.getNodeFrom());
-            GraphNodeOutput output = nodeFrom.getConfiguration().getNodeOutputs().get(connection.getFieldFrom());
+            NodeConfiguration nodeFromConfiguration = nodeConfigurationResolver.evaluate(nodeFrom.getType(), nodeFrom.getData());
+            GraphNodeOutput output = nodeFromConfiguration.getNodeOutputs().get(connection.getFieldFrom());
             GraphNode nodeTo = graph.getNodeById(connection.getNodeTo());
-            GraphNodeInput input = nodeTo.getConfiguration().getNodeInputs().get(connection.getFieldTo());
+            NodeConfiguration nodeToConfiguration = nodeConfigurationResolver.evaluate(nodeTo.getType(), nodeTo.getData());
+            GraphNodeInput input = nodeToConfiguration.getNodeInputs().get(connection.getFieldTo());
 
-            String fieldType = output.determineFieldType(getNodeInputs(graph, nodeInputsCache, nodeFrom));
+            String fieldType = output.determineFieldType(getNodeInputs(graph, nodeConfigurationResolver, nodeInputsCache, nodeFrom));
             if (!input.getAcceptedPropertyTypes().contains(fieldType, false)) {
                 result.addErrorConnection(connection);
             }
@@ -26,20 +30,24 @@ public class FieldTypeValidator implements GraphValidator {
         return result;
     }
 
-    private ObjectMap<String, Array<String>> getNodeInputs(Graph graph, ObjectMap<String, ObjectMap<String, Array<String>>> inputsCache, GraphNode node) {
+    private ObjectMap<String, Array<String>> getNodeInputs(Graph graph, BiFunction<String, JsonValue, NodeConfiguration> nodeConfigurationResolver,
+                                                           ObjectMap<String, ObjectMap<String, Array<String>>> inputsCache, GraphNode node) {
         ObjectMap<String, Array<String>> nodeInputs = inputsCache.get(node.getId());
         if (nodeInputs == null) {
             nodeInputs = new ObjectMap<>();
             inputsCache.put(node.getId(), nodeInputs);
 
-            for (ObjectMap.Entry<String, GraphNodeInput> nodeInput : node.getConfiguration().getNodeInputs()) {
+            NodeConfiguration nodeConfiguration = nodeConfigurationResolver.evaluate(node.getType(), node.getData());
+
+            for (ObjectMap.Entry<String, GraphNodeInput> nodeInput : nodeConfiguration.getNodeInputs()) {
                 Array<GraphConnection> incomingConnections = getConnectionsTo(graph, node.getId(), nodeInput.value.getFieldId());
 
                 Array<String> types = new Array<>();
                 for (GraphConnection incomingConnection : incomingConnections) {
                     GraphNode nodeFrom = graph.getNodeById(incomingConnection.getNodeFrom());
-                    GraphNodeOutput output = nodeFrom.getConfiguration().getNodeOutputs().get(incomingConnection.getFieldFrom());
-                    String fieldType = output.determineFieldType(getNodeInputs(graph, inputsCache, nodeFrom));
+                    NodeConfiguration nodeFromConfiguration = nodeConfigurationResolver.evaluate(nodeFrom.getType(), nodeFrom.getData());
+                    GraphNodeOutput output = nodeFromConfiguration.getNodeOutputs().get(incomingConnection.getFieldFrom());
+                    String fieldType = output.determineFieldType(getNodeInputs(graph, nodeConfigurationResolver, inputsCache, nodeFrom));
                     types.add(fieldType);
                 }
                 nodeInputs.put(nodeInput.key, types);

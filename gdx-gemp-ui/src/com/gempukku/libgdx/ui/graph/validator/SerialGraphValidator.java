@@ -1,9 +1,12 @@
 package com.gempukku.libgdx.ui.graph.validator;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonValue;
+import com.gempukku.libgdx.common.BiFunction;
 import com.gempukku.libgdx.ui.graph.NodeConnector;
 import com.gempukku.libgdx.ui.graph.data.Graph;
 import com.gempukku.libgdx.ui.graph.data.GraphConnection;
+import com.gempukku.libgdx.ui.graph.data.NodeConfiguration;
 
 public class SerialGraphValidator implements GraphValidator {
     private Array<GraphValidator> graphValidators = new Array<>();
@@ -13,10 +16,10 @@ public class SerialGraphValidator implements GraphValidator {
     }
 
     @Override
-    public GraphValidationResult validateGraph(Graph graph) {
+    public GraphValidationResult validateGraph(Graph graph, BiFunction<String, JsonValue, NodeConfiguration> nodeConfigurationResolver) {
         GraphValidationResult result = new GraphValidationResult();
         for (GraphValidator graphValidator : graphValidators) {
-            GraphValidationResult validationResult = graphValidator.validateGraph(graph);
+            GraphValidationResult validationResult = graphValidator.validateGraph(graph, nodeConfigurationResolver);
             if (validationResult.hasErrors()) {
                 // If it has error, stop validating, and just move existing warnings to this one to return
                 moveWarnings(result, validationResult);

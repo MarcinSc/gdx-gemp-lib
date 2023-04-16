@@ -6,7 +6,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.JsonValue;
 import com.gempukku.libgdx.common.Function;
 import com.gempukku.libgdx.ui.graph.GraphChangedEvent;
-import com.gempukku.libgdx.ui.graph.data.Graph;
 import com.gempukku.libgdx.ui.graph.editor.GraphNodeEditorInput;
 import com.gempukku.libgdx.ui.graph.editor.GraphNodeEditorOutput;
 import com.kotcrab.vis.ui.widget.VisLabel;
@@ -15,10 +14,10 @@ import com.kotcrab.vis.ui.widget.VisTable;
 
 public class EnumSelectEditorPart<T extends Enum> extends VisTable implements GraphNodeEditorPart {
     private final VisSelectBox<String> selectBox;
-    private Function<T, String> displayTextFunction;
-    private String[] resultValues;
+    private final Function<T, String> displayTextFunction;
+    private final String[] resultValues;
 
-    private String property;
+    private final String property;
 
     private static String[] convertToStrings(Enum<?>[] values) {
         String[] result = new String[values.length];
