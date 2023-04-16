@@ -18,10 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.JsonValue;
-import com.badlogic.gdx.utils.ObjectSet;
+import com.badlogic.gdx.utils.*;
 import com.gempukku.libgdx.common.Function;
 import com.gempukku.libgdx.ui.graph.data.*;
 import com.gempukku.libgdx.ui.graph.data.impl.DefaultGraph;
@@ -46,7 +43,7 @@ import java.awt.geom.CubicCurve2D;
 import java.awt.geom.Rectangle2D;
 import java.util.*;
 
-public class GraphEditor extends VisTable implements NavigableCanvas {
+public class GraphEditor extends VisTable implements NavigableCanvas, Disposable {
     private static final float CANVAS_GAP = 50f;
 
     private static final Color INVALID_LABEL_COLOR = Color.RED;
@@ -537,55 +534,6 @@ public class GraphEditor extends VisTable implements NavigableCanvas {
         return result;
     }
 
-    //
-//    public void addGraphBox(final GraphNodeEditor graphBox, String windowTitle, boolean closeable, float x, float y) {
-//        graphBoxes.put(graphBox.getId(), graphBox);
-//        VisWindow window = new VisWindow(windowTitle, false) {
-//            @Override
-//            protected void positionChanged() {
-//                graphWindowMoved(this, graphBox.getId());
-//            }
-//
-//            @Override
-//            protected void close() {
-//                removeGraphBox(graphBox);
-//                windowPositions.remove(this);
-//                super.close();
-//            }
-//
-//            @Override
-//            public void toFront() {
-//                super.toFront();
-//                String nodeId = graphBox.getId();
-//                if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
-//                    if (selectedNodes.contains(nodeId))
-//                        removeFromSelection(nodeId);
-//                    else
-//                        addToSelection(nodeId);
-//                } else {
-//                    setSelection(nodeId);
-//                }
-//            }
-//        };
-//        window.setKeepWithinStage(false);
-//        if (closeable) {
-//            window.addCloseButton();
-//        }
-//        window.add(graphBox.getActor()).grow().row();
-//        windowPositions.put(window, new Vector2(x, y));
-//        window.setPosition(x, y);
-//        addActor(window);
-//        window.setSize(Math.max(150, window.getPrefWidth()), window.getPrefHeight());
-//        boxWindows.put(graphBox.getId(), window);
-//        fire(new GraphChangedEvent(true, false));
-//    }
-//
-//    public void addNodeGroup(String name, ObjectSet<String> nodeIds) {
-//        nodeGroups.put(new NodeGroupImpl(name, nodeIds), new Rectangle());
-//        updateNodeGroups();
-//        fire(new GraphChangedEvent(false, false));
-//    }
-//
     private void graphWindowMoved(GraphNodeWindow window, float fromX, float fromY, float toX, float toY) {
         if (!movingSelected && !navigating) {
             movingSelected = true;
@@ -977,48 +925,13 @@ public class GraphEditor extends VisTable implements NavigableCanvas {
         }
     }
 
+    @Override
     public void dispose() {
         shapeRenderer.dispose();
         for (GraphNodeWindow window : editedGraph.getNodes()) {
             window.dispose();
         }
     }
-
-//    private void createNodeGroup() {
-//        if (selectedNodes.size > 0) {
-//            for (String selectedNode : selectedNodes) {
-//                if (groupsContain(selectedNode))
-//                    return;
-//            }
-//
-//            Dialogs.showInputDialog(getStage(), "Enter group name", "Name",
-//                    new InputValidator() {
-//                        @Override
-//                        public boolean validateInput(String input) {
-//                            return !input.trim().isEmpty();
-//                        }
-//                    },
-//                    new InputDialogListener() {
-//                        @Override
-//                        public void finished(String input) {
-//                            addNodeGroup(input.trim(), new ObjectSet<String>(selectedNodes));
-//                        }
-//
-//                        @Override
-//                        public void canceled() {
-//
-//                        }
-//                    });
-//        }
-//    }
-//
-//    private boolean groupsContain(String selectedNode) {
-//        for (NodeGroupImpl nodeGroupImpl : nodeGroups.keySet()) {
-//            if (nodeGroupImpl.getNodeIds().contains(selectedNode))
-//                return true;
-//        }
-//        return false;
-//    }
 
     public static class GraphEditorStyle {
         public Drawable background;
