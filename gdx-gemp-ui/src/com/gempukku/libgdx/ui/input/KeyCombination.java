@@ -3,9 +3,65 @@ package com.gempukku.libgdx.ui.input;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.utils.IntArray;
 
-public interface KeyCombination {
-    boolean contains(int keycode);
-    boolean isDown(Input input);
-    int getCombinationCount();
-    IntArray getShortCutRepresentation();
+/**
+ * Represents an activating key and a set of modifier keys (ctrl/sym, shift, alt).
+ */
+public final class KeyCombination {
+    private static final int[] ctrlKeys = new int[]{Input.Keys.SYM, Input.Keys.CONTROL_LEFT, Input.Keys.CONTROL_RIGHT};
+    private static final int[] shiftKeys = new int[]{Input.Keys.SHIFT_LEFT, Input.Keys.SHIFT_RIGHT};
+    private static final int[] altKeys = new int[]{Input.Keys.ALT_LEFT, Input.Keys.ALT_RIGHT};
+
+    private final boolean ctrl;
+    private final boolean shift;
+    private final boolean alt;
+    private final int activating;
+    private final int[] shortcut;
+
+    public KeyCombination(boolean ctrl, boolean shift, boolean alt, int activating) {
+        this.ctrl = ctrl;
+        this.shift = shift;
+        this.alt = alt;
+        this.activating = activating;
+
+        IntArray shortcutArr = new IntArray();
+        if (ctrl)
+            shortcutArr.add(Input.Keys.CONTROL_LEFT);
+        if (shift)
+            shortcutArr.add(Input.Keys.SHIFT_LEFT);
+        if (alt)
+            shortcutArr.add(Input.Keys.ALT_LEFT);
+        shortcutArr.add(activating);
+
+        shortcut = shortcutArr.toArray();
+    }
+
+    public boolean isActivated(Input input, int keycode) {
+        return activating == keycode && matchesModifiers(input);
+    }
+
+    private boolean matchesModifiers(Input input) {
+        if (!matchesModifier(input, ctrl, ctrlKeys))
+            return false;
+        if (!matchesModifier(input, shift, shiftKeys))
+            return false;
+        if (!matchesModifier(input, alt, altKeys))
+            return false;
+        return true;
+    }
+
+    private boolean matchesModifier(Input input, boolean modifierRequired, int[] keys) {
+        return modifierRequired == isAnyPressed(input, keys);
+    }
+
+    private boolean isAnyPressed(Input input, int... keycodes) {
+        for (int keycode : keycodes) {
+            if (input.isKeyPressed(keycode))
+                return true;
+        }
+        return false;
+    }
+
+    public int[] getShortCutRepresentation() {
+        return shortcut;
+    }
 }
