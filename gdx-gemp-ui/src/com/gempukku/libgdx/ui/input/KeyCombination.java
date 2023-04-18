@@ -3,6 +3,8 @@ package com.gempukku.libgdx.ui.input;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.utils.IntArray;
 
+import java.util.Objects;
+
 /**
  * Represents an activating key and a set of modifier keys (ctrl/sym, shift, alt).
  */
@@ -63,5 +65,18 @@ public final class KeyCombination {
 
     public int[] getShortCutRepresentation() {
         return shortcut;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        KeyCombination that = (KeyCombination) o;
+        return ctrl == that.ctrl && shift == that.shift && alt == that.alt && activating == that.activating;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ctrl, shift, alt, activating);
     }
 }
