@@ -2,21 +2,19 @@ package com.gempukku.libgdx.ui;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.tools.texturepacker.TextureUnpacker;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.gempukku.libgdx.common.Function;
-import com.gempukku.libgdx.ui.atlas.UnpackTextureAtlas;
 import com.gempukku.libgdx.ui.curve.DefaultCurveDefinition;
 import com.gempukku.libgdx.ui.curve.GCurveEditor;
 import com.gempukku.libgdx.ui.gradient.DefaultGradientDefinition;
@@ -30,8 +28,8 @@ import com.gempukku.libgdx.ui.graph.editor.DefaultGraphNodeEditorProducer;
 import com.gempukku.libgdx.ui.graph.editor.GraphNodeEditorProducer;
 import com.gempukku.libgdx.ui.graph.PopupMenuProducer;
 import com.gempukku.libgdx.ui.graph.editor.part.CurveEditorPart;
+import com.gempukku.libgdx.ui.graph.editor.part.GradientEditorPart;
 import com.gempukku.libgdx.ui.graph.editor.part.IntegerEditorPart;
-import com.gempukku.libgdx.ui.preview.NavigableCanvas;
 import com.gempukku.libgdx.ui.preview.PreviewWidget;
 import com.gempukku.libgdx.ui.tabbedpane.GTabbedPane;
 import com.kotcrab.vis.ui.VisUI;
@@ -39,21 +37,16 @@ import com.kotcrab.vis.ui.util.Validators;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.kotcrab.vis.ui.widget.VisLabel;
 
-import java.io.File;
-import java.io.IOException;
-
 public class GempTabbedPaneApplication extends ApplicationAdapter {
     private Skin skin;
     private Stage stage;
 
     @Override
     public void create() {
-//        try {
-//            UnpackTextureAtlas.unpackTextureAtlas(Gdx.files.local("gdx-gemp-ui/test-resources/skin/visui/uiskin.atlas"), new File("atlas-unpacked"), false);
-//        } catch (IOException e) {
-//            throw new GdxRuntimeException(e);
-//        }
-//
+        TextureUnpacker textureUnpacker = new TextureUnpacker();
+        FileHandle atlas = Gdx.files.local("gdx-gemp-ui/test-resources/skin/visui/uiskin.atlas");
+        textureUnpacker.splitAtlas(new TextureAtlas.TextureAtlasData(atlas, atlas.parent(), false), "atlas-unpacked");
+
         skin = new Skin(Gdx.files.internal("skin/visui/uiskin.json"));
         VisUI.load(skin);
         stage = new Stage(new ScreenViewport());
@@ -141,6 +134,8 @@ public class GempTabbedPaneApplication extends ApplicationAdapter {
                     DefaultGraphNodeEditorProducer producer = new DefaultGraphNodeEditorProducer(intOut) {
                         @Override
                         protected void buildNodeEditor(DefaultGraphNodeEditor graphNodeEditor, Skin skin, NodeConfiguration configuration) {
+                            graphNodeEditor.addGraphBoxPart(
+                                    new GradientEditorPart("gradient", "default"));
                             graphNodeEditor.addGraphBoxPart(new IntegerEditorPart("Value", "prop", 0, new Validators.IntegerValidator()));
                         }
                     };

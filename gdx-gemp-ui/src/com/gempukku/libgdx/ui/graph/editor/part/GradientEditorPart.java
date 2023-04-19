@@ -26,8 +26,6 @@ public class GradientEditorPart extends VisTable implements GraphNodeEditorPart 
         gradientDefinition.addColor(0, Color.WHITE);
 
         gradientEditor = new GGradientEditor(gradientDefinition, styleName);
-        gradientEditor.setPrefWidth(300);
-        gradientEditor.setPrefWidth(40);
 
         gradientEditor.addListener(new ChangeListener() {
             @Override
@@ -37,6 +35,16 @@ public class GradientEditorPart extends VisTable implements GraphNodeEditorPart 
         });
 
         add(gradientEditor).left().grow().row();
+    }
+
+    @Override
+    public float getPrefWidth() {
+        return 300;
+    }
+
+    @Override
+    public float getPrefHeight() {
+        return 40;
     }
 
     @Override
