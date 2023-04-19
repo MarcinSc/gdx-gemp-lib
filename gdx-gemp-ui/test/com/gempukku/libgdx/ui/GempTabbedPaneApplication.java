@@ -11,10 +11,12 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.gempukku.libgdx.common.Function;
+import com.gempukku.libgdx.ui.atlas.UnpackTextureAtlas;
 import com.gempukku.libgdx.ui.curve.DefaultCurveDefinition;
 import com.gempukku.libgdx.ui.curve.GCurveEditor;
 import com.gempukku.libgdx.ui.gradient.DefaultGradientDefinition;
@@ -37,12 +39,21 @@ import com.kotcrab.vis.ui.util.Validators;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.kotcrab.vis.ui.widget.VisLabel;
 
+import java.io.File;
+import java.io.IOException;
+
 public class GempTabbedPaneApplication extends ApplicationAdapter {
     private Skin skin;
     private Stage stage;
 
     @Override
     public void create() {
+//        try {
+//            UnpackTextureAtlas.unpackTextureAtlas(Gdx.files.local("gdx-gemp-ui/test-resources/skin/visui/uiskin.atlas"), new File("atlas-unpacked"), false);
+//        } catch (IOException e) {
+//            throw new GdxRuntimeException(e);
+//        }
+//
         skin = new Skin(Gdx.files.internal("skin/visui/uiskin.json"));
         VisUI.load(skin);
         stage = new Stage(new ScreenViewport());

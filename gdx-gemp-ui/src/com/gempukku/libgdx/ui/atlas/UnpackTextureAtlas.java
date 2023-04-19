@@ -29,8 +29,8 @@ public class UnpackTextureAtlas {
             Graphics2D graphics = (Graphics2D) unpackedImage.getGraphics();
             try {
                 graphics.drawImage(pageImage,
-                        MathUtils.round(region.offsetX), MathUtils.round(region.offsetY),
-                        MathUtils.round(region.offsetX) + region.width, MathUtils.round(region.offsetY) + region.height,
+                        MathUtils.round(region.offsetX), 0,
+                        MathUtils.round(region.offsetX) + region.width, region.height,
                         region.left, region.top, region.left + region.width, region.top + region.height, null);
             } finally {
                 graphics.dispose();
