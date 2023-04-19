@@ -276,7 +276,7 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
     }
 
     public void centerCanvas() {
-        navigateTo((canvasWidth - getWidth()) / 2f, (canvasHeight - getHeight()) / 2f);
+        navigateTo((getWidth()-canvasWidth) / 2f, (getHeight()-canvasHeight) / 2f);
     }
 
     @Override

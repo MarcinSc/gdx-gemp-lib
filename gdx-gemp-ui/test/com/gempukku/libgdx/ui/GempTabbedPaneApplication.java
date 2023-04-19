@@ -27,6 +27,7 @@ import com.gempukku.libgdx.ui.graph.editor.DefaultGraphNodeEditor;
 import com.gempukku.libgdx.ui.graph.editor.DefaultGraphNodeEditorProducer;
 import com.gempukku.libgdx.ui.graph.editor.GraphNodeEditorProducer;
 import com.gempukku.libgdx.ui.graph.PopupMenuProducer;
+import com.gempukku.libgdx.ui.graph.editor.part.CurveEditorPart;
 import com.gempukku.libgdx.ui.graph.editor.part.IntegerEditorPart;
 import com.gempukku.libgdx.ui.preview.NavigableCanvas;
 import com.gempukku.libgdx.ui.preview.PreviewWidget;
@@ -116,7 +117,7 @@ public class GempTabbedPaneApplication extends ApplicationAdapter {
         intIn.addNodeInput(new DefaultGraphNodeInput("0", "Value", "Int"));
 
         graph.addGraphNode(new DefaultGraphNode("1", "intOut", 0, 0, null));
-        graph.addGraphNode(new DefaultGraphNode("2", "intIn", 100, 0, null));
+        graph.addGraphNode(new DefaultGraphNode("2", "intIn", 200, 0, null));
 
         ObjectSet<String> nodeIds = new ObjectSet<>();
         nodeIds.addAll("1", "2");
@@ -138,7 +139,8 @@ public class GempTabbedPaneApplication extends ApplicationAdapter {
                     DefaultGraphNodeEditorProducer producer = new DefaultGraphNodeEditorProducer(intIn) {
                         @Override
                         protected void buildNodeEditor(DefaultGraphNodeEditor graphNodeEditor, Skin skin, NodeConfiguration configuration) {
-
+                            graphNodeEditor.addGraphBoxPart(
+                                    new CurveEditorPart("curve", "default"));
                         }
                     };
 
@@ -148,7 +150,9 @@ public class GempTabbedPaneApplication extends ApplicationAdapter {
             }
         };
         PopupMenuProducer popupMenuProducer = null;
-        return new GraphEditor(graph, graphNodeEditorProducers, popupMenuProducer);
+        GraphEditor graphEditor = new GraphEditor(graph, graphNodeEditorProducers, popupMenuProducer);
+        graphEditor.centerCanvas();
+        return graphEditor;
     }
 
     @Override
