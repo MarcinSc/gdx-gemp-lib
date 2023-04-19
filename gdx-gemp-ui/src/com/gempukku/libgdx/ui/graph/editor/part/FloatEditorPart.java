@@ -36,11 +36,14 @@ public class FloatEditorPart extends VisTable implements GraphNodeEditorPart {
             };
         v1Input.setText(String.valueOf(defaultValue));
         v1Input.setAlignment(Align.right);
+        v1Input.setRestoreLastValid(true);
         v1Input.addListener(
                 new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
-                        v1Input.fire(new GraphChangedEvent(false, true));
+                        if (v1Input.isInputValid()) {
+                            v1Input.fire(new GraphChangedEvent(false, true));
+                        }
                     }
                 });
 

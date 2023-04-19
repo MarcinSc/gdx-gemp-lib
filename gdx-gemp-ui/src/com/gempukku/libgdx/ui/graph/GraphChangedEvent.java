@@ -9,6 +9,7 @@ public class GraphChangedEvent extends Event {
     public GraphChangedEvent(boolean structure, boolean data) {
         this.structure = structure;
         this.data = data;
+        System.out.println("Graph changed");
     }
 
     public boolean isStructure() {

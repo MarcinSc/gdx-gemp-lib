@@ -22,6 +22,7 @@ public class IndexEditorPart extends VisTable implements GraphNodeEditorPart {
         this.property = property;
 
         indexField = new VisValidatableTextField(Validators.INTEGERS, new Validators.GreaterThanValidator(0, true));
+        indexField.setRestoreLastValid(true);
         indexField.setText("0");
         add(new VisLabel(label + " "));
         add(indexField).growX();
@@ -31,7 +32,9 @@ public class IndexEditorPart extends VisTable implements GraphNodeEditorPart {
                 new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
-                        fire(new GraphChangedEvent(false, true));
+                        if (indexField.isInputValid()) {
+                            fire(new GraphChangedEvent(false, true));
+                        }
                     }
                 });
     }

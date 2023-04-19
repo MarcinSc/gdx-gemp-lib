@@ -60,13 +60,16 @@ public class Vector4EditorPart extends VisTable implements GraphNodeEditorPart {
                     return 50;
                 }
             };
+        result.setRestoreLastValid(true);
         result.setText(String.valueOf(defaultValue));
         result.setAlignment(Align.right);
         result.addListener(
                 new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
-                        result.fire(new GraphChangedEvent(false, true));
+                        if (result.isInputValid()) {
+                            result.fire(new GraphChangedEvent(false, true));
+                        }
                     }
                 });
         return result;

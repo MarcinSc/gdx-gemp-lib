@@ -11,13 +11,11 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.utils.*;
 import com.gempukku.libgdx.common.Function;
 import com.gempukku.libgdx.ui.graph.data.*;
@@ -73,6 +71,7 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
     private boolean movingSelected = false;
 
     private final DefaultGraph<GraphNodeWindow, DrawnGraphConnection, RectangleNodeGroup> editedGraph;
+    private final GraphChangesAggregation graphChangesAggregation;
 
     public GraphEditor(Graph graph, Function<String, GraphNodeEditorProducer> graphNodeEditorProducers, final PopupMenuProducer popupMenuProducer) {
         this(graph, graphNodeEditorProducers, popupMenuProducer, VisUI.getSkin());
@@ -94,6 +93,7 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
         this.graphNodeEditorProducers = graphNodeEditorProducers;
         this.popupMenuProducer = popupMenuProducer;
 
+        graphChangesAggregation = new GraphChangesAggregation(this);
         editedGraph = new DefaultGraph<>(graph.getType());
 
         for (GraphNode node : graph.getNodes()) {
@@ -148,6 +148,8 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
                         if (rectangle.contains(x, y) && y > rectangle.y + rectangle.height - style.groupNameFont.getLineHeight()) {
                             // Hit the label
                             dragGroup = group;
+                            movingSelected = true;
+                            graphChangesAggregation.startAggregating();
                             break;
                         }
                     }
@@ -158,7 +160,6 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
             public void drag(InputEvent event, float x, float y, int pointer) {
                 if (event.getTarget() == GraphEditor.this) {
                     if (dragGroup != null) {
-                        movingSelected = true;
                         float moveByX = x - getDragStartX() - movedByX;
                         float moveByY = y - getDragStartY() - movedByY;
                         for (String nodeId : dragGroup.getNodeIds()) {
@@ -168,10 +169,19 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
                         movedByY += moveByY;
                         windowsMoved();
                         updateNodeGroups();
-                        movingSelected = false;
                     } else {
                         navigateTo(canvasXStart + getDragStartX() - x, canvasYStart + getDragStartY() - y);
                     }
+                }
+            }
+
+            @Override
+            public void dragStop(InputEvent event, float x, float y, int pointer) {
+                if (dragGroup != null) {
+                    dragGroup = null;
+                    movingSelected = false;
+                    windowsMoved();
+                    graphChangesAggregation.finishAggregating();
                 }
             }
         };
@@ -181,6 +191,10 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
         updateCanvas(true);
     }
 
+    private void graphChanged(boolean structure, boolean data) {
+        graphChangesAggregation.processChange(structure, data);
+    }
+
     public Graph getGraph() {
         return editedGraph;
     }
@@ -188,7 +202,7 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
     public void addGraphNode(String nodeId, String type, JsonValue data, float x, float y) {
         GraphNodeEditorProducer graphNodeEditorProducer = graphNodeEditorProducers.evaluate(type);
         GraphNodeEditor pipelineGraphBox = graphNodeEditorProducer.createNodeEditor(skin, data);
-        GraphNodeWindow graphNodeWindow = new GraphNodeWindow(nodeId, pipelineGraphBox,
+        final GraphNodeWindow graphNodeWindow = new GraphNodeWindow(nodeId, pipelineGraphBox,
                 graphNodeEditorProducer.getName(), skin.get(style.windowStyle, Window.WindowStyle.class)) {
             @Override
             protected void positionChanged(float fromX, float fromY, float toX, float toY) {
@@ -215,6 +229,26 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
                 }
             }
         };
+        graphNodeWindow.addListener(
+                new InputListener() {
+                    private boolean dragging;
+                    @Override
+                    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                        if (!dragging && graphNodeWindow.isDragging()) {
+                            dragging = true;
+                            graphChangesAggregation.startAggregating();
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                        if (dragging && !graphNodeWindow.isDragging()) {
+                            dragging = false;
+                            graphChangesAggregation.finishAggregating();
+                        }
+                    }
+                });
         graphNodeWindow.setKeepWithinStage(false);
         if (graphNodeEditorProducer.isCloseable()) {
             graphNodeWindow.addCloseButton();
@@ -225,19 +259,19 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
         graphNodeWindow.setSize(Math.max(150, graphNodeWindow.getPrefWidth()), graphNodeWindow.getPrefHeight());
 
         editedGraph.addGraphNode(graphNodeWindow);
-        fire(new GraphChangedEvent(true, true));
+        graphChanged(true, true);
         invalidate();
     }
 
     public void addNodeGroup(String name, ObjectSet<String> nodeIds) {
         editedGraph.addNodeGroup(new RectangleNodeGroup(new DefaultNodeGroup(name, nodeIds)));
         updateNodeGroups();
-        fire(new GraphChangedEvent(false, false));
+        graphChanged(false, false);
     }
 
     public void addGraphConnection(String fromNode, String fromField, String toNode, String toField) {
         editedGraph.addGraphConnection(new DrawnGraphConnection(fromNode, fromField, toNode, toField));
-        fire(new GraphChangedEvent(true, false));
+        graphChanged(true, false);
         invalidate();
     }
 
@@ -377,7 +411,7 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
                                             @Override
                                             public void finished(String input) {
                                                 finalNodeGroup.setName(input.trim());
-                                                fire(new GraphChangedEvent(false, false));
+                                                graphChanged(false, false);
                                             }
 
                                             @Override
@@ -395,7 +429,7 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
                             @Override
                             public void changed(ChangeEvent event, Actor actor) {
                                 editedGraph.removeNodeGroup(finalNodeGroup);
-                                fire(new GraphChangedEvent(false, false));
+                                graphChanged(false, false);
                             }
                         });
                 popupMenu.addItem(remove);
@@ -445,7 +479,7 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
 
     private void removeConnection(DrawnGraphConnection connection) {
         editedGraph.removeGraphConnection(connection);
-        fire(new GraphChangedEvent(true, false));
+        graphChanged(true, false);
         invalidate();
     }
 
@@ -536,7 +570,6 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
 
     private void graphWindowMoved(GraphNodeWindow window, float fromX, float fromY, float toX, float toY) {
         if (!movingSelected && !navigating) {
-            movingSelected = true;
             for (String selectedNode : selectedNodes) {
                 if (!selectedNode.equals(window.getId())) {
                     editedGraph.getNodeById(selectedNode).moveBy(toX - fromX, toY - fromY);
@@ -544,7 +577,6 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
             }
 
             windowsMoved();
-            movingSelected = false;
         }
     }
 
@@ -552,7 +584,7 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
         recreateClickableShapes();
         updateNodeGroups();
         updateCanvas(true);
-        fire(new GraphChangedEvent(false, false));
+        graphChanged(false, false);
     }
 
     private void removeFromSelection(String nodeId) {
@@ -610,7 +642,7 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
 
         window.dispose();
 
-        fire(new GraphChangedEvent(true, false));
+        graphChanged(true, false);
     }
 
     @Override
@@ -724,7 +756,12 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
     public void draw(Batch batch, float parentAlpha) {
         validate();
         style.background.draw(batch, getX(), getY(), getWidth(), getHeight());
-        drawGroups(batch);
+        batch.flush();
+        if (clipBegin()) {
+            drawGroups(batch);
+            batch.flush();
+            clipEnd();
+        }
         batch.end();
         shapeRenderer.setTransformMatrix(batch.getTransformMatrix());
         shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
