@@ -55,7 +55,7 @@ public class GDirtyTabIconLabel<T extends GDirtyTab> extends Button {
         dirtyImage = new Image(style.clean, Scaling.fit);
         add(dirtyImage);
 
-        if (iconImage != null) {
+        if (icon != null) {
             iconImage = new Image(icon, Scaling.fit);
             add(iconImage);
         }
