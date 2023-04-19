@@ -2,16 +2,13 @@ package com.gempukku.libgdx.ui;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.tools.texturepacker.TextureUnpacker;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.gempukku.libgdx.common.Function;
@@ -43,10 +40,6 @@ public class GempTabbedPaneApplication extends ApplicationAdapter {
 
     @Override
     public void create() {
-        TextureUnpacker textureUnpacker = new TextureUnpacker();
-        FileHandle atlas = Gdx.files.local("gdx-gemp-ui/test-resources/skin/visui/uiskin.atlas");
-        textureUnpacker.splitAtlas(new TextureAtlas.TextureAtlasData(atlas, atlas.parent(), false), "atlas-unpacked");
-
         skin = new Skin(Gdx.files.internal("skin/visui/uiskin.json"));
         VisUI.load(skin);
         stage = new Stage(new ScreenViewport());
