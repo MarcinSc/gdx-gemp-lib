@@ -69,7 +69,7 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
     private NodeConnector drawingFromConnector;
 
     private ObjectSet<String> selectedNodes = new ObjectSet<>();
-    private boolean movingSelected = false;
+    private boolean userInitiatedMove = false;
 
     private final DefaultGraph<GraphNodeWindow, DrawnGraphConnection, RectangleNodeGroup> editedGraph;
     private final GraphChangesAggregation graphChangesAggregation;
@@ -139,6 +139,7 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
             @Override
             public void dragStart(InputEvent event, float x, float y, int pointer) {
                 if (event.getTarget() == GraphEditor.this) {
+                    userInitiatedMove = true;
                     canvasXStart = canvasX;
                     canvasYStart = canvasY;
                     movedByX = 0;
@@ -149,7 +150,6 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
                         if (rectangle.contains(x, y) && y > rectangle.y + rectangle.height - style.groupNameFont.getLineHeight()) {
                             // Hit the label
                             dragGroup = group;
-                            movingSelected = true;
                             break;
                         }
                     }
@@ -182,10 +182,10 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
                 if (event.getTarget() == GraphEditor.this) {
                     if (dragGroup != null) {
                         dragGroup = null;
-                        movingSelected = false;
                     }
+                    userInitiatedMove = false;
                     graphChangesAggregation.finishAggregating();
-                    Gdx.graphics.setSystemCursor(null);
+                    Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
                 }
             }
         };
@@ -573,12 +573,15 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
     }
 
     private void graphWindowMoved(GraphNodeWindow window, float fromX, float fromY, float toX, float toY) {
-        if (!movingSelected && !navigating) {
+        if (!userInitiatedMove && !navigating) {
+            // This flag prevents recursive moves
+            userInitiatedMove = true;
             for (String selectedNode : selectedNodes) {
                 if (!selectedNode.equals(window.getId())) {
                     editedGraph.getNodeById(selectedNode).moveBy(toX - fromX, toY - fromY);
                 }
             }
+            userInitiatedMove = false;
 
             windowsMoved();
         }

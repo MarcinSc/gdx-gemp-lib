@@ -1,5 +1,7 @@
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
+sourceCompatibility = 1.8
+
 archivesBaseName = "gdx-temp-test"
 
 eclipse.project.name = "gdx-temp-test"
@@ -8,12 +10,12 @@ dependencies {
     implementation project(":gdx-gemp-template-ashley")
     implementation project(":gdx-gemp-camera2d")
 
-    implementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+    implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
     implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
     implementation "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
     implementation "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
 
-    implementation 'com.github.libgdx:ashley:d4dc6d4f9c'
+    implementation "com.github.libgdx:ashley:$ashleyVersion"
 
     implementation "com.gempukku.libgdx.graph:libgdx-graph:$gdxGraphVersion"
 }

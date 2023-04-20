@@ -8,7 +8,7 @@ dependencies {
     implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
 
     testImplementation "junit:junit:$junitVersion"
-    testImplementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+    testImplementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
     testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
 }
 

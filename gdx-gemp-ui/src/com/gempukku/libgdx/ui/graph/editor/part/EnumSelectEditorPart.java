@@ -12,7 +12,7 @@ import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTable;
 
-public class EnumSelectEditorPart<T extends Enum> extends VisTable implements GraphNodeEditorPart {
+public class EnumSelectEditorPart<T extends Enum<T>> extends VisTable implements GraphNodeEditorPart {
     private final VisSelectBox<String> selectBox;
     private final Function<T, String> displayTextFunction;
     private final String[] resultValues;

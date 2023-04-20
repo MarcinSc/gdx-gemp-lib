@@ -2,10 +2,9 @@ buildscript {
     repositories {
         mavenLocal()
         mavenCentral()
-        google()
         gradlePluginPortal()
-        jcenter()
-        maven { url 'https://jitpack.io' }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        google()
     }
     dependencies {
 
@@ -14,9 +13,6 @@ buildscript {
 
 allprojects {
     apply plugin: "eclipse"
-    apply plugin: "idea"
-    apply plugin: "maven"
-    apply plugin: "java"
 
     group = "com.gempukku.libgdx.lib"
     version = '0.1.14'
@@ -29,14 +25,15 @@ allprojects {
         mavenCentral()
         google()
         gradlePluginPortal()
-        jcenter()
-        maven { url 'https://jitpack.io' }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+        maven { url "https://jitpack.io" }
     }
 }
 
 configure(subprojects) {
     apply plugin: 'java-library'
-    sourceCompatibility = 1.7
+    sourceCompatibility = 1.8
 
     sourceSets.main.java.srcDirs = ["src/"]
     sourceSets.main.resources.srcDirs = ["resources/"]
