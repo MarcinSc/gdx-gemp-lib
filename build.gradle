@@ -33,7 +33,7 @@ allprojects {
 
 configure(subprojects) {
     apply plugin: 'java-library'
-    sourceCompatibility = 1.8
+    sourceCompatibility = 1.7
 
     sourceSets.main.java.srcDirs = ["src/"]
     sourceSets.main.resources.srcDirs = ["resources/"]
