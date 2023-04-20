@@ -3,6 +3,7 @@ package com.gempukku.libgdx.ui.graph;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -149,10 +150,11 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
                             // Hit the label
                             dragGroup = group;
                             movingSelected = true;
-                            graphChangesAggregation.startAggregating();
                             break;
                         }
                     }
+                    graphChangesAggregation.startAggregating();
+                    Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Hand);
                 }
             }
 
@@ -177,11 +179,13 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
 
             @Override
             public void dragStop(InputEvent event, float x, float y, int pointer) {
-                if (dragGroup != null) {
-                    dragGroup = null;
-                    movingSelected = false;
-                    windowsMoved();
+                if (event.getTarget() == GraphEditor.this) {
+                    if (dragGroup != null) {
+                        dragGroup = null;
+                        movingSelected = false;
+                    }
                     graphChangesAggregation.finishAggregating();
+                    Gdx.graphics.setSystemCursor(null);
                 }
             }
         };
