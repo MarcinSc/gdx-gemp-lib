@@ -24,7 +24,7 @@ public class GDirtyTabIconLabel<T extends GDirtyTab> extends Button {
     private final GDirtyTabImageLabelStyle style;
 
     public GDirtyTabIconLabel(GTabControl<? super T> tabControl, T tab, String title) {
-        this (tabControl, tab, "default", title);
+        this(tabControl, tab, "default", title);
     }
 
     public GDirtyTabIconLabel(GTabControl<? super T> tabControl, T tab, String styleName, String title) {
@@ -121,12 +121,13 @@ public class GDirtyTabIconLabel<T extends GDirtyTab> extends Button {
             getCell(textLabel).maxWidth(style.activeTextMaxWidth).minWidth(1);
             if (style.activeTextStyle != null)
                 textLabel.setStyle(style.activeTextStyle);
-            if (style.activeCloseStyle != null)
+            if (closeButton != null && style.activeCloseStyle != null)
                 closeButton.setStyle(style.activeCloseStyle);
         } else {
             getCell(textLabel).maxWidth(style.textMaxWidth).minWidth(1);
             textLabel.setStyle(style.textStyle);
-            closeButton.setStyle(style.closeStyle);
+            if (closeButton != null)
+                closeButton.setStyle(style.closeStyle);
         }
         if (dirty) {
             dirtyImage.setDrawable(style.dirty);
