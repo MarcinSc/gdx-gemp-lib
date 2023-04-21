@@ -939,6 +939,7 @@
       "background": "darkGrey",
       "windowStyle": "noborder",
       "windowSelectedStyle": "default",
+      "windowCloseButtonStyle": "close-window",
       "groupBackground": "dialogDim",
       "groupNameFont": "default-font",
       "groupNameColor": "white",

@@ -14,6 +14,8 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.utils.*;
@@ -31,10 +33,9 @@ import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.util.InputValidator;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.util.dialog.InputDialogListener;
+import com.kotcrab.vis.ui.widget.*;
 import com.kotcrab.vis.ui.widget.MenuItem;
 import com.kotcrab.vis.ui.widget.PopupMenu;
-import com.kotcrab.vis.ui.widget.VisTable;
-import com.kotcrab.vis.ui.widget.VisWindow;
 
 import java.awt.*;
 import java.awt.geom.CubicCurve2D;
@@ -199,7 +200,7 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
         GraphNodeEditorProducer graphNodeEditorProducer = graphNodeEditorProducers.evaluate(type);
         GraphNodeEditor pipelineGraphBox = graphNodeEditorProducer.createNodeEditor(data);
         final GraphNodeWindow graphNodeWindow = new GraphNodeWindow(nodeId, pipelineGraphBox,
-                graphNodeEditorProducer.getName(), style.windowStyle) {
+                graphNodeEditorProducer.getName(), style.windowStyle, style.windowCloseButtonStyle) {
             @Override
             protected void positionChanged(float fromX, float fromY, float toX, float toY) {
                 graphWindowMoved(this, fromX, fromY, toX, toY);
@@ -228,6 +229,7 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
         graphNodeWindow.addListener(
                 new InputListener() {
                     private boolean dragging;
+
                     @Override
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                         if (!dragging && graphNodeWindow.isDragging()) {
@@ -272,7 +274,7 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
     }
 
     public void centerCanvas() {
-        navigateTo((getWidth()-canvasWidth) / 2f, (getHeight()-canvasHeight) / 2f);
+        navigateTo((getWidth() - canvasWidth) / 2f, (getHeight() - canvasHeight) / 2f);
     }
 
     @Override
@@ -971,6 +973,7 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
         public Drawable background;
         public Window.WindowStyle windowStyle;
         public Window.WindowStyle windowSelectedStyle = null; // optional - defaults to windowStyle
+        public VisImageButton.VisImageButtonStyle windowCloseButtonStyle;
         // Group style
         public Drawable groupBackground;
         public float groupGap = 10;
