@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.BaseDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -14,14 +15,16 @@ import com.gempukku.libgdx.ui.graph.GraphChangedEvent;
 import com.gempukku.libgdx.ui.graph.data.Graph;
 import com.gempukku.libgdx.ui.graph.editor.GraphNodeEditorInput;
 import com.gempukku.libgdx.ui.graph.editor.GraphNodeEditorOutput;
+import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisImage;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.color.ColorPicker;
 import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter;
+import com.kotcrab.vis.ui.widget.color.ColorPickerStyle;
 
 public class ColorEditorPart extends VisTable implements GraphNodeEditorPart, Disposable {
-    private String property;
+    private final String property;
     private final VisImage image;
     private final ColorPicker picker;
 
@@ -30,6 +33,14 @@ public class ColorEditorPart extends VisTable implements GraphNodeEditorPart, Di
     }
 
     public ColorEditorPart(String label, String property, Color defaultColor) {
+        this(label, property, defaultColor, "default", "default");
+    }
+
+    public ColorEditorPart(String label, String property, Color defaultColor, String labelStyleName, String colorPickerStyleName) {
+        this(label, property, defaultColor, VisUI.getSkin().get(labelStyleName, Label.LabelStyle.class), colorPickerStyleName);
+    }
+
+    public ColorEditorPart(String label, String property, Color defaultColor, Label.LabelStyle labelStyle, String colorPickerStyleName) {
         this.property = property;
 
         final Drawable drawable = getSkin().getDrawable("white");
@@ -44,7 +55,7 @@ public class ColorEditorPart extends VisTable implements GraphNodeEditorPart, Di
         image = new VisImage(baseDrawable);
         image.setColor(defaultColor);
 
-        picker = new ColorPicker(new ColorPickerAdapter() {
+        picker = new ColorPicker(colorPickerStyleName, new ColorPickerAdapter() {
             @Override
             public void finished(Color newColor) {
                 image.setColor(newColor);
@@ -62,7 +73,7 @@ public class ColorEditorPart extends VisTable implements GraphNodeEditorPart, Di
                     }
                 });
 
-        add(new VisLabel(label)).growX();
+        add(new VisLabel(label, labelStyle)).growX();
         add(image);
         row();
     }

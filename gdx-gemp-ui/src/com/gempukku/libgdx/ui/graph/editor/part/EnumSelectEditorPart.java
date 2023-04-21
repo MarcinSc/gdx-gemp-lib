@@ -2,12 +2,15 @@ package com.gempukku.libgdx.ui.graph.editor.part;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.JsonValue;
 import com.gempukku.libgdx.common.Function;
 import com.gempukku.libgdx.ui.graph.GraphChangedEvent;
 import com.gempukku.libgdx.ui.graph.editor.GraphNodeEditorInput;
 import com.gempukku.libgdx.ui.graph.editor.GraphNodeEditorOutput;
+import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTable;
@@ -36,10 +39,23 @@ public class EnumSelectEditorPart<T extends Enum<T>> extends VisTable implements
     }
 
     public EnumSelectEditorPart(String label, String property, Function<T, String> displayTextFunction, T... values) {
+        this(label, property, displayTextFunction, "default", "default", values);
+    }
+
+    public EnumSelectEditorPart(String label, String property, Function<T, String> displayTextFunction,
+                                String labelStyleName, String selectBoxStyleName, T... values) {
+        this(label, property, displayTextFunction,
+                VisUI.getSkin().get(labelStyleName, Label.LabelStyle.class),
+                VisUI.getSkin().get(selectBoxStyleName, SelectBox.SelectBoxStyle.class),
+                values);
+    }
+
+    public EnumSelectEditorPart(String label, String property, Function<T, String> displayTextFunction,
+                                Label.LabelStyle labelStyle, SelectBox.SelectBoxStyle selectBoxStyle, T... values) {
         this.property = property;
-        selectBox = new VisSelectBox<>();
+        selectBox = new VisSelectBox<>(selectBoxStyle);
         selectBox.setItems(convertToDisplayText(displayTextFunction, values));
-        add(new VisLabel(label + " "));
+        add(new VisLabel(label + " ", labelStyle));
         add(selectBox).growX();
         row();
 

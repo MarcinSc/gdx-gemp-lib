@@ -1,6 +1,5 @@
 package com.gempukku.libgdx.ui.graph.editor;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.JsonValue;
 import com.gempukku.libgdx.ui.graph.data.GraphNodeInput;
 import com.gempukku.libgdx.ui.graph.data.GraphNodeOutput;
@@ -26,17 +25,17 @@ public abstract class DefaultGraphNodeEditorProducer implements GraphNodeEditorP
     }
 
     @Override
-    public DefaultGraphNodeEditor createNodeEditor(Skin skin, JsonValue data) {
+    public DefaultGraphNodeEditor createNodeEditor(JsonValue data) {
         DefaultGraphNodeEditor nodeEditor = new DefaultGraphNodeEditor(configuration);
         addConfigurationInputsAndOutputs(nodeEditor);
-        buildNodeEditor(nodeEditor, skin, configuration);
+        buildNodeEditor(nodeEditor, configuration);
         if (data != null)
             nodeEditor.initialize(data);
 
         return nodeEditor;
     }
 
-    protected abstract void buildNodeEditor(DefaultGraphNodeEditor graphNodeEditor, Skin skin, NodeConfiguration configuration);
+    protected abstract void buildNodeEditor(DefaultGraphNodeEditor graphNodeEditor, NodeConfiguration configuration);
 
     protected void addConfigurationInputsAndOutputs(DefaultGraphNodeEditor nodeEditor) {
         Iterator<GraphNodeInput> inputIterator = configuration.getNodeInputs().values().iterator();

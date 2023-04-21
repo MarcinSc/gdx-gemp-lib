@@ -126,7 +126,7 @@ public class GempTabbedPaneApplication extends ApplicationAdapter {
                 if (s.equals("intOut")) {
                     DefaultGraphNodeEditorProducer producer = new DefaultGraphNodeEditorProducer(intOut) {
                         @Override
-                        protected void buildNodeEditor(DefaultGraphNodeEditor graphNodeEditor, Skin skin, NodeConfiguration configuration) {
+                        protected void buildNodeEditor(DefaultGraphNodeEditor graphNodeEditor, NodeConfiguration configuration) {
                             graphNodeEditor.addGraphBoxPart(
                                     new GradientEditorPart("gradient", "default"));
                             graphNodeEditor.addGraphBoxPart(new IntegerEditorPart("Value", "prop", 0, new Validators.IntegerValidator()));
@@ -137,7 +137,7 @@ public class GempTabbedPaneApplication extends ApplicationAdapter {
                 } else if (s.equals("intIn")) {
                     DefaultGraphNodeEditorProducer producer = new DefaultGraphNodeEditorProducer(intIn) {
                         @Override
-                        protected void buildNodeEditor(DefaultGraphNodeEditor graphNodeEditor, Skin skin, NodeConfiguration configuration) {
+                        protected void buildNodeEditor(DefaultGraphNodeEditor graphNodeEditor, NodeConfiguration configuration) {
                             graphNodeEditor.addGraphBoxPart(
                                     new CurveEditorPart("curve", "default"));
                         }

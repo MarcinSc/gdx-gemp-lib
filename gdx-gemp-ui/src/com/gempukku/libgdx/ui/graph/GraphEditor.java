@@ -14,7 +14,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.utils.*;
@@ -50,46 +49,39 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
     private static final Color VALID_LABEL_COLOR = Color.WHITE;
     private static final float NODE_GROUP_PADDING = 4f;
 
-    private final Skin skin;
     private final GraphEditorStyle style;
     private final Function<String, GraphNodeEditorProducer> graphNodeEditorProducers;
     private final PopupMenuProducer popupMenuProducer;
 
-    private ShapeRenderer shapeRenderer;
+    private final ShapeRenderer shapeRenderer;
+
+    private final Map<NodeConnector, Shape> connectionNodeMap = new HashMap<>();
+    private final Map<DrawnGraphConnection, Shape> connections = new HashMap<>();
+
+    private final ObjectSet<String> selectedNodes = new ObjectSet<>();
+
+    private final DefaultGraph<GraphNodeWindow, DrawnGraphConnection, RectangleNodeGroup> editedGraph;
+    private final GraphChangesAggregation graphChangesAggregation;
 
     private float canvasX;
     private float canvasY;
     private float canvasWidth;
     private float canvasHeight;
     private boolean navigating;
-
-    private Map<NodeConnector, Shape> connectionNodeMap = new HashMap<>();
-    private Map<DrawnGraphConnection, Shape> connections = new HashMap<>();
-
+    private boolean userInitiatedMove = false;
     private NodeConnector drawingFromConnector;
 
-    private ObjectSet<String> selectedNodes = new ObjectSet<>();
-    private boolean userInitiatedMove = false;
-
-    private final DefaultGraph<GraphNodeWindow, DrawnGraphConnection, RectangleNodeGroup> editedGraph;
-    private final GraphChangesAggregation graphChangesAggregation;
-
     public GraphEditor(Graph graph, Function<String, GraphNodeEditorProducer> graphNodeEditorProducers, final PopupMenuProducer popupMenuProducer) {
-        this(graph, graphNodeEditorProducers, popupMenuProducer, VisUI.getSkin());
-    }
-
-    public GraphEditor(Graph graph, Function<String, GraphNodeEditorProducer> graphNodeEditorProducers, final PopupMenuProducer popupMenuProducer, Skin skin) {
-        this(graph, graphNodeEditorProducers, popupMenuProducer, skin, "default");
+        this(graph, graphNodeEditorProducers, popupMenuProducer, "default");
     }
 
     public GraphEditor(Graph graph, Function<String, GraphNodeEditorProducer> graphNodeEditorProducers, final PopupMenuProducer popupMenuProducer,
-                       Skin skin, String styleName) {
-        this(graph, graphNodeEditorProducers, popupMenuProducer, skin, skin.get(styleName, GraphEditorStyle.class));
+                       String styleName) {
+        this(graph, graphNodeEditorProducers, popupMenuProducer, VisUI.getSkin().get(styleName, GraphEditorStyle.class));
     }
 
     public GraphEditor(Graph graph, Function<String, GraphNodeEditorProducer> graphNodeEditorProducers, final PopupMenuProducer popupMenuProducer,
-                       Skin skin, final GraphEditorStyle style) {
-        this.skin = skin;
+                       final GraphEditorStyle style) {
         this.style = style;
         this.graphNodeEditorProducers = graphNodeEditorProducers;
         this.popupMenuProducer = popupMenuProducer;
@@ -205,9 +197,9 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
 
     public void addGraphNode(String nodeId, String type, JsonValue data, float x, float y) {
         GraphNodeEditorProducer graphNodeEditorProducer = graphNodeEditorProducers.evaluate(type);
-        GraphNodeEditor pipelineGraphBox = graphNodeEditorProducer.createNodeEditor(skin, data);
+        GraphNodeEditor pipelineGraphBox = graphNodeEditorProducer.createNodeEditor(data);
         final GraphNodeWindow graphNodeWindow = new GraphNodeWindow(nodeId, pipelineGraphBox,
-                graphNodeEditorProducer.getName(), skin.get(style.windowStyle, Window.WindowStyle.class)) {
+                graphNodeEditorProducer.getName(), style.windowStyle) {
             @Override
             protected void positionChanged(float fromX, float fromY, float toX, float toY) {
                 graphWindowMoved(this, fromX, fromY, toX, toY);
@@ -611,10 +603,8 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
     }
 
     private void updateSelectedVisuals() {
-        String selectedWindowStyleName = style.windowSelectedStyle != null ? style.windowSelectedStyle : style.windowStyle;
-        String windowStyleName = style.windowStyle;
-        VisWindow.WindowStyle notSelectedStyle = VisUI.getSkin().get(windowStyleName, VisWindow.WindowStyle.class);
-        VisWindow.WindowStyle selectedStyle = VisUI.getSkin().get(selectedWindowStyleName, VisWindow.WindowStyle.class);
+        VisWindow.WindowStyle notSelectedStyle = style.windowStyle;
+        VisWindow.WindowStyle selectedStyle = style.windowSelectedStyle != null ? style.windowSelectedStyle : style.windowStyle;
 
         for (GraphNodeWindow window : editedGraph.getNodes()) {
             VisWindow.WindowStyle newStyle = selectedNodes.contains(window.getId()) ? selectedStyle : notSelectedStyle;
@@ -979,8 +969,8 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
 
     public static class GraphEditorStyle {
         public Drawable background;
-        public String windowStyle = "default";
-        public String windowSelectedStyle = null; // optional - defaults to windowStyle
+        public Window.WindowStyle windowStyle;
+        public Window.WindowStyle windowSelectedStyle = null; // optional - defaults to windowStyle
         // Group style
         public Drawable groupBackground;
         public float groupGap = 10;

@@ -11,19 +11,28 @@ import com.gempukku.libgdx.ui.curve.GCurveEditor;
 import com.gempukku.libgdx.ui.graph.GraphChangedEvent;
 import com.gempukku.libgdx.ui.graph.editor.GraphNodeEditorInput;
 import com.gempukku.libgdx.ui.graph.editor.GraphNodeEditorOutput;
+import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisTable;
 
 public class CurveEditorPart extends VisTable implements GraphNodeEditorPart{
+    private final String property;
     private final DefaultCurveDefinition curveDefinition;
-    private String property;
 
-    public CurveEditorPart(String property, String styleName) {
+    public CurveEditorPart(String property) {
+        this(property, "default");
+    }
+
+    public CurveEditorPart(String property, String curveEditorStyleName) {
+        this(property, VisUI.getSkin().get(curveEditorStyleName, GCurveEditor.GCurveEditorStyle.class));
+    }
+
+    public CurveEditorPart(String property, GCurveEditor.GCurveEditorStyle curveEditorStyle) {
         this.property = property;
 
         curveDefinition = new DefaultCurveDefinition();
         curveDefinition.addPoint(0, 0);
 
-        final GCurveEditor curveEditor = new GCurveEditor(curveDefinition, styleName);
+        final GCurveEditor curveEditor = new GCurveEditor(curveDefinition, curveEditorStyle);
         curveEditor.setPrefWidth(300);
         curveEditor.setPrefHeight(200);
 

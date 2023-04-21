@@ -12,20 +12,28 @@ import com.gempukku.libgdx.ui.gradient.GradientDefinition;
 import com.gempukku.libgdx.ui.graph.GraphChangedEvent;
 import com.gempukku.libgdx.ui.graph.editor.GraphNodeEditorInput;
 import com.gempukku.libgdx.ui.graph.editor.GraphNodeEditorOutput;
+import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisTable;
 
 public class GradientEditorPart extends VisTable implements GraphNodeEditorPart {
     private final DefaultGradientDefinition gradientDefinition;
-    private String property;
-    private GGradientEditor gradientEditor;
+    private final String property;
 
-    public GradientEditorPart(String property, String styleName) {
+    public GradientEditorPart(String property) {
+        this(property, "default");
+    }
+
+    public GradientEditorPart(String property, String gradientEditorStyleName) {
+        this(property, VisUI.getSkin().get(gradientEditorStyleName, GGradientEditor.GGradientEditorStyle.class));
+    }
+
+    public GradientEditorPart(String property, GGradientEditor.GGradientEditorStyle gradientEditorStyle) {
         this.property = property;
 
         gradientDefinition = new DefaultGradientDefinition();
         gradientDefinition.addColor(0, Color.WHITE);
 
-        gradientEditor = new GGradientEditor(gradientDefinition, styleName);
+        final GGradientEditor gradientEditor = new GGradientEditor(gradientDefinition, gradientEditorStyle);
 
         gradientEditor.addListener(new ChangeListener() {
             @Override
@@ -76,7 +84,7 @@ public class GradientEditorPart extends VisTable implements GraphNodeEditorPart 
 
     @Override
     public void serializePart(JsonValue value) {
-        Array<GradientDefinition.ColorPosition> points = gradientEditor.getGradientDefinition().getColorPositions();
+        Array<GradientDefinition.ColorPosition> points = gradientDefinition.getColorPositions();
         JsonValue pointsValue = new JsonValue(JsonValue.ValueType.array);
         for (GradientDefinition.ColorPosition point : points) {
             pointsValue.addChild(new JsonValue(point.color.toString() + "," + SimpleNumberFormatter.format(point.position)));
