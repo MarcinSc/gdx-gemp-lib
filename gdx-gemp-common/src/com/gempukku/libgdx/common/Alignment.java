@@ -24,6 +24,10 @@ public enum Alignment {
         this.align = align;
     }
 
+    public int getAlign() {
+        return align;
+    }
+
     public boolean isLeft() {
         return (align & left.align) != 0;
     }

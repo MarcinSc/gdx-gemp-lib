@@ -19,6 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.utils.*;
+import com.gempukku.libgdx.common.Alignment;
 import com.gempukku.libgdx.common.Function;
 import com.gempukku.libgdx.ui.graph.data.*;
 import com.gempukku.libgdx.ui.graph.data.impl.DefaultGraph;
@@ -200,7 +201,7 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
         GraphNodeEditorProducer graphNodeEditorProducer = graphNodeEditorProducers.evaluate(type);
         GraphNodeEditor pipelineGraphBox = graphNodeEditorProducer.createNodeEditor(data);
         final GraphNodeWindow graphNodeWindow = new GraphNodeWindow(nodeId, pipelineGraphBox,
-                graphNodeEditorProducer.getName(), style.windowStyle, style.windowCloseButtonStyle) {
+                graphNodeEditorProducer.getName(), style.windowTitleAlignment, style.windowStyle, style.windowCloseButtonStyle) {
             @Override
             protected void positionChanged(float fromX, float fromY, float toX, float toY) {
                 graphWindowMoved(this, fromX, fromY, toX, toY);
@@ -974,6 +975,7 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
         public Window.WindowStyle windowStyle;
         public Window.WindowStyle windowSelectedStyle = null; // optional - defaults to windowStyle
         public VisImageButton.VisImageButtonStyle windowCloseButtonStyle;
+        public int windowTitleAlignment = 1;
         // Group style
         public Drawable groupBackground;
         public float groupGap = 10;

@@ -940,6 +940,7 @@
       "windowStyle": "noborder",
       "windowSelectedStyle": "default",
       "windowCloseButtonStyle": "close-window",
+      "windowTitleAlignment": 1,
       "groupBackground": "dialogDim",
       "groupNameFont": "default-font",
       "groupNameColor": "white",

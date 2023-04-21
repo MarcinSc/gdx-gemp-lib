@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectSet;
+import com.gempukku.libgdx.common.Alignment;
 import com.gempukku.libgdx.ui.graph.data.GraphNode;
 import com.gempukku.libgdx.ui.graph.data.NodeConfiguration;
 import com.gempukku.libgdx.ui.graph.editor.GraphNodeEditor;
@@ -24,12 +25,14 @@ public class GraphNodeWindow extends VisWindow implements GraphNode, Disposable 
     private final ObjectSet<String> connectorsWithError = new ObjectSet<>();
     private Vector2 lastPosition;
 
-    public GraphNodeWindow(String nodeId, GraphNodeEditor graphNodeEditor, String title, WindowStyle windowStyle, VisImageButton.VisImageButtonStyle closeButtonStyle) {
+    public GraphNodeWindow(String nodeId, GraphNodeEditor graphNodeEditor, String title, int windowTitleAlignment,
+                           WindowStyle windowStyle, VisImageButton.VisImageButtonStyle closeButtonStyle) {
         super(title, windowStyle);
         this.nodeId = nodeId;
         this.graphNodeEditor = graphNodeEditor;
         this.closeButtonStyle = closeButtonStyle;
         add(graphNodeEditor.getActor()).grow().row();
+        getTitleLabel().setAlignment(windowTitleAlignment);
     }
 
     public void addCloseButton () {
