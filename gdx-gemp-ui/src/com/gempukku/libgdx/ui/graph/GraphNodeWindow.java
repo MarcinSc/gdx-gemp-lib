@@ -35,28 +35,24 @@ public class GraphNodeWindow extends VisWindow implements GraphNode, Disposable 
         getTitleLabel().setAlignment(windowTitleAlignment);
     }
 
-    public void addCloseButton () {
-        Label titleLabel = getTitleLabel();
+    public void addCloseButton() {
         Table titleTable = getTitleTable();
 
         VisImageButton closeButton = new VisImageButton(closeButtonStyle);
         titleTable.add(closeButton).padRight(-getPadRight() + 0.7f);
         closeButton.addListener(new ChangeListener() {
             @Override
-            public void changed (ChangeEvent event, Actor actor) {
+            public void changed(ChangeEvent event, Actor actor) {
                 close();
             }
         });
         closeButton.addListener(new ClickListener() {
             @Override
-            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 event.cancel();
                 return true;
             }
         });
-
-        if (titleLabel.getLabelAlign() == Align.center && titleTable.getChildren().size == 2)
-            titleTable.getCell(titleLabel).padLeft(closeButton.getWidth() * 2);
     }
 
     public void clearConnectorErrors() {

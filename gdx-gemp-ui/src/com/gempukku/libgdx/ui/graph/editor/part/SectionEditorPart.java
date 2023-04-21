@@ -31,7 +31,6 @@ public class SectionEditorPart extends VisTable implements GraphNodeEditorPart {
         Separator separator = new Separator(separatorStyle);
         add(separator).growX().row();
         VisLabel label = new VisLabel(sectionLabel, labelStyle);
-        label.setColor(Color.GRAY);
         label.setAlignment(Align.center);
         add(label).growX().row();
     }
