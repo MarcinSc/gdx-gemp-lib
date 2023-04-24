@@ -1,9 +1,7 @@
 package com.gempukku.libgdx.ui.graph.editor;
 
 import com.badlogic.gdx.utils.JsonValue;
-import com.gempukku.libgdx.ui.graph.data.GraphNodeInput;
-import com.gempukku.libgdx.ui.graph.data.GraphNodeOutput;
-import com.gempukku.libgdx.ui.graph.data.NodeConfiguration;
+import com.gempukku.libgdx.ui.graph.data.*;
 
 import java.util.Iterator;
 
@@ -45,7 +43,7 @@ public abstract class DefaultGraphNodeEditorProducer implements GraphNodeEditorP
             GraphNodeOutput output = null;
             while (inputIterator.hasNext()) {
                 input = inputIterator.next();
-                if (input.isMainConnection()) {
+                if (input.getSide() == GraphNodeInputSide.Top) {
                     nodeEditor.addTopConnector(input);
                     input = null;
                 } else {
@@ -54,7 +52,7 @@ public abstract class DefaultGraphNodeEditorProducer implements GraphNodeEditorP
             }
             while (outputIterator.hasNext()) {
                 output = outputIterator.next();
-                if (output.isMainConnection()) {
+                if (output.getSide() == GraphNodeOutputSide.Bottom) {
                     nodeEditor.addBottomConnector(output);
                     output = null;
                 } else {

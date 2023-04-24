@@ -1,17 +1,7 @@
 package com.gempukku.libgdx.ui.graph.data;
 
-import com.badlogic.gdx.utils.Array;
-
-public interface GraphNodeInput {
+public interface GraphNodeInput extends GraphNodeIO {
     boolean isRequired();
 
-    boolean isAcceptingMultiple();
-
-    boolean isMainConnection();
-
-    String getFieldName();
-
-    String getFieldId();
-
-    Array<String> getAcceptedPropertyTypes();
+    GraphNodeInputSide getSide();
 }

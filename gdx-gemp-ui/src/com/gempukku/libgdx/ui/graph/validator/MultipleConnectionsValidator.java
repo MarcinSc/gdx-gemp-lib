@@ -8,12 +8,10 @@ import com.gempukku.libgdx.common.BiFunction;
 import com.gempukku.libgdx.ui.graph.NodeConnector;
 import com.gempukku.libgdx.ui.graph.data.*;
 
-import java.util.HashSet;
-
-public class RequiredInputsValidator implements GraphValidator {
+public class MultipleConnectionsValidator implements GraphValidator {
     private BiFunction<String, JsonValue, NodeConfiguration> nodeConfigurationResolver;
 
-    public RequiredInputsValidator(BiFunction<String, JsonValue, NodeConfiguration> nodeConfigurationResolver) {
+    public MultipleConnectionsValidator(BiFunction<String, JsonValue, NodeConfiguration> nodeConfigurationResolver) {
         this.nodeConfigurationResolver = nodeConfigurationResolver;
     }
 
@@ -32,7 +30,7 @@ public class RequiredInputsValidator implements GraphValidator {
             GraphNode node = graph.getNodeById(nodeId);
             NodeConfiguration nodeConfiguration = nodeConfigurationResolver.evaluate(node.getType(), node.getData());
             for (ObjectMap.Entry<String, GraphNodeInput> entry : nodeConfiguration.getNodeInputs().entries()) {
-                if (entry.value.isRequired() && !hasConnectionToInput(graph, node.getId(), entry.key))
+                if (!entry.value.acceptsMultipleConnections() && hasModeThanOneConnectionToInput(graph, node.getId(), entry.key))
                     result.addErrorConnector(new NodeConnector(node.getId(), entry.key));
             }
             validatedNodes.add(nodeId);
@@ -52,10 +50,15 @@ public class RequiredInputsValidator implements GraphValidator {
         return result;
     }
 
-    private boolean hasConnectionToInput(Graph graph, String nodeId, String fieldId) {
+    private boolean hasModeThanOneConnectionToInput(Graph graph, String nodeId, String fieldId) {
+        boolean found = false;
         for (GraphConnection connection : graph.getConnections()) {
-            if (connection.getNodeTo().equals(nodeId) && connection.getFieldTo().equals(fieldId))
-                return true;
+            if (connection.getNodeTo().equals(nodeId) && connection.getFieldTo().equals(fieldId)) {
+                if (found)
+                    return true;
+                else
+                    found = true;
+            }
         }
         return false;
     }

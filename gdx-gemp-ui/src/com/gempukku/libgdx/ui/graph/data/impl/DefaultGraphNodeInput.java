@@ -2,6 +2,9 @@ package com.gempukku.libgdx.ui.graph.data.impl;
 
 import com.badlogic.gdx.utils.Array;
 import com.gempukku.libgdx.ui.graph.data.GraphNodeInput;
+import com.gempukku.libgdx.ui.graph.data.GraphNodeInputSide;
+
+import java.util.Collection;
 
 public class DefaultGraphNodeInput implements GraphNodeInput {
     private final String id;
@@ -9,25 +12,25 @@ public class DefaultGraphNodeInput implements GraphNodeInput {
     private final boolean acceptingMultiple;
     private final Array<String> acceptedTypes;
     private final boolean required;
-    private final boolean mainConnection;
+    private final GraphNodeInputSide side;
 
     public DefaultGraphNodeInput(String id, String name, String... acceptedType) {
         this(id, name, false, acceptedType);
     }
 
     public DefaultGraphNodeInput(String id, String name, boolean required, String... acceptedType) {
-        this(id, name, required, false, acceptedType);
+        this(id, name, required, GraphNodeInputSide.Left, acceptedType);
     }
 
-    public DefaultGraphNodeInput(String id, String name, boolean required, boolean mainConnection, String... acceptedType) {
-        this(id, name, required, mainConnection, false, acceptedType);
+    public DefaultGraphNodeInput(String id, String name, boolean required, GraphNodeInputSide side, String... acceptedType) {
+        this(id, name, required, side, false, acceptedType);
     }
 
-    public DefaultGraphNodeInput(String id, String name, boolean required, boolean mainConnection, boolean acceptingMultiple, String... acceptedType) {
+    public DefaultGraphNodeInput(String id, String name, boolean required, GraphNodeInputSide side, boolean acceptingMultiple, String... acceptedType) {
         this.id = id;
         this.name = name;
         this.required = required;
-        this.mainConnection = mainConnection;
+        this.side = side;
         this.acceptingMultiple = acceptingMultiple;
         this.acceptedTypes = new Array<>(acceptedType);
     }
@@ -38,8 +41,8 @@ public class DefaultGraphNodeInput implements GraphNodeInput {
     }
 
     @Override
-    public boolean isMainConnection() {
-        return mainConnection;
+    public GraphNodeInputSide getSide() {
+        return side;
     }
 
     @Override
@@ -53,12 +56,12 @@ public class DefaultGraphNodeInput implements GraphNodeInput {
     }
 
     @Override
-    public boolean isAcceptingMultiple() {
+    public boolean acceptsMultipleConnections() {
         return acceptingMultiple;
     }
 
     @Override
-    public Array<String> getAcceptedPropertyTypes() {
+    public Array<String> getConnectableFieldTypes() {
         return acceptedTypes;
     }
 }

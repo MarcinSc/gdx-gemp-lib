@@ -11,16 +11,10 @@ import com.gempukku.libgdx.ui.graph.data.NodeConfiguration;
 
 // Checks that the graph is acyclic, starting from the specified end node id
 public class DAGValidatorWithEndNode implements GraphValidator {
-    private final String endNodeId;
-
-    public DAGValidatorWithEndNode(String endNodeId) {
-        this.endNodeId = endNodeId;
-    }
-
     @Override
-    public GraphValidationResult validateGraph(Graph graph) {
+    public GraphValidationResult validateGraph(Graph graph, String startNode) {
         GraphValidationResult result = new GraphValidationResult();
-        checkCyclic(result, graph, endNodeId);
+        checkCyclic(result, graph, startNode);
         return result;
     }
 

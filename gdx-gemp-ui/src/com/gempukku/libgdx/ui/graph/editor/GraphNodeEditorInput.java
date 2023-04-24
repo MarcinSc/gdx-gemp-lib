@@ -1,11 +1,9 @@
 package com.gempukku.libgdx.ui.graph.editor;
 
-public interface GraphNodeEditorInput {
-    enum Side {
-        Left, Top
-    }
+import com.gempukku.libgdx.ui.graph.data.GraphNodeInputSide;
 
-    Side getSide();
+public interface GraphNodeEditorInput {
+    GraphNodeInputSide getSide();
 
     float getOffset();
 

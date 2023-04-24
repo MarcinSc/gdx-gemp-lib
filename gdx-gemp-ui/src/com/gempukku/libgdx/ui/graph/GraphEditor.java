@@ -503,12 +503,12 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
                         drawingFromConnector = null;
                     } else {
                         // Remove conflicting connections if needed
-                        if (!input.isAcceptingMultiple()) {
+                        if (!input.acceptsMultipleConnections()) {
                             for (DrawnGraphConnection oldConnection : findNodeConnections(connectorTo)) {
                                 removeConnection(oldConnection);
                             }
                         }
-                        if (!output.supportsMultiple()) {
+                        if (!output.acceptsMultipleConnections()) {
                             for (DrawnGraphConnection oldConnection : findNodeConnections(connectorFrom)) {
                                 removeConnection(oldConnection);
                             }
@@ -524,8 +524,8 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
             }
         } else {
             boolean input = clickedNode.getConfiguration().getNodeInputs().containsKey(clickedNodeConnector.getFieldId());
-            if ((input && !clickedNode.getConfiguration().getNodeInputs().get(clickedNodeConnector.getFieldId()).isAcceptingMultiple())
-                    || (!input && !clickedNode.getConfiguration().getNodeOutputs().get(clickedNodeConnector.getFieldId()).supportsMultiple())) {
+            if ((input && !clickedNode.getConfiguration().getNodeInputs().get(clickedNodeConnector.getFieldId()).acceptsMultipleConnections())
+                    || (!input && !clickedNode.getConfiguration().getNodeOutputs().get(clickedNodeConnector.getFieldId()).acceptsMultipleConnections())) {
                 Array<DrawnGraphConnection> nodeConnections = findNodeConnections(clickedNodeConnector);
                 if (nodeConnections.size > 0) {
                     DrawnGraphConnection oldConnection = nodeConnections.get(0);
@@ -545,8 +545,8 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
     }
 
     private boolean connectorsMatch(GraphNodeInput input, GraphNodeOutput output) {
-        Array<String> producablePropertyTypes = output.getProducableFieldTypes();
-        for (String acceptedPropertyType : input.getAcceptedPropertyTypes()) {
+        Array<String> producablePropertyTypes = output.getConnectableFieldTypes();
+        for (String acceptedPropertyType : input.getConnectableFieldTypes()) {
             if (producablePropertyTypes.contains(acceptedPropertyType, false))
                 return true;
         }
@@ -736,7 +736,7 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
             GraphNodeEditorInput input = getGraphNodeEditorById(toNode.getNodeId()).getInputs().get(toNode.getFieldId());
             calculateConnection(to, toWindow, input);
             Shape shape;
-            if (output.getSide() == GraphNodeEditorOutput.Side.Right) {
+            if (output.getSide() == GraphNodeOutputSide.Right) {
                 shape = basicStroke.createStrokedShape(new CubicCurve2D.Float(from.x, from.y, ((from.x + to.x) / 2), from.y, ((from.x + to.x) / 2), to.y, to.x, to.y));
             } else {
                 shape = basicStroke.createStrokedShape(new CubicCurve2D.Float(from.x, from.y, from.x, ((from.y + to.y) / 2), to.x, ((from.y + to.y) / 2), to.x, to.y));
@@ -839,7 +839,7 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
 
             from.add(x, y);
             to.add(x, y);
-            if (output.getSide() == GraphNodeEditorOutput.Side.Right) {
+            if (output.getSide() == GraphNodeOutputSide.Right) {
                 shapeRenderer.curve(from.x, from.y, ((from.x + to.x) / 2), from.y, ((from.x + to.x) / 2), to.y, to.x, to.y, 100);
             } else {
                 shapeRenderer.curve(from.x, from.y, from.x, ((from.y + to.y) / 2), to.x, ((from.y + to.y) / 2), to.x, to.y, 100);
@@ -856,7 +856,7 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
                 GraphNodeEditorInput input = drawingFromNode.getInputs().get(drawingFromConnector.getFieldId());
                 calculateConnection(from, fromWindow, input);
                 Vector2 mouseLocation = screenToLocalCoordinates(new Vector2(Gdx.input.getX(), Gdx.input.getY())).add(x, y);
-                if (input.getSide() == GraphNodeEditorInput.Side.Left) {
+                if (input.getSide() == GraphNodeInputSide.Left) {
                     shapeRenderer.curve(x + from.x, y + from.y, ((x + from.x + mouseLocation.x) / 2), y + from.y,
                             ((x + from.x + mouseLocation.x) / 2), mouseLocation.y, mouseLocation.x, mouseLocation.y, 100);
                 } else {
@@ -867,7 +867,7 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
                 GraphNodeEditorOutput output = drawingFromNode.getOutputs().get(drawingFromConnector.getFieldId());
                 calculateConnection(from, fromWindow, output);
                 Vector2 mouseLocation = screenToLocalCoordinates(new Vector2(Gdx.input.getX(), Gdx.input.getY())).add(x, y);
-                if (output.getSide() == GraphNodeEditorOutput.Side.Right) {
+                if (output.getSide() == GraphNodeOutputSide.Right) {
                     shapeRenderer.curve(x + from.x, y + from.y, ((x + from.x + mouseLocation.x) / 2), y + from.y,
                             ((x + from.x + mouseLocation.x) / 2), mouseLocation.y, mouseLocation.x, mouseLocation.y, 100);
                 } else {

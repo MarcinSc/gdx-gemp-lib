@@ -1,20 +1,21 @@
 package com.gempukku.libgdx.ui.graph.editor;
 
 import com.gempukku.libgdx.common.Supplier;
+import com.gempukku.libgdx.ui.graph.data.GraphNodeInputSide;
 
 public class DefaultGraphNodeEditorInput implements GraphNodeEditorInput {
-    private Side side;
+    private GraphNodeInputSide side;
     private Supplier<Float> offsetSupplier;
     private String fieldId;
 
-    public DefaultGraphNodeEditorInput(Side side, Supplier<Float> offsetSupplier, String fieldId) {
+    public DefaultGraphNodeEditorInput(GraphNodeInputSide side, Supplier<Float> offsetSupplier, String fieldId) {
         this.side = side;
         this.offsetSupplier = offsetSupplier;
         this.fieldId = fieldId;
     }
 
     @Override
-    public Side getSide() {
+    public GraphNodeInputSide getSide() {
         return side;
     }
 
