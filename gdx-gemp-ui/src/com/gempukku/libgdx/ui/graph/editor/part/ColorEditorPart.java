@@ -50,7 +50,7 @@ public class ColorEditorPart extends VisTable implements GraphNodeEditorPart, Di
                 drawable.draw(batch, x, y, width, height);
             }
         };
-        baseDrawable.setMinSize(20, 20);
+        baseDrawable.setMinWidth(20);
 
         image = new VisImage(baseDrawable);
         image.setColor(defaultColor);
@@ -74,7 +74,7 @@ public class ColorEditorPart extends VisTable implements GraphNodeEditorPart, Di
                 });
 
         add(new VisLabel(label, labelStyle)).growX();
-        add(image);
+        add(image).fillY();
         row();
     }
 
