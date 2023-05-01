@@ -57,6 +57,9 @@ public class IntegerEditorPart extends VisTable implements GraphNodeEditorPart {
         row();
     }
 
+    public int getValue() {
+        return Integer.parseInt(v1Input.getText());
+    }
 
     @Override
     public Actor getActor() {

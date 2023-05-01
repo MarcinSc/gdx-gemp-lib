@@ -98,6 +98,10 @@ public class ColorEditorPart extends DisposableTable implements GraphNodeEditorP
         return null;
     }
 
+    public Color getColor() {
+        return new Color(image.getColor());
+    }
+
     @Override
     public void initialize(JsonValue data) {
         if (data != null) {

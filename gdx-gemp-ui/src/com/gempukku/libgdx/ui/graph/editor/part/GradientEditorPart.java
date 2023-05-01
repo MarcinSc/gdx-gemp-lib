@@ -35,6 +35,10 @@ public class GradientEditorPart extends VisTable implements GraphNodeEditorPart 
         add(gradientEditor).width(300).height(40).left().grow().row();
     }
 
+    public GradientDefinition getGradientDefinition() {
+        return new DefaultGradientDefinition(gradientEditor.getGradientDefinition());
+    }
+
     @Override
     public GraphNodeEditorOutput getOutputConnector() {
         return null;

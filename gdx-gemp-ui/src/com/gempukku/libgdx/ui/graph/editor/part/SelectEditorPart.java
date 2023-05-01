@@ -58,6 +58,10 @@ public class SelectEditorPart extends VisTable implements GraphNodeEditorPart {
                 });
     }
 
+    public String getSelected() {
+        return selectBox.getSelected();
+    }
+
     @Override
     public Actor getActor() {
         return this;
@@ -80,10 +84,6 @@ public class SelectEditorPart extends VisTable implements GraphNodeEditorPart {
             if (value != null)
                 selectBox.setSelected(value);
         }
-    }
-
-    private String getSelected() {
-        return selectBox.getSelected();
     }
 
     @Override

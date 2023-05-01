@@ -43,6 +43,10 @@ public class IndexEditorPart extends VisTable implements GraphNodeEditorPart {
         row();
     }
 
+    public int getIndex() {
+        return Integer.parseInt(indexField.getText());
+    }
+
     @Override
     public Actor getActor() {
         return this;

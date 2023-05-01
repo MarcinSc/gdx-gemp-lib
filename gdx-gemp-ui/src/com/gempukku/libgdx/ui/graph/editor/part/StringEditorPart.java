@@ -41,6 +41,10 @@ public class StringEditorPart extends VisTable implements GraphNodeEditorPart {
         row();
     }
 
+    public String getText() {
+        return input.getText();
+    }
+
     @Override
     public Actor getActor() {
         return this;

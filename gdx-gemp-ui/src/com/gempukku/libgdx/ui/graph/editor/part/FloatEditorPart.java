@@ -57,6 +57,9 @@ public class FloatEditorPart extends VisTable implements GraphNodeEditorPart {
         row();
     }
 
+    public float getValue() {
+        return Float.parseFloat(v1Input.getText());
+    }
 
     @Override
     public Actor getActor() {

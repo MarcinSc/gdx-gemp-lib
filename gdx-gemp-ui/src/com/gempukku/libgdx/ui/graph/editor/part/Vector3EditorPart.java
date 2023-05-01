@@ -1,5 +1,7 @@
 package com.gempukku.libgdx.ui.graph.editor.part;
 
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -70,6 +72,10 @@ public class Vector3EditorPart extends VisTable implements GraphNodeEditorPart {
         add(yInput).growX();
         add(zInput).growX();
         row();
+    }
+
+    public Vector3 getValue() {
+        return new Vector3(Float.parseFloat(xInput.getText()), Float.parseFloat(yInput.getText()), Float.parseFloat(xInput.getText()));
     }
 
     @Override

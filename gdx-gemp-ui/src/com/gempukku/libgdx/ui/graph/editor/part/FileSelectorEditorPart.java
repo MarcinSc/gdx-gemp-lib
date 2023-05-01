@@ -74,6 +74,10 @@ public class FileSelectorEditorPart extends VisTable implements GraphNodeEditorP
         }
     }
 
+    public String getSelectedPath() {
+        return selectedPath;
+    }
+
     @Override
     public Actor getActor() {
         return this;

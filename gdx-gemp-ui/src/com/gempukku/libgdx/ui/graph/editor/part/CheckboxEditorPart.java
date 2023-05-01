@@ -79,6 +79,10 @@ public class CheckboxEditorPart extends VisTable implements GraphNodeEditorPart 
         }
     }
 
+    public boolean isChecked() {
+        return input.isChecked();
+    }
+
     @Override
     public void serializePart(JsonValue object) {
         object.addChild(property, new JsonValue(input.isChecked()));

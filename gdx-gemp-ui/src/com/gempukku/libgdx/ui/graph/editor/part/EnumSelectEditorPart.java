@@ -4,6 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.Pools;
 import com.gempukku.libgdx.common.Function;
@@ -24,41 +25,46 @@ public class EnumSelectEditorPart<T extends Enum<T>> extends VisTable implements
 
     private String oldValue;
 
-    private static String[] convertToStrings(Enum<?>[] values) {
-        String[] result = new String[values.length];
-        for (int i = 0; i < values.length; i++) {
-            result[i] = values[i].name();
+    private static String[] convertToStrings(Array<? extends Enum<?>> values) {
+        String[] result = new String[values.size];
+        for (int i = 0; i < values.size; i++) {
+            result[i] = values.get(i).name();
         }
         return result;
     }
 
-    private static <T extends Enum<T>> String[] convertToDisplayText(Function<T, String> displayTextFunction, T[] values) {
-        String[] result = new String[values.length];
-        for (int i = 0; i < values.length; i++) {
-            result[i] = displayTextFunction.evaluate(values[i]);
+    private static <T extends Enum<T>> String[] convertToDisplayText(Function<T, String> displayTextFunction, Array<T> values) {
+        String[] result = new String[values.size];
+        for (int i = 0; i < values.size; i++) {
+            result[i] = displayTextFunction.evaluate(values.get(i));
         }
         return result;
     }
 
-    public EnumSelectEditorPart(String label, String property, Function<T, String> displayTextFunction, T... values) {
-        this(label, property, displayTextFunction, "default", "default", values);
+    public EnumSelectEditorPart(String label, String property, Function<T, String> displayTextFunction, Array<T> values) {
+        this(label, property, values.get(0), displayTextFunction, "default", "default", values);
     }
 
-    public EnumSelectEditorPart(String label, String property, Function<T, String> displayTextFunction,
-                                String labelStyleName, String selectBoxStyleName, T... values) {
-        this(label, property, displayTextFunction,
+    public EnumSelectEditorPart(String label, String property, T selectedValue, Function<T, String> displayTextFunction, Array<T> values) {
+        this(label, property, selectedValue, displayTextFunction, "default", "default", values);
+    }
+
+    public EnumSelectEditorPart(String label, String property, T selectedValue, Function<T, String> displayTextFunction,
+                                String labelStyleName, String selectBoxStyleName, Array<T> values) {
+        this(label, property, selectedValue, displayTextFunction,
                 VisUI.getSkin().get(labelStyleName, Label.LabelStyle.class),
                 VisUI.getSkin().get(selectBoxStyleName, SelectBox.SelectBoxStyle.class),
                 values);
     }
 
-    public EnumSelectEditorPart(String label, String property, Function<T, String> displayTextFunction,
-                                Label.LabelStyle labelStyle, SelectBox.SelectBoxStyle selectBoxStyle, T... values) {
+    public EnumSelectEditorPart(String label, String property, T selectedValue, Function<T, String> displayTextFunction,
+                                Label.LabelStyle labelStyle, SelectBox.SelectBoxStyle selectBoxStyle,  Array<T> values) {
         this.property = property;
-        this.oldValue = displayTextFunction.evaluate(values[0]);
+        this.oldValue = displayTextFunction.evaluate(selectedValue);
 
         selectBox = new VisSelectBox<>(selectBoxStyle);
         selectBox.setItems(convertToDisplayText(displayTextFunction, values));
+        selectBox.setSelected(oldValue);
         add(new VisLabel(label + " ", labelStyle));
         add(selectBox).growX();
         row();
@@ -104,7 +110,7 @@ public class EnumSelectEditorPart<T extends Enum<T>> extends VisTable implements
         }
     }
 
-    private String getSelected() {
+    public String getSelected() {
         return resultValues[selectBox.getSelectedIndex()];
     }
 

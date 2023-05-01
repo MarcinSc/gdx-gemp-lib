@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
 import com.gempukku.libgdx.common.SimpleNumberFormatter;
+import com.gempukku.libgdx.ui.curve.CurveDefinition;
 import com.gempukku.libgdx.ui.curve.DefaultCurveDefinition;
 import com.gempukku.libgdx.ui.curve.GCurveEditor;
 import com.gempukku.libgdx.ui.graph.GraphChangedEvent;
@@ -32,6 +33,10 @@ public class CurveEditorPart extends VisTable implements GraphNodeEditorPart{
         curveEditor = new GCurveEditor(new DefaultCurveDefinition(), curveEditorStyle);
 
         add(curveEditor).width(300).height(200).left().grow().row();
+    }
+
+    public CurveDefinition getCurveDefinition() {
+        return new DefaultCurveDefinition(curveEditor.getCurveDefinition());
     }
 
     @Override
