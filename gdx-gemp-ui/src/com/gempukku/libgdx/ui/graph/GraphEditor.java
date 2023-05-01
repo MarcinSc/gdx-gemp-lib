@@ -215,7 +215,11 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
             }
             windowPositionsAtDragStart = null;
             if (undoableAction.hasActions()) {
-                graphChanged(false, false, undoableAction);
+                DecoratedUndoableAction decorated = new DecoratedUndoableAction(undoableAction);
+                WindowsMovedAction windowsMovedAction = new WindowsMovedAction();
+                decorated.setAfterRedo(windowsMovedAction);
+                decorated.setAfterUndo(windowsMovedAction);
+                graphChanged(false, false, decorated);
             }
         }
     }
@@ -1231,6 +1235,18 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
             moveGroup = false;
             node.setPosition(newPosition.x - canvasX, newPosition.y - canvasY);
             moveGroup = true;
+        }
+    }
+
+    private class WindowsMovedAction extends DefaultUndoableAction {
+        @Override
+        public void undoAction() {
+            windowsMoved();
+        }
+
+        @Override
+        public void redoAction() {
+            windowsMoved();
         }
     }
 
