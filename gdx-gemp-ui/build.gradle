@@ -6,6 +6,7 @@ eclipse.project.name = "gdx-gemp-ui"
 
 dependencies {
     api project(":gdx-gemp-common")
+    api project(":gdx-gemp-undo")
 
     implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
     implementation "com.kotcrab.vis:vis-ui:$visUiVersion"

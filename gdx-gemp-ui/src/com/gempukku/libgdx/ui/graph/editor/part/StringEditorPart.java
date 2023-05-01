@@ -8,6 +8,7 @@ import com.gempukku.libgdx.ui.graph.GraphChangedEvent;
 import com.gempukku.libgdx.ui.graph.data.Graph;
 import com.gempukku.libgdx.ui.graph.editor.GraphNodeEditorInput;
 import com.gempukku.libgdx.ui.graph.editor.GraphNodeEditorOutput;
+import com.gempukku.libgdx.ui.undo.UndoableTextField;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
@@ -33,14 +34,7 @@ public class StringEditorPart extends VisTable implements GraphNodeEditorPart {
 
     public StringEditorPart(String label, String property, String defaultValue, Label.LabelStyle labelStyle, VisTextField.VisTextFieldStyle textFieldStyle) {
         this.property = property;
-        input = new VisTextField(defaultValue, textFieldStyle);
-        input.addListener(
-                new ChangeListener() {
-                    @Override
-                    public void changed(ChangeEvent event, Actor actor) {
-                        input.fire(new GraphChangedEvent(false, true));
-                    }
-                });
+        input = new UndoableTextField(defaultValue, textFieldStyle);
 
         add(new VisLabel(label, labelStyle));
         add(input).growX();

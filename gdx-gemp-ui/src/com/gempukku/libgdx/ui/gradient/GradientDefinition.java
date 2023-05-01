@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Array;
 
 public interface GradientDefinition {
-    Array<ColorPosition> getColorPositions();
+    Iterable<ColorPosition> getColorPositions();
 
     void removeColor(int index);
     void addColor(float position, Color color);

@@ -16,7 +16,7 @@ import com.kotcrab.vis.ui.widget.VisTable;
 
 public class CurveEditorPart extends VisTable implements GraphNodeEditorPart{
     private final String property;
-    private final DefaultCurveDefinition curveDefinition;
+    private final GCurveEditor curveEditor;
 
     public CurveEditorPart(String property) {
         this(property, "default");
@@ -29,22 +29,9 @@ public class CurveEditorPart extends VisTable implements GraphNodeEditorPart{
     public CurveEditorPart(String property, GCurveEditor.GCurveEditorStyle curveEditorStyle) {
         this.property = property;
 
-        curveDefinition = new DefaultCurveDefinition();
-        curveDefinition.addPoint(0, 0);
+        curveEditor = new GCurveEditor(new DefaultCurveDefinition(), curveEditorStyle);
 
-        final GCurveEditor curveEditor = new GCurveEditor(curveDefinition, curveEditorStyle);
-        curveEditor.setPrefWidth(300);
-        curveEditor.setPrefHeight(200);
-
-        curveEditor.addListener(
-                new ChangeListener() {
-                    @Override
-                    public void changed(ChangeEvent event, Actor actor) {
-                        curveEditor.fire(new GraphChangedEvent(false, true));
-                    }
-                });
-
-        add(curveEditor).left().grow().row();
+        add(curveEditor).width(300).height(200).left().grow().row();
     }
 
     @Override
@@ -65,18 +52,19 @@ public class CurveEditorPart extends VisTable implements GraphNodeEditorPart{
     @Override
     public void initialize(JsonValue data) {
         if (data != null) {
-            curveDefinition.removePoint(0);
+            Array<Vector2> pointsArray = new Array<>();
             JsonValue points = data.get(property);
             for (String point : points.asStringArray()) {
                 String[] split = point.split(",");
-                curveDefinition.addPoint(Float.parseFloat(split[0]), Float.parseFloat(split[1]));
+                pointsArray.add(new Vector2(Float.parseFloat(split[0]), Float.parseFloat(split[1])));
             }
+            curveEditor.setCurveDefinition(new DefaultCurveDefinition(pointsArray));
         }
     }
 
     @Override
     public void serializePart(JsonValue value) {
-        Array<Vector2> points = curveDefinition.getPoints();
+        Iterable<Vector2> points = curveEditor.getCurveDefinition().getPoints();
         JsonValue pointsValue = new JsonValue(JsonValue.ValueType.array);
         for (Vector2 point : points) {
             pointsValue.addChild(new JsonValue(SimpleNumberFormatter.format(point.x) + "," + SimpleNumberFormatter.format(point.y)));

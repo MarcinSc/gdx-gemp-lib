@@ -8,11 +8,12 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.gempukku.libgdx.undo.DefaultUndoableAction;
+import com.gempukku.libgdx.undo.event.UndoableChangeEvent;
 import com.gempukku.libgdx.ui.DisposableWidget;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.color.ColorPicker;
@@ -22,10 +23,11 @@ public class GGradientEditor extends DisposableWidget {
     private static final float MIN_POINT_X_DRAG_DIFFERENCE = 0.001f;
     private static final int PIXMAP_WIDTH = 1024;
 
+    private final DefaultGradientDefinition gradientDefinition;
+    private final GGradientEditorStyle style;
+
     private Pixmap pixmap;
     private Texture gradientTexture;
-    private GradientDefinition gradientDefinition;
-    private GGradientEditorStyle style;
 
     public GGradientEditor() {
         this(new DefaultGradientDefinition());
@@ -40,13 +42,26 @@ public class GGradientEditor extends DisposableWidget {
     }
 
     public GGradientEditor(GradientDefinition gradientDefinition, GGradientEditorStyle style) {
-        this.gradientDefinition = gradientDefinition;
+        this.gradientDefinition = new DefaultGradientDefinition(gradientDefinition);
         this.style = style;
         addListener(new GradientEditorListener());
     }
 
     public GradientDefinition getGradientDefinition() {
         return gradientDefinition;
+    }
+
+    public void setGradientDefinition(GradientDefinition gradientDefinition) {
+        GradientDefinition oldGradientDefinition = this.gradientDefinition.cpy();
+        this.gradientDefinition.copy(gradientDefinition);
+        updateGradientTexture();
+        GradientDefinition newGradientDefinition = this.gradientDefinition.cpy();
+
+        SetGradientDefinitionAction setGradientDefinitionAction = new SetGradientDefinitionAction(oldGradientDefinition, newGradientDefinition);
+        UndoableChangeEvent event = Pools.obtain(UndoableChangeEvent.class);
+        event.setUndoableAction(setGradientDefinitionAction);
+        fire(event);
+        Pools.free(event);
     }
 
     @Override
@@ -107,38 +122,40 @@ public class GGradientEditor extends DisposableWidget {
     }
 
     private void updateGradientTexture() {
-        if (gradientTexture != null) {
-            gradientTexture.dispose();
-        }
+        if (pixmap != null) {
+            if (gradientTexture != null) {
+                gradientTexture.dispose();
+            }
 
-        pixmap.setColor(Color.WHITE);
-        pixmap.fill();
-        Array<GradientDefinition.ColorPosition> colorPositions = gradientDefinition.getColorPositions();
-        if (colorPositions.size > 0) {
-            Color lerpColor = Pools.obtain(Color.class);
+            pixmap.setColor(Color.WHITE);
+            pixmap.fill();
+            Array<GradientDefinition.ColorPosition> colorPositions = gradientDefinition.getColorPositions();
+            if (colorPositions.size > 0) {
+                Color lerpColor = Pools.obtain(Color.class);
 
-            GradientDefinition.ColorPosition firstPoint = colorPositions.get(0);
-            Color lastColor = firstPoint.color;
-            int drawStart = 0;
-            for (GradientDefinition.ColorPosition colorPosition : colorPositions) {
-                int colorStart = MathUtils.round(colorPosition.position * PIXMAP_WIDTH);
-                for (int position = drawStart; position < colorStart; position++) {
-                    float gradientT = 1f * (position - drawStart) / (colorStart - drawStart);
-                    lerpColor.set(lastColor).lerp(colorPosition.color, gradientT);
-                    lerpColor.a = 1;
-                    pixmap.drawPixel(position, 0, toRGBA(lerpColor));
+                GradientDefinition.ColorPosition firstPoint = colorPositions.get(0);
+                Color lastColor = firstPoint.color;
+                int drawStart = 0;
+                for (GradientDefinition.ColorPosition colorPosition : colorPositions) {
+                    int colorStart = MathUtils.round(colorPosition.position * PIXMAP_WIDTH);
+                    for (int position = drawStart; position < colorStart; position++) {
+                        float gradientT = 1f * (position - drawStart) / (colorStart - drawStart);
+                        lerpColor.set(lastColor).lerp(colorPosition.color, gradientT);
+                        lerpColor.a = 1;
+                        pixmap.drawPixel(position, 0, toRGBA(lerpColor));
+                    }
+                    drawStart = colorStart;
+                    lastColor = colorPosition.color;
                 }
-                drawStart = colorStart;
-                lastColor = colorPosition.color;
-            }
-            if (drawStart < PIXMAP_WIDTH - 1) {
-                pixmap.setColor(toRGBA(lastColor));
-                pixmap.drawLine(drawStart, 0, PIXMAP_WIDTH - 1, 0);
-            }
+                if (drawStart < PIXMAP_WIDTH - 1) {
+                    pixmap.setColor(toRGBA(lastColor));
+                    pixmap.drawLine(drawStart, 0, PIXMAP_WIDTH - 1, 0);
+                }
 
-            Pools.free(lerpColor);
+                Pools.free(lerpColor);
+            }
+            gradientTexture = new Texture(pixmap);
         }
-        gradientTexture = new Texture(pixmap);
     }
 
     private Color calculateColorAt(float position) {
@@ -170,28 +187,47 @@ public class GGradientEditor extends DisposableWidget {
     protected void disposeWidget() {
         gradientTexture.dispose();
         pixmap.dispose();
+        gradientTexture = null;
+        pixmap = null;
     }
 
-    private void addColor(float position, Color color) {
+    private void addColor(float position, Color color, GradientDefinition fromGradientDefinition) {
         gradientDefinition.addColor(position, color);
         updateGradientTexture();
-        fire(new ChangeListener.ChangeEvent());
+        generateEvent(fromGradientDefinition);
     }
 
-    private void updateColor(int index, float position, Color color) {
+    private void updateColor(int index, float position, Color color, GradientDefinition fromGradientDefinition) {
         gradientDefinition.updatePoint(index, position, color);
         updateGradientTexture();
-        fire(new ChangeListener.ChangeEvent());
+        generateEvent(fromGradientDefinition);
     }
 
-    private void removeColor(int index) {
+    private void removeColor(int index, GradientDefinition fromGradientDefinition) {
         gradientDefinition.removeColor(index);
         updateGradientTexture();
-        fire(new ChangeListener.ChangeEvent());
+        generateEvent(fromGradientDefinition);
+    }
+
+    private void generateEvent(GradientDefinition fromGradientDefinition) {
+        if (fromGradientDefinition != null) {
+            GradientDefinition newGradientDefinition = gradientDefinition.cpy();
+
+            SetGradientDefinitionAction setGradientDefinitionAction = new SetGradientDefinitionAction(fromGradientDefinition, newGradientDefinition);
+            UndoableChangeEvent event = Pools.obtain(UndoableChangeEvent.class);
+            event.setUndoableAction(setGradientDefinitionAction);
+            fire(event);
+            Pools.free(event);
+        } else {
+            UndoableChangeEvent event = Pools.obtain(UndoableChangeEvent.class);
+            fire(event);
+            Pools.free(event);
+        }
     }
 
     private class GradientEditorListener extends InputListener {
         private int draggedIndex = -1;
+        private GradientDefinition beforeDragGradientDefinition;
         private long lastClickTime;
 
         private boolean isPointHit(float point, float position) {
@@ -210,13 +246,15 @@ public class GGradientEditor extends DisposableWidget {
                         editColor(index);
                     } else {
                         draggedIndex = index;
+                        beforeDragGradientDefinition = gradientDefinition.cpy();
                     }
 
                     lastClickTime = now;
                 } else {
+                    final GradientDefinition fromGradientDefinition = gradientDefinition.cpy();
                     final float hitX = clampValue(unwrapPosition(x));
                     Color startColor = calculateColorAt(hitX).cpy();
-                    addColor(hitX, startColor);
+                    addColor(hitX, startColor, null);
                     final int modifiedIndex = findPointIndex(hitX);
 
                     ColorPicker colorPicker = new ColorPicker();
@@ -230,25 +268,25 @@ public class GGradientEditor extends DisposableWidget {
                                 @Override
                                 public void canceled(Color oldColor) {
                                     cancelled = true;
-                                    removeColor(modifiedIndex);
+                                    removeColor(modifiedIndex, null);
                                 }
 
                                 @Override
                                 public void changed(Color newColor) {
                                     if (!cancelled)
-                                        updateColor(modifiedIndex, hitX, newColor);
+                                        updateColor(modifiedIndex, hitX, newColor, null);
                                 }
 
                                 @Override
                                 public void reset(Color previousColor, Color newColor) {
                                     if (!cancelled)
-                                        updateColor(modifiedIndex, hitX, newColor);
+                                        updateColor(modifiedIndex, hitX, newColor, null);
                                 }
 
                                 @Override
                                 public void finished(Color newColor) {
                                     if (!cancelled)
-                                        updateColor(modifiedIndex, hitX, newColor);
+                                        updateColor(modifiedIndex, hitX, newColor, fromGradientDefinition);
                                 }
                             });
                     getStage().addActor(colorPicker.fadeIn());
@@ -256,13 +294,14 @@ public class GGradientEditor extends DisposableWidget {
             } else if (button == Input.Buttons.RIGHT) {
                 int hitPointIndex = getHitPointIndex(x);
                 if (hitPointIndex != -1) {
-                    removeColor(hitPointIndex);
+                    removeColor(hitPointIndex, gradientDefinition.cpy());
                 }
             }
             return true;
         }
 
         private void editColor(final int index) {
+            final GradientDefinition fromGradientDefinition = gradientDefinition.cpy();
             final GradientDefinition.ColorPosition colorPosition = gradientDefinition.getColorPositions().get(index);
             Color oldColor = colorPosition.color.cpy();
 
@@ -277,25 +316,25 @@ public class GGradientEditor extends DisposableWidget {
                         @Override
                         public void canceled(Color oldColor) {
                             cancelled = true;
-                            updateColor(index, colorPosition.position, oldColor);
+                            updateColor(index, colorPosition.position, oldColor, null);
                         }
 
                         @Override
                         public void changed(Color newColor) {
                             if (!cancelled)
-                                updateColor(index, colorPosition.position, newColor);
+                                updateColor(index, colorPosition.position, newColor, null);
                         }
 
                         @Override
                         public void reset(Color previousColor, Color newColor) {
                             if (!cancelled)
-                                updateColor(index, colorPosition.position, newColor);
+                                updateColor(index, colorPosition.position, newColor, null);
                         }
 
                         @Override
                         public void finished(Color newColor) {
                             if (!cancelled)
-                                updateColor(index, colorPosition.position, newColor);
+                                updateColor(index, colorPosition.position, newColor, fromGradientDefinition);
                         }
                     });
             getStage().addActor(colorPicker.fadeIn());
@@ -304,19 +343,20 @@ public class GGradientEditor extends DisposableWidget {
         @Override
         public void touchDragged(InputEvent event, float x, float y, int pointer) {
             if (draggedIndex > -1) {
-                moveDraggedPoint(x);
+                moveDraggedPoint(x, false);
             }
         }
 
         @Override
         public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
             if (draggedIndex > -1 && button == Input.Buttons.LEFT) {
-                moveDraggedPoint(x);
+                moveDraggedPoint(x, true);
                 draggedIndex = -1;
+                beforeDragGradientDefinition = null;
             }
         }
 
-        private void moveDraggedPoint(float x) {
+        private void moveDraggedPoint(float x, boolean generateUndoable) {
             Array<GradientDefinition.ColorPosition> colorPositions = gradientDefinition.getColorPositions();
             float hitPosition = clampValue(unwrapPosition(x));
 
@@ -331,7 +371,7 @@ public class GGradientEditor extends DisposableWidget {
                 if (hitPosition >= nextPoint.position)
                     hitPosition = nextPoint.position - MIN_POINT_X_DRAG_DIFFERENCE;
             }
-            updateColor(draggedIndex, hitPosition, colorPositions.get(draggedIndex).color);
+            updateColor(draggedIndex, hitPosition, colorPositions.get(draggedIndex).color, generateUndoable?beforeDragGradientDefinition:null);
         }
 
         private float clampValue(float value) {
@@ -362,5 +402,25 @@ public class GGradientEditor extends DisposableWidget {
         public float tickWidth = 9f;
         public float tickHeight = 9f;
         public Drawable tick;
+    }
+
+    private class SetGradientDefinitionAction extends DefaultUndoableAction {
+        private final GradientDefinition oldGradientDefinition;
+        private final GradientDefinition newGradientDefinition;
+
+        public SetGradientDefinitionAction(GradientDefinition oldGradientDefinition, GradientDefinition newGradientDefinition) {
+            this.oldGradientDefinition = oldGradientDefinition;
+            this.newGradientDefinition = newGradientDefinition;
+        }
+
+        @Override
+        public void undoAction() {
+            setGradientDefinition(oldGradientDefinition);
+        }
+
+        @Override
+        public void redoAction() {
+            setGradientDefinition(newGradientDefinition);
+        }
     }
 }

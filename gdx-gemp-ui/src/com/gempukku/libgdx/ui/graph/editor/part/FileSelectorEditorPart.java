@@ -6,10 +6,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
-import com.gempukku.libgdx.ui.graph.GraphChangedEvent;
-import com.gempukku.libgdx.ui.graph.data.Graph;
+import com.badlogic.gdx.utils.Pools;
 import com.gempukku.libgdx.ui.graph.editor.GraphNodeEditorInput;
 import com.gempukku.libgdx.ui.graph.editor.GraphNodeEditorOutput;
+import com.gempukku.libgdx.undo.DefaultUndoableAction;
+import com.gempukku.libgdx.undo.event.UndoableChangeEvent;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
@@ -55,13 +56,22 @@ public class FileSelectorEditorPart extends VisTable implements GraphNodeEditorP
                         fileChooser.setListener(new FileChooserAdapter() {
                             @Override
                             public void selected(Array<FileHandle> file) {
-                                selectedPath = file.get(0).path();
-                                fire(new GraphChangedEvent(false, true));
+                                setSelectedPath(file.get(0).path());
                             }
                         });
                         getStage().addActor(fileChooser.fadeIn());
                     }
                 });
+    }
+
+    private void setSelectedPath(String path) {
+        if (!selectedPath.equals(path)) {
+            UndoableChangeEvent event = Pools.obtain(UndoableChangeEvent.class);
+            event.setUndoableAction(new SetSelectedPathAction(selectedPath, path));
+            fire(event);
+            Pools.free(event);
+            selectedPath = path;
+        }
     }
 
     @Override
@@ -89,5 +99,25 @@ public class FileSelectorEditorPart extends VisTable implements GraphNodeEditorP
     @Override
     public void serializePart(JsonValue object) {
         object.addChild(property, new JsonValue(selectedPath));
+    }
+
+    private class SetSelectedPathAction extends DefaultUndoableAction {
+        private final String oldPath;
+        private final String newPath;
+
+        public SetSelectedPathAction(String oldPath, String newPath) {
+            this.oldPath = oldPath;
+            this.newPath = newPath;
+        }
+
+        @Override
+        public void undoAction() {
+            setSelectedPath(oldPath);
+        }
+
+        @Override
+        public void redoAction() {
+            setSelectedPath(newPath);
+        }
     }
 }

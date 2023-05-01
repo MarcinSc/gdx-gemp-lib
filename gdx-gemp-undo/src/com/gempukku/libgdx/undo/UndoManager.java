@@ -1,4 +1,4 @@
-package com.gempukku.libgdx.common.undo;
+package com.gempukku.libgdx.undo;
 
 public interface UndoManager {
     void addUndoableAction(UndoableAction undoableAction);

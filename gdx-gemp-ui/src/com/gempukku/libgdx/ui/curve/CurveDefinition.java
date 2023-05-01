@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 public interface CurveDefinition {
-    Array<Vector2> getPoints();
+    Iterable<Vector2> getPoints();
 
     void removePoint(int index);
 

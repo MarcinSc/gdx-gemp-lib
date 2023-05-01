@@ -1,0 +1,9 @@
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+archivesBaseName = "gdx-gemp-undo"
+
+eclipse.project.name = "gdx-gemp-undo"
+
+dependencies {
+    implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+}

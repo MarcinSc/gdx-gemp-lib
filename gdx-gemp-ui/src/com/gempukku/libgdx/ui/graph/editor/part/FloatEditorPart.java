@@ -9,6 +9,7 @@ import com.gempukku.libgdx.ui.graph.GraphChangedEvent;
 import com.gempukku.libgdx.ui.graph.data.Graph;
 import com.gempukku.libgdx.ui.graph.editor.GraphNodeEditorInput;
 import com.gempukku.libgdx.ui.graph.editor.GraphNodeEditorOutput;
+import com.gempukku.libgdx.ui.undo.UndoableValidatableTextField;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.util.InputValidator;
 import com.kotcrab.vis.ui.util.Validators;
@@ -39,7 +40,7 @@ public class FloatEditorPart extends VisTable implements GraphNodeEditorPart {
     public FloatEditorPart(String label, String property, float defaultValue, InputValidator inputValidator,
                            Label.LabelStyle labelStyle, VisTextField.VisTextFieldStyle textFieldStyle) {
         this.property = property;
-        v1Input = new VisValidatableTextField(String.valueOf(defaultValue), textFieldStyle) {
+        v1Input = new UndoableValidatableTextField(String.valueOf(defaultValue), textFieldStyle) {
             @Override
             public float getPrefWidth() {
                 return 50;
@@ -50,15 +51,6 @@ public class FloatEditorPart extends VisTable implements GraphNodeEditorPart {
             v1Input.addValidator(inputValidator);
         v1Input.setAlignment(Align.right);
         v1Input.setRestoreLastValid(true);
-        v1Input.addListener(
-                new ChangeListener() {
-                    @Override
-                    public void changed(ChangeEvent event, Actor actor) {
-                        if (v1Input.isInputValid()) {
-                            v1Input.fire(new GraphChangedEvent(false, true));
-                        }
-                    }
-                });
 
         add(new VisLabel(label, labelStyle));
         add(v1Input).growX();

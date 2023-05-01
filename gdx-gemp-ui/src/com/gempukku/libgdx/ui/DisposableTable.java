@@ -1,9 +1,9 @@
 package com.gempukku.libgdx.ui;
 
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Widget;
+import com.kotcrab.vis.ui.widget.VisTable;
 
-public abstract class DisposableWidget extends Widget {
+public abstract class DisposableTable extends VisTable {
     private boolean initialized;
 
     @Override

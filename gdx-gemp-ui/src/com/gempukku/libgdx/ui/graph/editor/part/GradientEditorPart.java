@@ -16,8 +16,8 @@ import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisTable;
 
 public class GradientEditorPart extends VisTable implements GraphNodeEditorPart {
-    private final DefaultGradientDefinition gradientDefinition;
     private final String property;
+    private final GGradientEditor gradientEditor;
 
     public GradientEditorPart(String property) {
         this(property, "default");
@@ -30,29 +30,9 @@ public class GradientEditorPart extends VisTable implements GraphNodeEditorPart 
     public GradientEditorPart(String property, GGradientEditor.GGradientEditorStyle gradientEditorStyle) {
         this.property = property;
 
-        gradientDefinition = new DefaultGradientDefinition();
-        gradientDefinition.addColor(0, Color.WHITE);
+        gradientEditor = new GGradientEditor(new DefaultGradientDefinition(), gradientEditorStyle);
 
-        final GGradientEditor gradientEditor = new GGradientEditor(gradientDefinition, gradientEditorStyle);
-
-        gradientEditor.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                gradientEditor.fire(new GraphChangedEvent(false, true));
-            }
-        });
-
-        add(gradientEditor).left().grow().row();
-    }
-
-    @Override
-    public float getPrefWidth() {
-        return 300;
-    }
-
-    @Override
-    public float getPrefHeight() {
-        return 40;
+        add(gradientEditor).width(300).height(40).left().grow().row();
     }
 
     @Override
@@ -73,18 +53,19 @@ public class GradientEditorPart extends VisTable implements GraphNodeEditorPart 
     @Override
     public void initialize(JsonValue data) {
         if (data != null) {
-            gradientDefinition.removeColor(0);
+            Array<GradientDefinition.ColorPosition> colors = new Array<>();
             JsonValue points = data.get(property);
             for (String point : points.asStringArray()) {
                 String[] split = point.split(",");
-                gradientDefinition.addColor(Float.parseFloat(split[1]), Color.valueOf(split[0]));
+                colors.add(new GradientDefinition.ColorPosition(Float.parseFloat(split[1]), Color.valueOf(split[0])));
             }
+            gradientEditor.setGradientDefinition(new DefaultGradientDefinition(colors));
         }
     }
 
     @Override
     public void serializePart(JsonValue value) {
-        Array<GradientDefinition.ColorPosition> points = gradientDefinition.getColorPositions();
+        Iterable<GradientDefinition.ColorPosition> points = gradientEditor.getGradientDefinition().getColorPositions();
         JsonValue pointsValue = new JsonValue(JsonValue.ValueType.array);
         for (GradientDefinition.ColorPosition point : points) {
             pointsValue.addChild(new JsonValue(point.color.toString() + "," + SimpleNumberFormatter.format(point.position)));

@@ -9,22 +9,22 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
+import com.gempukku.libgdx.undo.DefaultUndoableAction;
+import com.gempukku.libgdx.undo.event.UndoableChangeEvent;
 import com.gempukku.libgdx.ui.DisposableWidget;
 import com.kotcrab.vis.ui.VisUI;
 
 public class GCurveEditor extends DisposableWidget {
     private static final float MIN_POINT_X_DRAG_DIFFERENCE = 0.001f;
 
-    private ShapeRenderer shapeRenderer;
-    private CurveDefinition curveDefinition;
-    private GCurveEditorStyle style;
+    private final DefaultCurveDefinition curveDefinition;
+    private final GCurveEditorStyle style;
 
     // Temporary drawing variables
+    private ShapeRenderer shapeRenderer;
     private float padding;
     private float availableWidth;
     private float availableHeight;
@@ -42,9 +42,19 @@ public class GCurveEditor extends DisposableWidget {
     }
 
     public GCurveEditor(CurveDefinition curveDefinition, GCurveEditorStyle style) {
-        this.curveDefinition = curveDefinition;
+        this.curveDefinition = new DefaultCurveDefinition();
+        this.curveDefinition.copy(curveDefinition);
         this.style = style;
         addListener(new CurveEditorListener());
+    }
+
+    public void setCurveDefinition(CurveDefinition curveDefinition) {
+        SetCurveDefinitionAction setCurveDefinitionAction = new SetCurveDefinitionAction(this.curveDefinition.cpy(), new DefaultCurveDefinition(curveDefinition));
+        this.curveDefinition.copy(curveDefinition);
+        UndoableChangeEvent event = Pools.obtain(UndoableChangeEvent.class);
+        event.setUndoableAction(setCurveDefinitionAction);
+        this.fire(event);
+        Pools.free(event);
     }
 
     public CurveDefinition getCurveDefinition() {
@@ -93,7 +103,7 @@ public class GCurveEditor extends DisposableWidget {
 
     private void drawParameterizedLine(float x1, float y1, float x2, float y2, float lineWidth) {
         //stageToLocalCoordinates(start.set(0, 0));
-        shapeRenderer.rectLine(getX() + padding + x1 * availableWidth, getY()+padding + y1 * availableHeight,
+        shapeRenderer.rectLine(getX() + padding + x1 * availableWidth, getY() + padding + y1 * availableHeight,
                 getX() + padding + x2 * availableWidth, getY() + padding + y2 * availableHeight, lineWidth);
     }
 
@@ -123,7 +133,7 @@ public class GCurveEditor extends DisposableWidget {
         Color color = style.pointsColor;
         shapeRenderer.setColor(color.r, color.g, color.b, color.a * parentAlpha);
         for (Vector2 point : curveDefinition.getPoints()) {
-            shapeRenderer.circle(getX()+ padding + point.x * availableWidth, getY() + padding + point.y * availableHeight, style.pointSize);
+            shapeRenderer.circle(getX() + padding + point.x * availableWidth, getY() + padding + point.y * availableHeight, style.pointSize);
         }
     }
 
@@ -146,18 +156,44 @@ public class GCurveEditor extends DisposableWidget {
     }
 
     private void addPoint(float x, float y) {
+        DefaultCurveDefinition oldCurveDefinition = curveDefinition.cpy();
         curveDefinition.addPoint(x, y);
-        fire(new ChangeListener.ChangeEvent());
+        DefaultCurveDefinition newCurveDefinition = curveDefinition.cpy();
+
+        SetCurveDefinitionAction setCurveDefinitionAction = new SetCurveDefinitionAction(oldCurveDefinition, newCurveDefinition);
+        UndoableChangeEvent event = Pools.obtain(UndoableChangeEvent.class);
+        event.setUndoableAction(setCurveDefinitionAction);
+        fire(event);
+        Pools.free(event);
     }
 
-    private void updatePoint(int index, float x, float y) {
+    private void updatePoint(int index, float x, float y, CurveDefinition fromCurveDefinition) {
         curveDefinition.updatePoint(index, x, y);
-        fire(new ChangeListener.ChangeEvent());
+        if (fromCurveDefinition != null) {
+            DefaultCurveDefinition newCurveDefinition = curveDefinition.cpy();
+
+            SetCurveDefinitionAction setCurveDefinitionAction = new SetCurveDefinitionAction(fromCurveDefinition, newCurveDefinition);
+            UndoableChangeEvent event = Pools.obtain(UndoableChangeEvent.class);
+            event.setUndoableAction(setCurveDefinitionAction);
+            fire(event);
+            Pools.free(event);
+        } else {
+            UndoableChangeEvent event = Pools.obtain(UndoableChangeEvent.class);
+            fire(event);
+            Pools.free(event);
+        }
     }
 
     private void removePoint(int index) {
+        DefaultCurveDefinition oldCurveDefinition = curveDefinition.cpy();
         curveDefinition.removePoint(index);
-        fire(new ChangeListener.ChangeEvent());
+        DefaultCurveDefinition newCurveDefinition = curveDefinition.cpy();
+
+        SetCurveDefinitionAction setCurveDefinitionAction = new SetCurveDefinitionAction(oldCurveDefinition, newCurveDefinition);
+        UndoableChangeEvent event = Pools.obtain(UndoableChangeEvent.class);
+        event.setUndoableAction(setCurveDefinitionAction);
+        fire(event);
+        Pools.free(event);
     }
 
     @Override
@@ -174,6 +210,7 @@ public class GCurveEditor extends DisposableWidget {
 
     private class CurveEditorListener extends InputListener {
         private int draggedIndex = -1;
+        private CurveDefinition beforeDragCurveDefinition;
 
         private boolean isPointHit(Vector2 point, Vector2 position) {
             Vector2 tmpVector = Pools.obtain(Vector2.class);
@@ -190,6 +227,7 @@ public class GCurveEditor extends DisposableWidget {
                 int hitPointIndex = getHitPointIndex(mousePosition);
                 if (hitPointIndex != -1) {
                     draggedIndex = hitPointIndex;
+                    beforeDragCurveDefinition = curveDefinition.cpy();
                 } else {
                     Vector2 hitPosition = unwrapPoint(mousePosition);
                     clampPoint(hitPosition);
@@ -210,19 +248,20 @@ public class GCurveEditor extends DisposableWidget {
         @Override
         public void touchDragged(InputEvent event, float x, float y, int pointer) {
             if (draggedIndex > -1) {
-                moveDraggedPoint(x, y);
+                moveDraggedPoint(x, y, false);
             }
         }
 
         @Override
         public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
             if (draggedIndex > -1 && button == Input.Buttons.LEFT) {
-                moveDraggedPoint(x, y);
+                moveDraggedPoint(x, y, true);
                 draggedIndex = -1;
+                beforeDragCurveDefinition = null;
             }
         }
 
-        private void moveDraggedPoint(float x, float y) {
+        private void moveDraggedPoint(float x, float y, boolean generateUndoable) {
             Vector2 mousePosition = Pools.obtain(Vector2.class).set(x, y);
 
             Array<Vector2> points = curveDefinition.getPoints();
@@ -240,7 +279,7 @@ public class GCurveEditor extends DisposableWidget {
                 if (hitPosition.x >= nextPoint.x)
                     hitPosition.x = nextPoint.x - MIN_POINT_X_DRAG_DIFFERENCE;
             }
-            updatePoint(draggedIndex, hitPosition.x, hitPosition.y);
+            updatePoint(draggedIndex, hitPosition.x, hitPosition.y, generateUndoable ? beforeDragCurveDefinition : null);
 
             Pools.free(mousePosition);
         }
@@ -279,5 +318,25 @@ public class GCurveEditor extends DisposableWidget {
         public Color pointsColor = new Color(0.3f, 0.3f, 0.7f, 0.9f);
         public float curveThickness = 3f;
         public Color curveColor = new Color(0.7f, 0.3f, 0.3f, 1f);
+    }
+
+    public class SetCurveDefinitionAction extends DefaultUndoableAction {
+        private final CurveDefinition oldCurveDefinition;
+        private final CurveDefinition newCurveDefinition;
+
+        public SetCurveDefinitionAction(CurveDefinition oldCurveDefinition, CurveDefinition newCurveDefinition) {
+            this.oldCurveDefinition = oldCurveDefinition;
+            this.newCurveDefinition = newCurveDefinition;
+        }
+
+        @Override
+        public void undoAction() {
+            setCurveDefinition(oldCurveDefinition);
+        }
+
+        @Override
+        public void redoAction() {
+            setCurveDefinition(newCurveDefinition);
+        }
     }
 }

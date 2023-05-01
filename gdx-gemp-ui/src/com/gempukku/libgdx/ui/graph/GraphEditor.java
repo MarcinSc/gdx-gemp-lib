@@ -14,22 +14,20 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.utils.*;
-import com.gempukku.libgdx.common.Alignment;
 import com.gempukku.libgdx.common.Function;
+import com.gempukku.libgdx.ui.DisposableTable;
+import com.gempukku.libgdx.undo.*;
 import com.gempukku.libgdx.ui.graph.data.*;
 import com.gempukku.libgdx.ui.graph.data.impl.DefaultGraph;
 import com.gempukku.libgdx.ui.graph.data.impl.DefaultNodeGroup;
-import com.gempukku.libgdx.ui.graph.editor.GraphNodeEditor;
-import com.gempukku.libgdx.ui.graph.editor.GraphNodeEditorInput;
-import com.gempukku.libgdx.ui.graph.editor.GraphNodeEditorOutput;
-import com.gempukku.libgdx.ui.graph.editor.GraphNodeEditorProducer;
+import com.gempukku.libgdx.ui.graph.editor.*;
 import com.gempukku.libgdx.ui.graph.validator.GraphValidationResult;
 import com.gempukku.libgdx.ui.preview.NavigableCanvas;
+import com.gempukku.libgdx.undo.event.UndoableChangeEvent;
+import com.gempukku.libgdx.undo.event.UndoableChangeListener;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.util.InputValidator;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
@@ -43,7 +41,7 @@ import java.awt.geom.CubicCurve2D;
 import java.awt.geom.Rectangle2D;
 import java.util.*;
 
-public class GraphEditor extends VisTable implements NavigableCanvas, Disposable {
+public class GraphEditor extends DisposableTable implements NavigableCanvas {
     private static final float CANVAS_GAP = 50f;
 
     private static final Color INVALID_LABEL_COLOR = Color.RED;
@@ -54,8 +52,9 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
     private final GraphEditorStyle style;
     private final Function<String, GraphNodeEditorProducer> graphNodeEditorProducers;
     private final PopupMenuProducer popupMenuProducer;
+    private final ConvertToGraphChangedListener convertToGraphChangedListener = new ConvertToGraphChangedListener();
 
-    private final ShapeRenderer shapeRenderer;
+    private ShapeRenderer shapeRenderer;
 
     private final Map<NodeConnector, Shape> connectionNodeMap = new HashMap<>();
     private final Map<DrawnGraphConnection, Shape> connections = new HashMap<>();
@@ -63,14 +62,14 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
     private final ObjectSet<String> selectedNodes = new ObjectSet<>();
 
     private final DefaultGraph<GraphNodeWindow, DrawnGraphConnection, RectangleNodeGroup> editedGraph;
-    private final GraphChangesAggregation graphChangesAggregation;
+    private ObjectMap<String, Vector2> windowPositionsAtDragStart;
 
     private float canvasX;
     private float canvasY;
     private float canvasWidth;
     private float canvasHeight;
-    private boolean navigating;
-    private boolean userInitiatedMove = false;
+    private boolean canvasMoving;
+    private boolean moveGroup = true;
     private NodeConnector drawingFromConnector;
 
     public GraphEditor(Graph graph, Function<String, GraphNodeEditorProducer> graphNodeEditorProducers, final PopupMenuProducer popupMenuProducer) {
@@ -88,7 +87,6 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
         this.graphNodeEditorProducers = graphNodeEditorProducers;
         this.popupMenuProducer = popupMenuProducer;
 
-        graphChangesAggregation = new GraphChangesAggregation(this);
         editedGraph = new DefaultGraph<>(graph.getType());
 
         for (GraphNode node : graph.getNodes()) {
@@ -102,9 +100,6 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
         for (NodeGroup group : graph.getGroups()) {
             addNodeGroup(group.getName(), group.getNodeIds());
         }
-
-        shapeRenderer = new ShapeRenderer();
-        shapeRenderer.setAutoShapeType(true);
 
         setClip(true);
         setTouchable(Touchable.enabled);
@@ -133,23 +128,25 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
             @Override
             public void dragStart(InputEvent event, float x, float y, int pointer) {
                 if (event.getTarget() == GraphEditor.this) {
-                    userInitiatedMove = true;
                     canvasXStart = canvasX;
                     canvasYStart = canvasY;
                     movedByX = 0;
                     movedByY = 0;
-                    dragGroup = null;
-                    for (RectangleNodeGroup group : editedGraph.getGroups()) {
-                        Rectangle rectangle = group.getRectangle();
-                        if (rectangle.contains(x, y) && y > rectangle.y + rectangle.height - style.groupNameFont.getLineHeight()) {
-                            // Hit the label
-                            dragGroup = group;
-                            break;
-                        }
-                    }
-                    graphChangesAggregation.startAggregating();
+                    dragGroup = findDragGroup(x, y);
+                    windowsStartingToMove();
                     Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Hand);
                 }
+            }
+
+            private RectangleNodeGroup findDragGroup(float x, float y) {
+                for (RectangleNodeGroup group : editedGraph.getGroups()) {
+                    Rectangle rectangle = group.getRectangle();
+                    if (rectangle.contains(x, y) && y > rectangle.y + rectangle.height - style.groupNameFont.getLineHeight()) {
+                        // Hit the label
+                        return group;
+                    }
+                }
+                return null;
             }
 
             @Override
@@ -158,9 +155,11 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
                     if (dragGroup != null) {
                         float moveByX = x - getDragStartX() - movedByX;
                         float moveByY = y - getDragStartY() - movedByY;
+                        moveGroup = false;
                         for (String nodeId : dragGroup.getNodeIds()) {
                             editedGraph.getNodeById(nodeId).moveBy(moveByX, moveByY);
                         }
+                        moveGroup = true;
                         movedByX += moveByX;
                         movedByY += moveByY;
                         windowsMoved();
@@ -177,8 +176,8 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
                     if (dragGroup != null) {
                         dragGroup = null;
                     }
-                    userInitiatedMove = false;
-                    graphChangesAggregation.finishAggregating();
+                    windowsFinishedToMove();
+                    windowsMoved();
                     Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
                 }
             }
@@ -189,8 +188,45 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
         updateCanvas(true);
     }
 
-    private void graphChanged(boolean structure, boolean data) {
-        graphChangesAggregation.processChange(structure, data);
+    private void windowsStartingToMove() {
+        // Snapshot position of all windows
+        windowPositionsAtDragStart = new ObjectMap<>();
+        for (GraphNodeWindow node : editedGraph.getNodes()) {
+            Vector2 windowPosition = Pools.obtain(Vector2.class).set(canvasX + node.getX(), canvasY + node.getY());
+            windowPositionsAtDragStart.put(node.getId(), windowPosition);
+        }
+    }
+
+    private void windowsFinishedToMove() {
+        if (windowPositionsAtDragStart != null) {
+            CompositeUndoableAction undoableAction = new CompositeUndoableAction();
+            for (GraphNodeWindow node : editedGraph.getNodes()) {
+                Vector2 oldPosition = windowPositionsAtDragStart.get(node.getId());
+                if (oldPosition != null) {
+                    Vector2 newPosition = Pools.obtain(Vector2.class).set(canvasX + node.getX(), canvasY + node.getY());
+                    if (!oldPosition.equals(newPosition)) {
+                        MoveNodeAction moveNodeAction = new MoveNodeAction(node, oldPosition, newPosition);
+                        undoableAction.addUndoableAction(moveNodeAction);
+                    } else {
+                        Pools.free(oldPosition);
+                        Pools.free(newPosition);
+                    }
+                }
+            }
+            windowPositionsAtDragStart = null;
+            if (undoableAction.hasActions()) {
+                graphChanged(false, false, undoableAction);
+            }
+        }
+    }
+
+    private void graphChanged(boolean structure, boolean data, UndoableAction undoableAction) {
+        GraphChangedEvent event = Pools.obtain(GraphChangedEvent.class);
+        event.setStructure(structure);
+        event.setData(data);
+        event.setUndoableAction(undoableAction);
+        fire(event);
+        Pools.free(event);
     }
 
     public Graph getGraph() {
@@ -227,6 +263,7 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
                 }
             }
         };
+        graphNodeWindow.addListener(convertToGraphChangedListener);
         graphNodeWindow.addListener(
                 new InputListener() {
                     private boolean dragging;
@@ -235,7 +272,7 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                         if (!dragging && graphNodeWindow.isDragging()) {
                             dragging = true;
-                            graphChangesAggregation.startAggregating();
+                            windowsStartingToMove();
                         }
                         return true;
                     }
@@ -244,7 +281,7 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
                     public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                         if (dragging && !graphNodeWindow.isDragging()) {
                             dragging = false;
-                            graphChangesAggregation.finishAggregating();
+                            windowsFinishedToMove();
                         }
                     }
                 });
@@ -252,26 +289,24 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
         if (graphNodeEditorProducer.isCloseable()) {
             graphNodeWindow.addCloseButton();
         }
-        graphNodeWindow.setPosition(x, y);
-        graphNodeWindow.setPosition(x, y);
-        addActor(graphNodeWindow);
-        graphNodeWindow.setSize(Math.max(150, graphNodeWindow.getPrefWidth()), graphNodeWindow.getPrefHeight());
 
-        editedGraph.addGraphNode(graphNodeWindow);
-        graphChanged(true, true);
-        invalidate();
+        AddGraphNodeAction addNodeAction = new AddGraphNodeAction(graphNodeWindow, x - canvasX, y - canvasY);
+        addNodeAction.doAction();
+        graphChanged(true, true, addNodeAction);
     }
 
     public void addNodeGroup(String name, ObjectSet<String> nodeIds) {
-        editedGraph.addNodeGroup(new RectangleNodeGroup(new DefaultNodeGroup(name, nodeIds)));
-        updateNodeGroups();
-        graphChanged(false, false);
+        final RectangleNodeGroup nodeGroup = new RectangleNodeGroup(new DefaultNodeGroup(name, nodeIds));
+        AddNodeGroupAction addGroupAction = new AddNodeGroupAction(nodeGroup);
+        addGroupAction.doAction();
+        graphChanged(false, false, addGroupAction);
     }
 
     public void addGraphConnection(String fromNode, String fromField, String toNode, String toField) {
-        editedGraph.addGraphConnection(new DrawnGraphConnection(fromNode, fromField, toNode, toField));
-        graphChanged(true, false);
-        invalidate();
+        final DrawnGraphConnection graphConnection = new DrawnGraphConnection(fromNode, fromField, toNode, toField);
+        AddGraphConnectionAction addConnectionAction = new AddGraphConnectionAction(graphConnection);
+        addConnectionAction.doAction();
+        graphChanged(true, false, addConnectionAction);
     }
 
     public void centerCanvas() {
@@ -305,7 +340,7 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
         x = MathUtils.round(x);
         y = MathUtils.round(y);
 
-        navigating = true;
+        canvasMoving = true;
         float difX = x - canvasX;
         float difY = y - canvasY;
         for (Actor element : editedGraph.getNodes()) {
@@ -313,13 +348,13 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
         }
         canvasX = x;
         canvasY = y;
-        navigating = false;
+        canvasMoving = false;
 
         windowsMoved();
     }
 
     private void updateCanvas(boolean adjustPosition) {
-        if (!navigating) {
+        if (!canvasMoving) {
             float minX = Float.MAX_VALUE;
             float minY = Float.MAX_VALUE;
             float maxX = Float.MIN_VALUE;
@@ -409,8 +444,11 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
                                         new InputDialogListener() {
                                             @Override
                                             public void finished(String input) {
-                                                finalNodeGroup.setName(input.trim());
-                                                graphChanged(false, false);
+                                                final String oldName = finalNodeGroup.getName();
+                                                final String newName = input.trim();
+                                                RenameGroupAction renameGroupAction = new RenameGroupAction(finalNodeGroup, oldName, newName);
+                                                renameGroupAction.doAction();
+                                                graphChanged(false, false, renameGroupAction);
                                             }
 
                                             @Override
@@ -427,8 +465,9 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
                         new ChangeListener() {
                             @Override
                             public void changed(ChangeEvent event, Actor actor) {
-                                editedGraph.removeNodeGroup(finalNodeGroup);
-                                graphChanged(false, false);
+                                RemoveGroupAction removeGroupAction = new RemoveGroupAction(finalNodeGroup);
+                                removeGroupAction.doAction();
+                                graphChanged(false, false, removeGroupAction);
                             }
                         });
                 popupMenu.addItem(remove);
@@ -476,10 +515,10 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
         return false;
     }
 
-    private void removeConnection(DrawnGraphConnection connection) {
-        editedGraph.removeGraphConnection(connection);
-        graphChanged(true, false);
-        invalidate();
+    private void removeConnection(final DrawnGraphConnection connection) {
+        RemoveConnectionAction removeConnectionAction = new RemoveConnectionAction(connection);
+        removeConnectionAction.doAction();
+        graphChanged(true, false, removeConnectionAction);
     }
 
     private void processNodeClick(NodeConnector clickedNodeConnector) {
@@ -568,16 +607,15 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
     }
 
     private void graphWindowMoved(GraphNodeWindow window, float fromX, float fromY, float toX, float toY) {
-        if (!userInitiatedMove && !navigating) {
+        if (moveGroup && !canvasMoving) {
             // This flag prevents recursive moves
-            userInitiatedMove = true;
+            moveGroup = false;
             for (String selectedNode : selectedNodes) {
                 if (!selectedNode.equals(window.getId())) {
                     editedGraph.getNodeById(selectedNode).moveBy(toX - fromX, toY - fromY);
                 }
             }
-            userInitiatedMove = false;
-
+            moveGroup = true;
             windowsMoved();
         }
     }
@@ -586,7 +624,7 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
         recreateClickableShapes();
         updateNodeGroups();
         updateCanvas(true);
-        graphChanged(false, false);
+        graphChanged(false, false, null);
     }
 
     private void removeFromSelection(String nodeId) {
@@ -619,30 +657,31 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
         return selectedNodes;
     }
 
-    private void removeGraphNodeWindow(GraphNodeWindow window) {
-        Iterator<? extends DrawnGraphConnection> graphConnectionIterator = editedGraph.getConnections().iterator();
-        String nodeId = window.getId();
-        while (graphConnectionIterator.hasNext()) {
-            GraphConnection graphConnectionImpl = graphConnectionIterator.next();
-            if (graphConnectionImpl.getNodeFrom().equals(nodeId)
-                    || graphConnectionImpl.getNodeTo().equals(nodeId))
-                graphConnectionIterator.remove();
+    private void removeGraphNodeWindow(final GraphNodeWindow window) {
+        final String nodeId = window.getId();
+
+        CompositeUndoableAction compositeUndoableAction = new CompositeUndoableAction();
+
+        // Remove all connections to window
+        for (DrawnGraphConnection graphConnection : editedGraph.getConnections()) {
+            if (graphConnection.getNodeFrom().equals(nodeId)
+                    || graphConnection.getNodeTo().equals(nodeId)) {
+                compositeUndoableAction.addUndoableAction(new RemoveConnectionAction(graphConnection));
+            }
         }
 
-        editedGraph.removeGraphNode(window);
-        selectedNodes.remove(nodeId);
-        for (RectangleNodeGroup nodeGroup : editedGraph.getGroups()) {
-            if (nodeGroup.getNodeIds().remove(nodeId)) {
-                if (nodeGroup.getNodeIds().size == 0) {
-                    editedGraph.removeNodeGroup(nodeGroup);
-                }
+        // Remove window from group
+        for (final RectangleNodeGroup nodeGroup : editedGraph.getGroups()) {
+            if (nodeGroup.getNodeIds().contains(nodeId)) {
+                compositeUndoableAction.addUndoableAction(new RemoveNodeFromGroupAction(window, nodeGroup));
                 break;
             }
         }
 
-        window.dispose();
+        compositeUndoableAction.addUndoableAction(new RemoveGraphNodeAction(window, window.getX() - canvasX, window.getY() - canvasY));
+        compositeUndoableAction.doAction();
 
-        graphChanged(true, false);
+        graphChanged(true, true, compositeUndoableAction);
     }
 
     @Override
@@ -963,11 +1002,15 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
     }
 
     @Override
-    public void dispose() {
+    protected void initializeWidget() {
+        shapeRenderer = new ShapeRenderer();
+        shapeRenderer.setAutoShapeType(true);
+    }
+
+    @Override
+    protected void disposeWidget() {
         shapeRenderer.dispose();
-        for (GraphNodeWindow window : editedGraph.getNodes()) {
-            window.dispose();
-        }
+        shapeRenderer = null;
     }
 
     public static class GraphEditorStyle {
@@ -987,5 +1030,220 @@ public class GraphEditor extends VisTable implements NavigableCanvas, Disposable
         public Color connectionColor = Color.WHITE;
         public Color connectorColor = Color.WHITE;
         public Color invalidConnectorColor = null; // optional - defaults to connectorColor
+    }
+
+    private class AddGraphNodeAction extends DefaultUndoableAction {
+        private final GraphNodeWindow graphNodeWindow;
+        private final float x;
+        private final float y;
+
+        public AddGraphNodeAction(GraphNodeWindow graphNodeWindow, float x, float y) {
+            this.graphNodeWindow = graphNodeWindow;
+            this.x = x;
+            this.y = y;
+        }
+
+        @Override
+        public void undoAction() {
+            graphNodeWindow.fadeOut();
+            editedGraph.removeGraphNode(graphNodeWindow);
+            selectedNodes.remove(graphNodeWindow.getId());
+        }
+
+        @Override
+        public void redoAction() {
+            addActor(graphNodeWindow.fadeIn());
+            graphNodeWindow.setPosition(canvasX + x, canvasY + y);
+            graphNodeWindow.setSize(Math.max(150, graphNodeWindow.getPrefWidth()), graphNodeWindow.getPrefHeight());
+            editedGraph.addGraphNode(graphNodeWindow);
+        }
+    }
+
+    private class AddNodeGroupAction extends DefaultUndoableAction {
+        private RectangleNodeGroup nodeGroup;
+
+        public AddNodeGroupAction(RectangleNodeGroup nodeGroup) {
+            this.nodeGroup = nodeGroup;
+        }
+
+        @Override
+        public void undoAction() {
+            editedGraph.removeNodeGroup(nodeGroup);
+        }
+
+        @Override
+        public void redoAction() {
+            editedGraph.addNodeGroup(nodeGroup);
+            updateNodeGroups();
+        }
+    }
+
+    private class AddGraphConnectionAction extends DefaultUndoableAction {
+        private DrawnGraphConnection graphConnection;
+
+        public AddGraphConnectionAction(DrawnGraphConnection graphConnection) {
+            this.graphConnection = graphConnection;
+        }
+
+        @Override
+        public void undoAction() {
+            editedGraph.removeGraphConnection(graphConnection);
+        }
+
+        @Override
+        public void redoAction() {
+            editedGraph.addGraphConnection(graphConnection);
+        }
+    }
+
+    private class RenameGroupAction extends DefaultUndoableAction {
+        private RectangleNodeGroup nodeGroup;
+        private String oldName;
+        private String newName;
+
+        public RenameGroupAction(RectangleNodeGroup nodeGroup, String oldName, String newName) {
+            this.nodeGroup = nodeGroup;
+            this.oldName = oldName;
+            this.newName = newName;
+        }
+
+        @Override
+        public void undoAction() {
+            nodeGroup.setName(oldName);
+        }
+
+        @Override
+        public void redoAction() {
+            nodeGroup.setName(newName);
+        }
+    }
+
+    private class RemoveGroupAction extends DefaultUndoableAction {
+        private RectangleNodeGroup nodeGroup;
+
+        public RemoveGroupAction(RectangleNodeGroup nodeGroup) {
+            this.nodeGroup = nodeGroup;
+        }
+
+        @Override
+        public void undoAction() {
+            editedGraph.addNodeGroup(nodeGroup);
+            updateNodeGroups();
+        }
+
+        @Override
+        public void redoAction() {
+            editedGraph.removeNodeGroup(nodeGroup);
+        }
+    }
+
+    private class RemoveConnectionAction extends DefaultUndoableAction {
+        private DrawnGraphConnection connection;
+
+        public RemoveConnectionAction(DrawnGraphConnection connection) {
+            this.connection = connection;
+        }
+
+        @Override
+        public void undoAction() {
+            editedGraph.addGraphConnection(connection);
+        }
+
+        @Override
+        public void redoAction() {
+            editedGraph.removeGraphConnection(connection);
+        }
+    }
+
+    private class RemoveGraphNodeAction extends DefaultUndoableAction {
+        private final GraphNodeWindow graphNodeWindow;
+        private final float x;
+        private final float y;
+
+        public RemoveGraphNodeAction(GraphNodeWindow graphNodeWindow, float x, float y) {
+            this.graphNodeWindow = graphNodeWindow;
+            this.x = x;
+            this.y = y;
+        }
+
+        @Override
+        public void undoAction() {
+            addActor(graphNodeWindow.fadeIn());
+            graphNodeWindow.setPosition(canvasX + x, canvasY + y);
+            graphNodeWindow.setSize(Math.max(150, graphNodeWindow.getPrefWidth()), graphNodeWindow.getPrefHeight());
+            editedGraph.addGraphNode(graphNodeWindow);
+        }
+
+        @Override
+        public void redoAction() {
+            graphNodeWindow.fadeOut();
+            editedGraph.removeGraphNode(graphNodeWindow);
+            selectedNodes.remove(graphNodeWindow.getId());
+        }
+    }
+
+    private class RemoveNodeFromGroupAction extends DefaultUndoableAction {
+        private GraphNodeWindow graphNodeWindow;
+        private RectangleNodeGroup nodeGroup;
+
+        public RemoveNodeFromGroupAction(GraphNodeWindow graphNodeWindow, RectangleNodeGroup nodeGroup) {
+            this.graphNodeWindow = graphNodeWindow;
+            this.nodeGroup = nodeGroup;
+        }
+
+        @Override
+        public void undoAction() {
+            if (nodeGroup.getNodeIds().isEmpty()) {
+                editedGraph.addNodeGroup(nodeGroup);
+            }
+            nodeGroup.getNodeIds().add(graphNodeWindow.getId());
+        }
+
+        @Override
+        public void redoAction() {
+            nodeGroup.getNodeIds().remove(graphNodeWindow.getId());
+            if (nodeGroup.getNodeIds().isEmpty()) {
+                editedGraph.removeNodeGroup(nodeGroup);
+            }
+        }
+    }
+
+    private class MoveNodeAction extends DefaultUndoableAction {
+        private GraphNodeWindow node;
+        private Vector2 oldPosition;
+        private Vector2 newPosition;
+
+        public MoveNodeAction(GraphNodeWindow node, Vector2 oldPosition, Vector2 newPosition) {
+            this.node = node;
+            this.oldPosition = oldPosition;
+            this.newPosition = newPosition;
+        }
+
+        @Override
+        public void undoAction() {
+            moveGroup = false;
+            node.setPosition(oldPosition.x - canvasX, oldPosition.y - canvasY);
+            moveGroup = true;
+        }
+
+        @Override
+        public void redoAction() {
+            moveGroup = false;
+            node.setPosition(newPosition.x - canvasX, newPosition.y - canvasY);
+            moveGroup = true;
+        }
+    }
+
+    private class ConvertToGraphChangedListener extends UndoableChangeListener {
+        @Override
+        public void changed(UndoableChangeEvent event) {
+            GraphChangedEvent graphChangedEvent = Pools.obtain(GraphChangedEvent.class);
+            graphChangedEvent.setData(true);
+            graphChangedEvent.setUndoableAction(event.getUndoableAction());
+            fire(graphChangedEvent);
+            Pools.free(graphChangedEvent);
+
+            event.stop();
+        }
     }
 }
