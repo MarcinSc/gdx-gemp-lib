@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.Pools;
 import com.gempukku.libgdx.ui.graph.editor.GraphNodeEditorInput;
 import com.gempukku.libgdx.ui.graph.editor.GraphNodeEditorOutput;
+import com.gempukku.libgdx.ui.undo.UndoableCheckBox;
 import com.gempukku.libgdx.undo.DefaultUndoableAction;
 import com.gempukku.libgdx.undo.event.UndoableChangeEvent;
 import com.kotcrab.vis.ui.VisUI;
@@ -34,24 +35,8 @@ public class CheckboxEditorPart extends VisTable implements GraphNodeEditorPart 
         this.property = property;
         this.oldValue = defaultValue;
 
-        input = new VisCheckBox(label, style);
+        input = new UndoableCheckBox(label, style);
         input.setChecked(defaultValue);
-        input.addListener(
-                new ChangeListener() {
-                    @Override
-                    public void changed(ChangeEvent event, Actor actor) {
-                        boolean newValue = input.isChecked();
-                        if (newValue != oldValue) {
-                            UndoableChangeEvent undoableEvent = Pools.obtain(UndoableChangeEvent.class);
-                            undoableEvent.setUndoableAction(new SetSelectedAction(oldValue, newValue));
-                            input.fire(undoableEvent);
-                            Pools.free(undoableEvent);
-                            oldValue = newValue;
-                        }
-
-                        event.stop();
-                    }
-                });
 
         add(input).left().grow();
         row();
@@ -86,25 +71,5 @@ public class CheckboxEditorPart extends VisTable implements GraphNodeEditorPart 
     @Override
     public void serializePart(JsonValue object) {
         object.addChild(property, new JsonValue(input.isChecked()));
-    }
-
-    private class SetSelectedAction extends DefaultUndoableAction {
-        private boolean oldValue;
-        private boolean newValue;
-
-        public SetSelectedAction(boolean oldValue, boolean newValue) {
-            this.oldValue = oldValue;
-            this.newValue = newValue;
-        }
-
-        @Override
-        public void undoAction() {
-            input.setChecked(oldValue);
-        }
-
-        @Override
-        public void redoAction() {
-            input.setChecked(newValue);
-        }
     }
 }

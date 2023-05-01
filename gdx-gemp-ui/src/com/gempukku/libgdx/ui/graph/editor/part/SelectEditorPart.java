@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.Pools;
 import com.gempukku.libgdx.ui.graph.editor.GraphNodeEditorInput;
 import com.gempukku.libgdx.ui.graph.editor.GraphNodeEditorOutput;
+import com.gempukku.libgdx.ui.undo.UndoableSelectBox;
 import com.gempukku.libgdx.undo.DefaultUndoableAction;
 import com.gempukku.libgdx.undo.event.UndoableChangeEvent;
 import com.kotcrab.vis.ui.VisUI;
@@ -36,26 +37,11 @@ public class SelectEditorPart extends VisTable implements GraphNodeEditorPart {
         this.property = property;
         this.oldValue = values[0];
 
-        selectBox = new VisSelectBox<>(selectBoxStyle);
+        selectBox = new UndoableSelectBox<>(selectBoxStyle);
         selectBox.setItems(values);
         add(new VisLabel(label + " ", labelStyle));
         add(selectBox).growX();
         row();
-
-        selectBox.addListener(
-                new ChangeListener() {
-                    @Override
-                    public void changed(ChangeEvent event, Actor actor) {
-                        String value = selectBox.getSelected();
-                        if (!oldValue.equals(value)) {
-                            UndoableChangeEvent undoableEvent = Pools.obtain(UndoableChangeEvent.class);
-                            undoableEvent.setUndoableAction(new SetSelectedAction(oldValue, value));
-                            fire(undoableEvent);
-                            Pools.free(undoableEvent);
-                            oldValue = value;
-                        }
-                    }
-                });
     }
 
     public String getSelected() {
@@ -89,25 +75,5 @@ public class SelectEditorPart extends VisTable implements GraphNodeEditorPart {
     @Override
     public void serializePart(JsonValue object) {
         object.addChild(property, new JsonValue(getSelected()));
-    }
-
-    private class SetSelectedAction extends DefaultUndoableAction {
-        private final String oldValue;
-        private final String newValue;
-
-        public SetSelectedAction(String oldValue, String newValue) {
-            this.oldValue = oldValue;
-            this.newValue = newValue;
-        }
-
-        @Override
-        public void undoAction() {
-            selectBox.setSelected(oldValue);
-        }
-
-        @Override
-        public void redoAction() {
-            selectBox.setSelected(newValue);
-        }
     }
 }
