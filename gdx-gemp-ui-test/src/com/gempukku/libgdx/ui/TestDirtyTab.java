@@ -3,8 +3,9 @@ package com.gempukku.libgdx.ui;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.gempukku.libgdx.ui.tabbedpane.*;
+import com.kotcrab.vis.ui.widget.VisTable;
 
-public class TestDirtyTab extends Table implements GDirtyTab {
+public class TestDirtyTab extends VisTable implements GDirtyTab {
     private GDirtyTabLabel<TestDirtyTab> tabActor;
     private String title;
     private boolean dirty;

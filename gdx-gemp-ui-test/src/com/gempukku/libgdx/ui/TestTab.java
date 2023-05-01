@@ -5,8 +5,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.gempukku.libgdx.ui.tabbedpane.GTab;
 import com.gempukku.libgdx.ui.tabbedpane.GTabControl;
 import com.gempukku.libgdx.ui.tabbedpane.GTabLabel;
+import com.kotcrab.vis.ui.widget.VisTable;
 
-public class TestTab extends Table implements GTab {
+public class TestTab extends VisTable implements GTab {
     private GTabLabel<TestTab> tabActor;
     private String title;
 

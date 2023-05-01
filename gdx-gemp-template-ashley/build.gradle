@@ -6,6 +6,8 @@ eclipse.project.name = "gdx-gemp-template-ashley"
 
 dependencies {
     api project(":gdx-gemp-template")
+
+    implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
     implementation("com.github.libgdx:ashley:$ashleyVersion") {
         exclude group: "com.badlogicgames.gdx"
     }
