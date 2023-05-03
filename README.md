@@ -1,6 +1,8 @@
 # gdx-gemp-lib
 This repository contains a set of small modules, which are too small to be separated into their own projects.
 
+## Modules
+
 ### gdx-gemp-ai
 A skeleton of Finite State machine implementation.
 
@@ -9,10 +11,6 @@ Integrating Artemis ODB with Box2D for Physics simulation.
 
 ### gdx-gemp-camera2d
 Configurable camera controller for 2D games. The camera's behavior is controlled via defined constraints.
-
-### gdx-gemp-camera2d-test
-A module containing an application demonstrating how to use gdx-gemp-camera2d. It also uses gdx-gemp-template-ashley module
-for entity loading.
 
 ### gdx-gemp-common
 Set of tiny classes, which are used across many of other modules.
@@ -47,11 +45,19 @@ also allows to navigate on that canvas,
 * set of Undoable UI elements (elements firing UndoableChangeEvent instead of ChangeEvent) for use with gdx-gemp-undo
 module.
 
-### gdx-gemp-ui-test
-A module containing an application used for testing the UI elements in gdx-gemp-ui module.
-
 ### gdx-gemp-undo
 An undo/redo lightweight implementation for libGDX.
+
+## Test Modules
+Modules not designed to be used in your application, but might be a good place to see how to use the modules in this
+repository.
+
+### gdx-gemp-camera2d-test
+A module containing an application demonstrating how to use gdx-gemp-camera2d. It also uses gdx-gemp-template-ashley module
+for entity loading.
+
+### gdx-gemp-ui-test
+A module containing an application used for testing the UI elements in gdx-gemp-ui module.
 
 ---
 For documentation, check the author's website:
