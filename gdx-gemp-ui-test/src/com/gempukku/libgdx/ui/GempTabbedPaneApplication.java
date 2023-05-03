@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.gempukku.libgdx.common.Function;
+import com.gempukku.libgdx.common.Supplier;
 import com.gempukku.libgdx.undo.*;
 import com.gempukku.libgdx.ui.curve.DefaultCurveDefinition;
 import com.gempukku.libgdx.ui.curve.GCurveEditor;
@@ -41,10 +42,12 @@ import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
+import com.kotcrab.vis.ui.widget.color.ColorPicker;
 
 public class GempTabbedPaneApplication extends ApplicationAdapter {
     private Skin skin;
     private Stage stage;
+    private ColorPicker colorPicker;
 
     @Override
     public void create() {
@@ -53,12 +56,21 @@ public class GempTabbedPaneApplication extends ApplicationAdapter {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
+        colorPicker = new ColorPicker();
+
+        Supplier<ColorPicker> colorPickerSupplier = new Supplier<ColorPicker>() {
+            @Override
+            public ColorPicker get() {
+                return colorPicker;
+            }
+        };
+
         GTabbedPane tabbedPane = new GTabbedPane();
         TestTab tab1 = createCurveTestTab(tabbedPane);
-        TestTab tab2 = createGradientTestTab(tabbedPane);
+        TestTab tab2 = createGradientTestTab(tabbedPane, colorPickerSupplier);
         TestDirtyTab tab3 = createDirtyTestTab(tabbedPane);
 
-        GraphEditor graphEditor = createGraphEditor("Whatever");
+        GraphEditor graphEditor = createGraphEditor("Whatever", colorPickerSupplier);
 
         TestTab tab4 = createGraphTestTab(tabbedPane, graphEditor);
 
@@ -137,7 +149,7 @@ public class GempTabbedPaneApplication extends ApplicationAdapter {
         return tab3;
     }
 
-    private static TestTab createGradientTestTab(GTabbedPane tabbedPane) {
+    private static TestTab createGradientTestTab(GTabbedPane tabbedPane, Supplier<ColorPicker> colorPickerSupplier) {
         TestTab tab2 = new TestTab(tabbedPane, "Gradient", true);
         tab2.add(new VisLabel("Top")).colspan(3).row();
         tab2.add(new VisLabel("Left"));
@@ -148,7 +160,7 @@ public class GempTabbedPaneApplication extends ApplicationAdapter {
                         new GradientDefinition.ColorPosition(0.3f, Color.BLUE),
                         new GradientDefinition.ColorPosition(0.8f, Color.BLACK)}));
 
-        GGradientEditor gradientEditor = new GGradientEditor(gradientDefinition);
+        GGradientEditor gradientEditor = new GGradientEditor(colorPickerSupplier, gradientDefinition);
         tab2.add(gradientEditor).grow();
         tab2.add(new VisLabel("Right")).row();
         tab2.add(new VisLabel("Bottom")).colspan(3).row();
@@ -187,7 +199,7 @@ public class GempTabbedPaneApplication extends ApplicationAdapter {
         return tab1;
     }
 
-    private static GraphEditor createGraphEditor(String type) {
+    private static GraphEditor createGraphEditor(String type, Supplier<ColorPicker> colorPickerSupplier) {
         DefaultGraph<DefaultGraphNode, DefaultGraphConnection, DefaultNodeGroup> graph = new DefaultGraph<>(type);
 
         final DefaultNodeConfiguration intOut = new DefaultNodeConfiguration("intOut", "Integer Out");
@@ -211,7 +223,7 @@ public class GempTabbedPaneApplication extends ApplicationAdapter {
                         @Override
                         protected void buildNodeEditor(DefaultGraphNodeEditor graphNodeEditor, NodeConfiguration configuration) {
                             graphNodeEditor.addGraphBoxPart(
-                                    new GradientEditorPart("gradient", "default"));
+                                    new GradientEditorPart(colorPickerSupplier, "gradient", "default"));
                             graphNodeEditor.addGraphBoxPart(new IntegerEditorPart("Value", "prop", 0, new Validators.IntegerValidator()));
                         }
                     };
@@ -253,6 +265,7 @@ public class GempTabbedPaneApplication extends ApplicationAdapter {
 
     @Override
     public void dispose() {
+        colorPicker.dispose();
         stage.dispose();
         VisUI.dispose();
         skin.dispose();

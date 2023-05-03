@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.gempukku.libgdx.common.Supplier;
 import com.gempukku.libgdx.undo.DefaultUndoableAction;
 import com.gempukku.libgdx.undo.event.UndoableChangeEvent;
 import com.gempukku.libgdx.ui.DisposableWidget;
@@ -25,23 +26,25 @@ public class GGradientEditor extends DisposableWidget {
 
     private final DefaultGradientDefinition gradientDefinition;
     private final GGradientEditorStyle style;
+    private final Supplier<ColorPicker> colorPickerSupplier;
 
     private Pixmap pixmap;
     private Texture gradientTexture;
 
-    public GGradientEditor() {
-        this(new DefaultGradientDefinition());
+    public GGradientEditor(Supplier<ColorPicker> colorPickerSupplier) {
+        this(colorPickerSupplier, new DefaultGradientDefinition());
     }
 
-    public GGradientEditor(GradientDefinition gradientDefinition) {
-        this(gradientDefinition, "default");
+    public GGradientEditor(Supplier<ColorPicker> colorPickerSupplier, GradientDefinition gradientDefinition) {
+        this(colorPickerSupplier, gradientDefinition, "default");
     }
 
-    public GGradientEditor(GradientDefinition gradientDefinition, String styleName) {
-        this(gradientDefinition, VisUI.getSkin().get(styleName, GGradientEditorStyle.class));
+    public GGradientEditor(Supplier<ColorPicker> colorPickerSupplier, GradientDefinition gradientDefinition, String styleName) {
+        this(colorPickerSupplier, gradientDefinition, VisUI.getSkin().get(styleName, GGradientEditorStyle.class));
     }
 
-    public GGradientEditor(GradientDefinition gradientDefinition, GGradientEditorStyle style) {
+    public GGradientEditor(Supplier<ColorPicker> colorPickerSupplier, GradientDefinition gradientDefinition, GGradientEditorStyle style) {
+        this.colorPickerSupplier = colorPickerSupplier;
         this.gradientDefinition = new DefaultGradientDefinition(gradientDefinition);
         this.style = style;
         addListener(new GradientEditorListener());
@@ -257,7 +260,7 @@ public class GGradientEditor extends DisposableWidget {
                     addColor(hitX, startColor, null);
                     final int modifiedIndex = findPointIndex(hitX);
 
-                    ColorPicker colorPicker = new ColorPicker();
+                    ColorPicker colorPicker = colorPickerSupplier.get();
                     colorPicker.setColor(startColor);
                     colorPicker.setModal(true);
                     colorPicker.setAllowAlphaEdit(false);
@@ -305,7 +308,7 @@ public class GGradientEditor extends DisposableWidget {
             final GradientDefinition.ColorPosition colorPosition = gradientDefinition.getColorPositions().get(index);
             Color oldColor = colorPosition.color.cpy();
 
-            ColorPicker colorPicker = new ColorPicker();
+            ColorPicker colorPicker = colorPickerSupplier.get();
             colorPicker.setColor(oldColor);
             colorPicker.setModal(true);
             colorPicker.setAllowAlphaEdit(false);

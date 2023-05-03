@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.Pools;
+import com.gempukku.libgdx.common.Supplier;
 import com.gempukku.libgdx.ui.DisposableTable;
 import com.gempukku.libgdx.ui.graph.editor.GraphNodeEditorInput;
 import com.gempukku.libgdx.ui.graph.editor.GraphNodeEditorOutput;
@@ -19,32 +20,30 @@ import com.gempukku.libgdx.undo.event.UndoableChangeEvent;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisImage;
 import com.kotcrab.vis.ui.widget.VisLabel;
+import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.color.ColorPicker;
 import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter;
 
-public class ColorEditorPart extends DisposableTable implements GraphNodeEditorPart {
+public class ColorEditorPart extends VisTable implements GraphNodeEditorPart {
     private final String property;
-    private final String colorPickerStyleName;
     private final VisImage image;
-    private ColorPicker picker;
 
     private Color oldColor;
 
-    public ColorEditorPart(String label, String property) {
-        this(label, property, Color.WHITE);
+    public ColorEditorPart(Supplier<ColorPicker> colorPickerSupplier, String label, String property) {
+        this(colorPickerSupplier, label, property, Color.WHITE);
     }
 
-    public ColorEditorPart(String label, String property, Color defaultColor) {
-        this(label, property, defaultColor, "default", "default");
+    public ColorEditorPart(Supplier<ColorPicker> colorPickerSupplier, String label, String property, Color defaultColor) {
+        this(colorPickerSupplier, label, property, defaultColor, "default");
     }
 
-    public ColorEditorPart(String label, String property, Color defaultColor, String labelStyleName, String colorPickerStyleName) {
-        this(label, property, defaultColor, VisUI.getSkin().get(labelStyleName, Label.LabelStyle.class), colorPickerStyleName);
+    public ColorEditorPart(Supplier<ColorPicker> colorPickerSupplier, String label, String property, Color defaultColor, String labelStyleName) {
+        this(colorPickerSupplier, label, property, defaultColor, VisUI.getSkin().get(labelStyleName, Label.LabelStyle.class));
     }
 
-    public ColorEditorPart(String label, String property, Color defaultColor, Label.LabelStyle labelStyle, String colorPickerStyleName) {
+    public ColorEditorPart(final Supplier<ColorPicker> colorPickerSupplier, String label, String property, Color defaultColor, Label.LabelStyle labelStyle) {
         this.property = property;
-        this.colorPickerStyleName = colorPickerStyleName;
         this.oldColor = defaultColor;
 
         final Drawable drawable = getSkin().getDrawable("white");
@@ -63,9 +62,19 @@ public class ColorEditorPart extends DisposableTable implements GraphNodeEditorP
                 new ClickListener(Input.Buttons.LEFT) {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
+                        ColorPicker colorPicker = colorPickerSupplier.get();
                         //displaying picker with fade in animation
-                        picker.setColor(oldColor);
-                        image.getStage().addActor(picker.fadeIn());
+                        colorPicker.setColor(oldColor);
+                        colorPicker.setListener(
+                                new ColorPickerAdapter() {
+                                    @Override
+                                    public void finished(Color newColor) {
+                                        if (!oldColor.equals(newColor)) {
+                                            setPickedColor(newColor);
+                                        }
+                                    }
+                                });
+                        image.getStage().addActor(colorPicker.fadeIn());
                     }
                 });
 
@@ -114,24 +123,6 @@ public class ColorEditorPart extends DisposableTable implements GraphNodeEditorP
     @Override
     public void serializePart(JsonValue object) {
         object.addChild(property, new JsonValue(image.getColor().toString()));
-    }
-
-    @Override
-    protected void initializeWidget() {
-        picker = new ColorPicker(colorPickerStyleName, new ColorPickerAdapter() {
-            @Override
-            public void finished(Color newColor) {
-                if (!oldColor.equals(newColor)) {
-                    setPickedColor(newColor);
-                }
-            }
-        });
-    }
-
-    @Override
-    protected void disposeWidget() {
-        picker.dispose();
-        picker = null;
     }
 
     private class SetColorAction extends DefaultUndoableAction {

@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
 import com.gempukku.libgdx.common.SimpleNumberFormatter;
+import com.gempukku.libgdx.common.Supplier;
 import com.gempukku.libgdx.ui.gradient.DefaultGradientDefinition;
 import com.gempukku.libgdx.ui.gradient.GGradientEditor;
 import com.gempukku.libgdx.ui.gradient.GradientDefinition;
@@ -14,23 +15,24 @@ import com.gempukku.libgdx.ui.graph.editor.GraphNodeEditorInput;
 import com.gempukku.libgdx.ui.graph.editor.GraphNodeEditorOutput;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisTable;
+import com.kotcrab.vis.ui.widget.color.ColorPicker;
 
 public class GradientEditorPart extends VisTable implements GraphNodeEditorPart {
     private final String property;
     private final GGradientEditor gradientEditor;
 
-    public GradientEditorPart(String property) {
-        this(property, "default");
+    public GradientEditorPart(Supplier<ColorPicker> colorPickerSupplier, String property) {
+        this(colorPickerSupplier, property, "default");
     }
 
-    public GradientEditorPart(String property, String gradientEditorStyleName) {
-        this(property, VisUI.getSkin().get(gradientEditorStyleName, GGradientEditor.GGradientEditorStyle.class));
+    public GradientEditorPart(Supplier<ColorPicker> colorPickerSupplier, String property, String gradientEditorStyleName) {
+        this(colorPickerSupplier, property, VisUI.getSkin().get(gradientEditorStyleName, GGradientEditor.GGradientEditorStyle.class));
     }
 
-    public GradientEditorPart(String property, GGradientEditor.GGradientEditorStyle gradientEditorStyle) {
+    public GradientEditorPart(Supplier<ColorPicker> colorPickerSupplier, String property, GGradientEditor.GGradientEditorStyle gradientEditorStyle) {
         this.property = property;
 
-        gradientEditor = new GGradientEditor(new DefaultGradientDefinition(), gradientEditorStyle);
+        gradientEditor = new GGradientEditor(colorPickerSupplier, new DefaultGradientDefinition(), gradientEditorStyle);
 
         add(gradientEditor).width(300).height(40).left().grow().row();
     }
