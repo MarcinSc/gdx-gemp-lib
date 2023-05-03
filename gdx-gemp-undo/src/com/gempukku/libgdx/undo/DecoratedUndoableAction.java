@@ -3,47 +3,47 @@ package com.gempukku.libgdx.undo;
 public class DecoratedUndoableAction implements UndoableAction {
     private final UndoableAction decorated;
 
-    private UndoableAction beforeUndo;
-    private UndoableAction beforeRedo;
-    private UndoableAction afterUndo;
-    private UndoableAction afterRedo;
+    private Runnable beforeUndo;
+    private Runnable beforeRedo;
+    private Runnable afterUndo;
+    private Runnable afterRedo;
 
     public DecoratedUndoableAction(UndoableAction decorated) {
         this.decorated = decorated;
     }
 
-    public void setBeforeUndo(UndoableAction beforeUndo) {
+    public void setBeforeUndo(Runnable beforeUndo) {
         this.beforeUndo = beforeUndo;
     }
 
-    public void setBeforeRedo(UndoableAction beforeRedo) {
+    public void setBeforeRedo(Runnable beforeRedo) {
         this.beforeRedo = beforeRedo;
     }
 
-    public void setAfterUndo(UndoableAction afterUndo) {
+    public void setAfterUndo(Runnable afterUndo) {
         this.afterUndo = afterUndo;
     }
 
-    public void setAfterRedo(UndoableAction afterRedo) {
+    public void setAfterRedo(Runnable afterRedo) {
         this.afterRedo = afterRedo;
     }
 
     @Override
     public void undoAction() {
         if (beforeUndo != null)
-            beforeUndo.undoAction();
+            beforeUndo.run();
         decorated.undoAction();
         if (afterUndo != null)
-            afterUndo.undoAction();
+            afterUndo.run();
     }
 
     @Override
     public void redoAction() {
         if (beforeRedo != null)
-            beforeRedo.redoAction();
+            beforeRedo.run();
         decorated.redoAction();
         if (afterRedo != null)
-            afterRedo.redoAction();;
+            afterRedo.run();;
     }
 
     @Override

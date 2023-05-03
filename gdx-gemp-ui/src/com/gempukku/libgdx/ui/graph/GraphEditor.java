@@ -1238,14 +1238,9 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
         }
     }
 
-    private class WindowsMovedAction extends DefaultUndoableAction {
+    private class WindowsMovedAction implements Runnable {
         @Override
-        public void undoAction() {
-            windowsMoved();
-        }
-
-        @Override
-        public void redoAction() {
+        public void run() {
             windowsMoved();
         }
     }
