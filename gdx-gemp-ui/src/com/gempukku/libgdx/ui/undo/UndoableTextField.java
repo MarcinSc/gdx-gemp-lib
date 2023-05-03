@@ -1,7 +1,11 @@
 package com.gempukku.libgdx.ui.undo;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.Pools;
 import com.gempukku.libgdx.undo.DefaultUndoableAction;
 import com.gempukku.libgdx.undo.event.UndoableChangeEvent;
@@ -45,6 +49,11 @@ public class UndoableTextField extends VisTextField {
         }
     }
 
+    @Override
+    protected InputListener createInputListener() {
+        return new UndoableTextFieldClickListener();
+    }
+
     private class SetTextAction extends DefaultUndoableAction {
         private final String oldText;
         private final String newText;
@@ -62,6 +71,18 @@ public class UndoableTextField extends VisTextField {
         @Override
         public void redoAction() {
             setText(newText);
+        }
+    }
+
+    private class UndoableTextFieldClickListener extends TextFieldClickListener {
+        @Override
+        public boolean keyDown(InputEvent event, int keycode) {
+            boolean ctrl = UIUtils.ctrl();
+            if (ctrl && keycode == Input.Keys.Z && !isReadOnly()) {
+                return false;
+            }
+
+            return super.keyDown(event, keycode);
         }
     }
 }

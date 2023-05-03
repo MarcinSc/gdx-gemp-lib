@@ -250,7 +250,7 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
             @Override
             protected void close() {
                 removeGraphNodeWindow(this);
-                super.close();
+                remove();
             }
 
             @Override
@@ -1049,14 +1049,14 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
 
         @Override
         public void undoAction() {
-            graphNodeWindow.fadeOut();
+            graphNodeWindow.remove();
             editedGraph.removeGraphNode(graphNodeWindow);
             selectedNodes.remove(graphNodeWindow.getId());
         }
 
         @Override
         public void redoAction() {
-            addActor(graphNodeWindow.fadeIn());
+            addActor(graphNodeWindow);
             graphNodeWindow.setPosition(canvasX + x, canvasY + y);
             graphNodeWindow.setSize(Math.max(150, graphNodeWindow.getPrefWidth()), graphNodeWindow.getPrefHeight());
             editedGraph.addGraphNode(graphNodeWindow);
@@ -1172,7 +1172,7 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
 
         @Override
         public void undoAction() {
-            addActor(graphNodeWindow.fadeIn());
+            addActor(graphNodeWindow);
             graphNodeWindow.setPosition(canvasX + x, canvasY + y);
             graphNodeWindow.setSize(Math.max(150, graphNodeWindow.getPrefWidth()), graphNodeWindow.getPrefHeight());
             editedGraph.addGraphNode(graphNodeWindow);
@@ -1180,7 +1180,7 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
 
         @Override
         public void redoAction() {
-            graphNodeWindow.fadeOut();
+            graphNodeWindow.remove();
             editedGraph.removeGraphNode(graphNodeWindow);
             selectedNodes.remove(graphNodeWindow.getId());
         }

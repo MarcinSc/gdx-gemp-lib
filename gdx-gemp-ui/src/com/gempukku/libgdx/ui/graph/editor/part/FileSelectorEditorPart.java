@@ -22,20 +22,20 @@ public class FileSelectorEditorPart extends VisTable implements GraphNodeEditorP
     private final String property;
     private String selectedPath;
 
-    public FileSelectorEditorPart(String label, String property) {
-        this(label, property, null, "default", "default", "default");
+    public FileSelectorEditorPart(String label, String property, FileHandle folderLocation) {
+        this(label, property, folderLocation, null, "default", "default", "default");
     }
 
-    public FileSelectorEditorPart(String label, String property, String defaultPath,
+    public FileSelectorEditorPart(String label, String property, FileHandle folderLocation, String defaultPath,
                                   String labelStyleName, String chooseButtonStyleName,
                                   final String fileChooserStyleName) {
-        this(label, property, defaultPath,
+        this(label, property, folderLocation, defaultPath,
                 VisUI.getSkin().get(labelStyleName, Label.LabelStyle.class),
                 VisUI.getSkin().get(chooseButtonStyleName, VisTextButton.VisTextButtonStyle.class),
                 fileChooserStyleName);
     }
 
-    public FileSelectorEditorPart(String label, String property, String defaultPath,
+    public FileSelectorEditorPart(String label, String property, final FileHandle folderLocation, String defaultPath,
                                   Label.LabelStyle labelStyle, VisTextButton.VisTextButtonStyle chooseButtonStyle,
                                   final String fileChooserStyleName) {
         this.property = property;
@@ -52,6 +52,7 @@ public class FileSelectorEditorPart extends VisTable implements GraphNodeEditorP
                     public void changed(ChangeEvent event, Actor actor) {
                         final FileChooser fileChooser = new FileChooser(fileChooserStyleName, FileChooser.Mode.OPEN);
                         fileChooser.setModal(true);
+                        fileChooser.setDirectory(folderLocation);
                         fileChooser.setSelectionMode(FileChooser.SelectionMode.FILES);
                         fileChooser.setListener(new FileChooserAdapter() {
                             @Override
