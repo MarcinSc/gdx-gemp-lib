@@ -294,7 +294,7 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
             graphNodeWindow.addCloseButton();
         }
 
-        AddGraphNodeAction addNodeAction = new AddGraphNodeAction(graphNodeWindow, x - canvasX, y - canvasY);
+        AddGraphNodeAction addNodeAction = new AddGraphNodeAction(graphNodeWindow, x + canvasX, y + canvasY);
         addNodeAction.doAction();
         graphChanged(true, true, addNodeAction);
     }
@@ -682,7 +682,7 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
             }
         }
 
-        compositeUndoableAction.addUndoableAction(new RemoveGraphNodeAction(window, window.getX() - canvasX, window.getY() - canvasY));
+        compositeUndoableAction.addUndoableAction(new RemoveGraphNodeAction(window, window.getX() + canvasX, window.getY() + canvasY));
         compositeUndoableAction.doAction();
 
         graphChanged(true, true, compositeUndoableAction);
@@ -1058,7 +1058,7 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
         @Override
         public void redoAction() {
             addActor(graphNodeWindow);
-            graphNodeWindow.setPosition(canvasX + x, canvasY + y);
+            graphNodeWindow.setPosition(x - canvasX, y - canvasX);
             graphNodeWindow.setSize(Math.max(150, graphNodeWindow.getPrefWidth()), graphNodeWindow.getPrefHeight());
             editedGraph.addGraphNode(graphNodeWindow);
             graphChanged(true, true, null);
@@ -1179,7 +1179,7 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
         @Override
         public void undoAction() {
             addActor(graphNodeWindow);
-            graphNodeWindow.setPosition(canvasX + x, canvasY + y);
+            graphNodeWindow.setPosition(x - canvasX, y - canvasY);
             graphNodeWindow.setSize(Math.max(150, graphNodeWindow.getPrefWidth()), graphNodeWindow.getPrefHeight());
             editedGraph.addGraphNode(graphNodeWindow);
             graphChanged(true, true, null);
