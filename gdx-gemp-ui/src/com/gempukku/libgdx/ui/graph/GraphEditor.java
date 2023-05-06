@@ -64,10 +64,14 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
     private final DefaultGraph<GraphNodeWindow, DrawnGraphConnection, RectangleNodeGroup> editedGraph;
     private ObjectMap<String, Vector2> windowPositionsAtDragStart;
 
-    private float canvasX;
-    private float canvasY;
+    private float canvasMinX;
+    private float canvasMinY;
     private float canvasWidth;
     private float canvasHeight;
+
+    private float canvasPositionX;
+    private float canvasPositionY;
+
     private boolean canvasMoving;
     private boolean moveGroup = true;
     private NodeConnector drawingFromConnector;
@@ -119,8 +123,8 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
                     }
                 });
         DragListener dragListener = new DragListener() {
-            private float canvasXStart;
-            private float canvasYStart;
+            private float positionXStart;
+            private float positionYStart;
             private RectangleNodeGroup dragGroup;
             private float movedByX = 0;
             private float movedByY = 0;
@@ -128,8 +132,8 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
             @Override
             public void dragStart(InputEvent event, float x, float y, int pointer) {
                 if (event.getTarget() == GraphEditor.this) {
-                    canvasXStart = canvasX;
-                    canvasYStart = canvasY;
+                    positionXStart = canvasPositionX;
+                    positionYStart = canvasPositionY;
                     movedByX = 0;
                     movedByY = 0;
                     dragGroup = findDragGroup(x, y);
@@ -165,7 +169,7 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
                         windowsMoved();
                         updateNodeGroups();
                     } else {
-                        navigateTo(canvasXStart + getDragStartX() - x, canvasYStart + getDragStartY() - y);
+                        navigateTo((positionXStart - canvasMinX) + getDragStartX() - x, (positionYStart - canvasMinY) + getDragStartY() - y);
                     }
                 }
             }
@@ -185,14 +189,14 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
         dragListener.setTapSquareSize(0f);
         addListener(dragListener);
 
-        updateCanvas(true);
+        updateCanvas();
     }
 
     private void windowsStartingToMove() {
         // Snapshot position of all windows
         windowPositionsAtDragStart = new ObjectMap<>();
         for (GraphNodeWindow node : editedGraph.getNodes()) {
-            Vector2 windowPosition = Pools.obtain(Vector2.class).set(canvasX + node.getX(), canvasY + node.getY());
+            Vector2 windowPosition = Pools.obtain(Vector2.class).set(canvasPositionX + node.getX(), canvasPositionY + node.getY());
             windowPositionsAtDragStart.put(node.getId(), windowPosition);
         }
     }
@@ -203,7 +207,7 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
             for (GraphNodeWindow node : editedGraph.getNodes()) {
                 Vector2 oldPosition = windowPositionsAtDragStart.get(node.getId());
                 if (oldPosition != null) {
-                    Vector2 newPosition = Pools.obtain(Vector2.class).set(canvasX + node.getX(), canvasY + node.getY());
+                    Vector2 newPosition = Pools.obtain(Vector2.class).set(canvasPositionX + node.getX(), canvasPositionY + node.getY());
                     if (!oldPosition.equals(newPosition)) {
                         MoveNodeAction moveNodeAction = new MoveNodeAction(node, oldPosition, newPosition);
                         undoableAction.addUndoableAction(moveNodeAction);
@@ -294,7 +298,7 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
             graphNodeWindow.addCloseButton();
         }
 
-        AddGraphNodeAction addNodeAction = new AddGraphNodeAction(graphNodeWindow, x + canvasX, y + canvasY);
+        AddGraphNodeAction addNodeAction = new AddGraphNodeAction(graphNodeWindow, canvasPositionX + x, canvasPositionY + y);
         addNodeAction.doAction();
         graphChanged(true, true, addNodeAction);
     }
@@ -319,7 +323,7 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
 
     @Override
     public void getCanvasPosition(Vector2 result) {
-        result.set(canvasX, canvasY);
+        result.set(canvasPositionX - canvasMinX, canvasPositionY - canvasMinY);
     }
 
     @Override
@@ -335,7 +339,9 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
     @Override
     public void processElements(Callback callback) {
         for (GraphNodeWindow window : editedGraph.getNodes()) {
-            callback.processElement(canvasX + window.getX(), canvasY + window.getY(), window.getWidth(), window.getHeight());
+            float posX = window.getX()+canvasPositionX - canvasMinX;
+            float posY = window.getY()+canvasPositionY-canvasMinY;
+            callback.processElement(posX, posY, window.getWidth(), window.getHeight());
         }
     }
 
@@ -345,19 +351,19 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
         y = MathUtils.round(y);
 
         canvasMoving = true;
-        float difX = x - canvasX;
-        float difY = y - canvasY;
+        float difX = (x + canvasMinX) - canvasPositionX;
+        float difY = (y + canvasMinY) - canvasPositionY;
         for (Actor element : editedGraph.getNodes()) {
             element.moveBy(-difX, -difY);
         }
-        canvasX = x;
-        canvasY = y;
+        canvasPositionX = x + canvasMinX;
+        canvasPositionY = y + canvasMinY;
         canvasMoving = false;
 
         windowsMoved();
     }
 
-    private void updateCanvas(boolean adjustPosition) {
+    private void updateCanvas() {
         if (!canvasMoving) {
             float minX = Float.MAX_VALUE;
             float minY = Float.MAX_VALUE;
@@ -371,8 +377,8 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
                 maxY = 0;
             } else {
                 for (Actor child : editedGraph.getNodes()) {
-                    float childX = child.getX();
-                    float childY = child.getY();
+                    float childX = canvasPositionX+child.getX();
+                    float childY = canvasPositionY+child.getY();
                     float childWidth = child.getWidth();
                     float childHeight = child.getHeight();
                     minX = Math.min(minX, childX);
@@ -387,13 +393,11 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
             maxX += CANVAS_GAP;
             maxY += CANVAS_GAP;
 
+            canvasMinX = minX;
+            canvasMinY = minY;
+
             canvasWidth = maxX - minX;
             canvasHeight = maxY - minY;
-
-//            if (adjustPosition) {
-//                canvasX = -minX;
-//                canvasY = -minY;
-//            }
         }
     }
 
@@ -627,7 +631,7 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
     private void windowsMoved() {
         recreateClickableShapes();
         updateNodeGroups();
-        updateCanvas(true);
+        updateCanvas();
         graphChanged(false, false, null);
     }
 
@@ -682,7 +686,7 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
             }
         }
 
-        compositeUndoableAction.addUndoableAction(new RemoveGraphNodeAction(window, window.getX() + canvasX, window.getY() + canvasY));
+        compositeUndoableAction.addUndoableAction(new RemoveGraphNodeAction(window, window.getX() + canvasPositionX, window.getY() + canvasPositionY));
         compositeUndoableAction.doAction();
 
         graphChanged(true, true, compositeUndoableAction);
@@ -693,7 +697,7 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
         super.layout();
         recreateClickableShapes();
         updateNodeGroups();
-        updateCanvas(false);
+        updateCanvas();
     }
 
     private void updateNodeGroups() {
@@ -1058,7 +1062,7 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
         @Override
         public void redoAction() {
             addActor(graphNodeWindow);
-            graphNodeWindow.setPosition(x - canvasX, y - canvasX);
+            graphNodeWindow.setPosition(x - canvasPositionX, y - canvasPositionY);
             graphNodeWindow.setSize(Math.max(150, graphNodeWindow.getPrefWidth()), graphNodeWindow.getPrefHeight());
             editedGraph.addGraphNode(graphNodeWindow);
             graphChanged(true, true, null);
@@ -1179,7 +1183,7 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
         @Override
         public void undoAction() {
             addActor(graphNodeWindow);
-            graphNodeWindow.setPosition(x - canvasX, y - canvasY);
+            graphNodeWindow.setPosition(x - canvasPositionX, y - canvasPositionY);
             graphNodeWindow.setSize(Math.max(150, graphNodeWindow.getPrefWidth()), graphNodeWindow.getPrefHeight());
             editedGraph.addGraphNode(graphNodeWindow);
             graphChanged(true, true, null);
@@ -1234,14 +1238,14 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
         @Override
         public void undoAction() {
             moveGroup = false;
-            node.setPosition(oldPosition.x - canvasX, oldPosition.y - canvasY);
+            node.setPosition(oldPosition.x - canvasPositionX, oldPosition.y - canvasPositionY);
             moveGroup = true;
         }
 
         @Override
         public void redoAction() {
             moveGroup = false;
-            node.setPosition(newPosition.x - canvasX, newPosition.y - canvasY);
+            node.setPosition(newPosition.x - canvasPositionX, newPosition.y - canvasPositionY);
             moveGroup = true;
         }
     }
