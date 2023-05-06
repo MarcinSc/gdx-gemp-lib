@@ -748,7 +748,7 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
 
                 switch (connector.getSide()) {
                     case Left:
-                        from.set(windowX - width, windowY - height/2);
+                        from.set(windowX - width, windowY + connector.getOffset() - height/2);
                         break;
                     case Top:
                         from.set(windowX + connector.getOffset() - width/2, windowY + window.getHeight());
