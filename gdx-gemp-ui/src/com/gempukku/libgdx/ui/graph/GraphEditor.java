@@ -390,10 +390,10 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
             canvasWidth = maxX - minX;
             canvasHeight = maxY - minY;
 
-            if (adjustPosition) {
-                canvasX = -minX;
-                canvasY = -minY;
-            }
+//            if (adjustPosition) {
+//                canvasX = -minX;
+//                canvasY = -minY;
+//            }
         }
     }
 
