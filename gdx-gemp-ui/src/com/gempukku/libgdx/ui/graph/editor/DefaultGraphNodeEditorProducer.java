@@ -1,5 +1,6 @@
 package com.gempukku.libgdx.ui.graph.editor;
 
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.JsonValue;
 import com.gempukku.libgdx.ui.graph.data.*;
 
@@ -33,6 +34,10 @@ public abstract class DefaultGraphNodeEditorProducer implements GraphNodeEditorP
         return nodeEditor;
     }
 
+    protected abstract Drawable getInputDrawable(GraphNodeInputSide side, boolean valid);
+
+    protected abstract Drawable getOutputDrawable(GraphNodeOutputSide side, boolean valid);
+
     protected abstract void buildNodeEditor(DefaultGraphNodeEditor graphNodeEditor, NodeConfiguration configuration);
 
     protected void addConfigurationInputsAndOutputs(DefaultGraphNodeEditor nodeEditor) {
@@ -44,7 +49,7 @@ public abstract class DefaultGraphNodeEditorProducer implements GraphNodeEditorP
             while (inputIterator.hasNext()) {
                 input = inputIterator.next();
                 if (input.getSide() == GraphNodeInputSide.Top) {
-                    nodeEditor.addTopConnector(input);
+                    nodeEditor.addTopConnector(input, getInputDrawable(input.getSide(), true), getInputDrawable(input.getSide(), false));
                     input = null;
                 } else {
                     break;
@@ -53,7 +58,7 @@ public abstract class DefaultGraphNodeEditorProducer implements GraphNodeEditorP
             while (outputIterator.hasNext()) {
                 output = outputIterator.next();
                 if (output.getSide() == GraphNodeOutputSide.Bottom) {
-                    nodeEditor.addBottomConnector(output);
+                    nodeEditor.addBottomConnector(output, getOutputDrawable(output.getSide(), true), getOutputDrawable(output.getSide(), false));
                     output = null;
                 } else {
                     break;
@@ -61,11 +66,15 @@ public abstract class DefaultGraphNodeEditorProducer implements GraphNodeEditorP
             }
 
             if (input != null && output != null) {
-                nodeEditor.addTwoSideGraphPart(input, output);
+                nodeEditor.addTwoSideGraphPart(
+                        input, getInputDrawable(input.getSide(), true), getInputDrawable(input.getSide(), false),
+                        output, getOutputDrawable(output.getSide(), true), getOutputDrawable(output.getSide(), false));
             } else if (input != null) {
-                nodeEditor.addInputGraphPart(input);
+                nodeEditor.addInputGraphPart(
+                        input, getInputDrawable(input.getSide(), true), getInputDrawable(input.getSide(), false));
             } else if (output != null) {
-                nodeEditor.addOutputGraphPart(output);
+                nodeEditor.addOutputGraphPart(
+                        output, getOutputDrawable(output.getSide(), true), getOutputDrawable(output.getSide(), false));
             }
         }
     }

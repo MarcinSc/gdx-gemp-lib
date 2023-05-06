@@ -1,6 +1,7 @@
 package com.gempukku.libgdx.ui.graph.editor.part;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.JsonValue;
 import com.gempukku.libgdx.ui.graph.GraphChangedEvent;
 import com.gempukku.libgdx.ui.graph.data.*;
@@ -20,12 +21,12 @@ public class DefaultGraphNodeEditorPart implements GraphNodeEditorPart {
         this.callback = callback;
     }
 
-    public void setInputConnector(GraphNodeInputSide side, GraphNodeInput graphNodeInput) {
-        inputConnector = new DefaultGraphNodeEditorInput(side, null, graphNodeInput.getFieldId());
+    public void setInputConnector(GraphNodeInputSide side, GraphNodeInput graphNodeInput, Drawable validDrawable, Drawable invalidDrawable) {
+        inputConnector = new DefaultGraphNodeEditorInput(side, null, graphNodeInput.getFieldId(), validDrawable, invalidDrawable);
     }
 
-    public void setOutputConnector(GraphNodeOutputSide side, GraphNodeOutput graphNodeOutput) {
-        outputConnector = new DefaultGraphNodeEditorOutput(side, null, graphNodeOutput.getFieldId());
+    public void setOutputConnector(GraphNodeOutputSide side, GraphNodeOutput graphNodeOutput, Drawable validDrawable, Drawable invalidDrawable) {
+        outputConnector = new DefaultGraphNodeEditorOutput(side, null, graphNodeOutput.getFieldId(), validDrawable, invalidDrawable);
     }
 
     @Override

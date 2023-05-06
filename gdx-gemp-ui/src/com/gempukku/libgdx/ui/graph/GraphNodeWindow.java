@@ -2,8 +2,6 @@ package com.gempukku.libgdx.ui.graph;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -12,7 +10,6 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.gempukku.libgdx.ui.graph.data.GraphNode;
 import com.gempukku.libgdx.ui.graph.editor.GraphNodeEditor;
-import com.gempukku.libgdx.ui.graph.editor.PropertyChangedEvent;
 import com.kotcrab.vis.ui.widget.VisImageButton;
 import com.kotcrab.vis.ui.widget.VisWindow;
 
@@ -30,19 +27,6 @@ public class GraphNodeWindow extends VisWindow implements GraphNode {
         this.graphNodeEditor = graphNodeEditor;
         this.closeButtonStyle = closeButtonStyle;
         Actor editorActor = graphNodeEditor.getActor();
-        editorActor.addListener(
-                new EventListener() {
-                    @Override
-                    public boolean handle(Event event) {
-                        if (event instanceof PropertyChangedEvent) {
-                            PropertyChangedEvent propertyChangedEvent = (PropertyChangedEvent) event;
-                            fire(new NodePropertyChangedEvent(GraphNodeWindow.this.nodeId, propertyChangedEvent.getProperty(), propertyChangedEvent.getOldValue(), propertyChangedEvent.getNewValue()));
-                            propertyChangedEvent.stop();
-                            return true;
-                        }
-                        return false;
-                    }
-                });
         add(editorActor).grow().row();
         getTitleLabel().setAlignment(windowTitleAlignment);
     }

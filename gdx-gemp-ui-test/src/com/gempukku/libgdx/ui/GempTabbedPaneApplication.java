@@ -11,11 +11,14 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.gempukku.libgdx.common.Function;
 import com.gempukku.libgdx.common.Supplier;
+import com.gempukku.libgdx.ui.graph.data.GraphNodeInputSide;
+import com.gempukku.libgdx.ui.graph.data.GraphNodeOutputSide;
 import com.gempukku.libgdx.undo.*;
 import com.gempukku.libgdx.ui.curve.DefaultCurveDefinition;
 import com.gempukku.libgdx.ui.curve.GCurveEditor;
@@ -221,6 +224,16 @@ public class GempTabbedPaneApplication extends ApplicationAdapter {
                 if (s.equals("intOut")) {
                     DefaultGraphNodeEditorProducer producer = new DefaultGraphNodeEditorProducer(intOut) {
                         @Override
+                        protected Drawable getInputDrawable(GraphNodeInputSide side, boolean valid) {
+                            return VisUI.getSkin().getDrawable(valid ? "white" : "darkGrey");
+                        }
+
+                        @Override
+                        protected Drawable getOutputDrawable(GraphNodeOutputSide side, boolean valid) {
+                            return VisUI.getSkin().getDrawable(valid ? "white" : "darkGrey");
+                        }
+
+                        @Override
                         protected void buildNodeEditor(DefaultGraphNodeEditor graphNodeEditor, NodeConfiguration configuration) {
                             graphNodeEditor.addGraphBoxPart(
                                     new GradientEditorPart(colorPickerSupplier, "gradient", "default"));
@@ -231,6 +244,16 @@ public class GempTabbedPaneApplication extends ApplicationAdapter {
                     return producer;
                 } else if (s.equals("intIn")) {
                     DefaultGraphNodeEditorProducer producer = new DefaultGraphNodeEditorProducer(intIn) {
+                        @Override
+                        protected Drawable getInputDrawable(GraphNodeInputSide side, boolean valid) {
+                            return VisUI.getSkin().getDrawable(valid ? "white" : "darkGrey");
+                        }
+
+                        @Override
+                        protected Drawable getOutputDrawable(GraphNodeOutputSide side, boolean valid) {
+                            return VisUI.getSkin().getDrawable(valid ? "white" : "darkGrey");
+                        }
+
                         @Override
                         protected void buildNodeEditor(DefaultGraphNodeEditor graphNodeEditor, NodeConfiguration configuration) {
                             graphNodeEditor.addGraphBoxPart(

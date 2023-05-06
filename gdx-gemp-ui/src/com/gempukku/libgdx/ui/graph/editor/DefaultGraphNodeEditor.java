@@ -2,6 +2,7 @@ package com.gempukku.libgdx.ui.graph.editor;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.JsonValue;
 import com.gempukku.libgdx.common.Supplier;
@@ -44,27 +45,28 @@ public class DefaultGraphNodeEditor implements GraphNodeEditor {
         return configuration;
     }
 
-    public void addTopConnector(GraphNodeInput graphNodeInput) {
+    public void addTopConnector(GraphNodeInput graphNodeInput, Drawable validDrawable, Drawable invalidDrawable) {
         inputConnectors.put(graphNodeInput.getFieldId(), new DefaultGraphNodeEditorInput(GraphNodeInputSide.Top, new Supplier<Float>() {
             @Override
             public Float get() {
                 return table.getWidth() / 2f;
             }
-        }, graphNodeInput.getFieldId()));
+        }, graphNodeInput.getFieldId(), validDrawable, invalidDrawable));
     }
 
-    public void addBottomConnector(GraphNodeOutput graphNodeOutput) {
+    public void addBottomConnector(GraphNodeOutput graphNodeOutput, Drawable validDrawable, Drawable invalidDrawable) {
         outputConnectors.put(graphNodeOutput.getFieldId(), new DefaultGraphNodeEditorOutput(GraphNodeOutputSide.Bottom,
                 new Supplier<Float>() {
                     @Override
                     public Float get() {
                         return table.getWidth() / 2f;
                     }
-                }, graphNodeOutput.getFieldId()));
+                }, graphNodeOutput.getFieldId(), validDrawable, invalidDrawable));
     }
 
-    public void addTwoSideGraphPart(GraphNodeInput graphNodeInput,
-                                    GraphNodeOutput graphNodeOutput) {
+    public void addTwoSideGraphPart(
+            GraphNodeInput graphNodeInput, Drawable inputValidDrawable, Drawable inputInvalidDrawable,
+            GraphNodeOutput graphNodeOutput, Drawable outputValidDrawable, Drawable outputInvalidDrawable) {
         VisTable table = new VisTable();
         table.add(new VisLabel(graphNodeInput.getFieldName(), labelStyle)).grow();
         VisLabel outputLabel = new VisLabel(graphNodeOutput.getFieldName(), labelStyle);
@@ -73,29 +75,30 @@ public class DefaultGraphNodeEditor implements GraphNodeEditor {
         table.row();
 
         DefaultGraphNodeEditorPart graphBoxPart = new DefaultGraphNodeEditorPart(table, null);
-        graphBoxPart.setInputConnector(GraphNodeInputSide.Left, graphNodeInput);
-        graphBoxPart.setOutputConnector(GraphNodeOutputSide.Right, graphNodeOutput);
+        graphBoxPart.setInputConnector(GraphNodeInputSide.Left, graphNodeInput, inputValidDrawable, inputInvalidDrawable);
+        graphBoxPart.setOutputConnector(GraphNodeOutputSide.Right, graphNodeOutput, outputValidDrawable, outputInvalidDrawable);
         addGraphBoxPart(graphBoxPart);
     }
 
-    public void addInputGraphPart(GraphNodeInput graphNodeInput) {
+    public void addInputGraphPart(
+            GraphNodeInput graphNodeInput, Drawable inputValidDrawable, Drawable inputInvalidDrawable) {
         VisTable table = new VisTable();
         table.add(new VisLabel(graphNodeInput.getFieldName(), labelStyle)).grow().row();
 
         DefaultGraphNodeEditorPart graphBoxPart = new DefaultGraphNodeEditorPart(table, null);
-        graphBoxPart.setInputConnector(GraphNodeInputSide.Left, graphNodeInput);
+        graphBoxPart.setInputConnector(GraphNodeInputSide.Left, graphNodeInput, inputValidDrawable, inputInvalidDrawable);
         addGraphBoxPart(graphBoxPart);
     }
 
     public void addOutputGraphPart(
-            GraphNodeOutput graphNodeOutput) {
+            GraphNodeOutput graphNodeOutput, Drawable outputValidDrawable, Drawable outputInvalidDrawable) {
         VisTable table = new VisTable();
         VisLabel outputLabel = new VisLabel(graphNodeOutput.getFieldName(), labelStyle);
         outputLabel.setAlignment(Align.right);
         table.add(outputLabel).grow().row();
 
         DefaultGraphNodeEditorPart graphBoxPart = new DefaultGraphNodeEditorPart(table, null);
-        graphBoxPart.setOutputConnector(GraphNodeOutputSide.Right, graphNodeOutput);
+        graphBoxPart.setOutputConnector(GraphNodeOutputSide.Right, graphNodeOutput, outputValidDrawable, outputInvalidDrawable);
         addGraphBoxPart(graphBoxPart);
     }
 
@@ -113,7 +116,7 @@ public class DefaultGraphNodeEditor implements GraphNodeEditor {
                                     return actor.getY() + actor.getHeight() / 2f;
                                 }
                             },
-                            inputConnector.getFieldId()));
+                            inputConnector.getFieldId(), inputConnector.getDrawable(true), inputConnector.getDrawable(false)));
         }
         final GraphNodeEditorOutput outputConnector = graphBoxPart.getOutputConnector();
         if (outputConnector != null) {
@@ -125,7 +128,7 @@ public class DefaultGraphNodeEditor implements GraphNodeEditor {
                                     return actor.getY() + actor.getHeight() / 2f;
                                 }
                             },
-                            outputConnector.getFieldId()));
+                            outputConnector.getFieldId(), outputConnector.getDrawable(true), outputConnector.getDrawable(false)));
         }
     }
 
