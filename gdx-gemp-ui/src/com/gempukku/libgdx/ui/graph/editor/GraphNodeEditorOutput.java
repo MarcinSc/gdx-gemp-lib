@@ -6,7 +6,7 @@ import com.gempukku.libgdx.ui.graph.data.GraphNodeOutputSide;
 public interface GraphNodeEditorOutput {
     GraphNodeOutputSide getSide();
 
-    Drawable getDrawable(boolean valid);
+    Drawable getConnectorDrawable(boolean valid);
 
     float getOffset();
 

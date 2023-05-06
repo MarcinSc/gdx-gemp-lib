@@ -339,8 +339,8 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
     @Override
     public void processElements(Callback callback) {
         for (GraphNodeWindow window : editedGraph.getNodes()) {
-            float posX = window.getX()+canvasPositionX - canvasMinX;
-            float posY = window.getY()+canvasPositionY-canvasMinY;
+            float posX = window.getX() + canvasPositionX - canvasMinX;
+            float posY = window.getY() + canvasPositionY - canvasMinY;
             callback.processElement(posX, posY, window.getWidth(), window.getHeight());
         }
     }
@@ -377,8 +377,8 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
                 maxY = 0;
             } else {
                 for (Actor child : editedGraph.getNodes()) {
-                    float childX = canvasPositionX+child.getX();
-                    float childY = canvasPositionY+child.getY();
+                    float childX = canvasPositionX + child.getX();
+                    float childY = canvasPositionY + child.getY();
                     float childWidth = child.getWidth();
                     float childHeight = child.getHeight();
                     minX = Math.min(minX, childX);
@@ -740,32 +740,44 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
             float windowX = window.getX();
             float windowY = window.getY();
             for (GraphNodeEditorInput connector : graphNodeEditor.getInputs().values()) {
+                boolean invalid = window.isConnectorError(connector.getFieldId());
+                Drawable drawable = connector.getConnectorDrawable(!invalid);
+
+                float width = drawable.getMinWidth();
+                float height = drawable.getMinHeight();
+
                 switch (connector.getSide()) {
                     case Left:
-                        from.set(windowX - style.connectorLength, windowY + connector.getOffset());
+                        from.set(windowX - width, windowY - height/2);
                         break;
                     case Top:
-                        from.set(windowX + connector.getOffset(), windowY + window.getHeight() + style.connectorLength);
+                        from.set(windowX + connector.getOffset() - width/2, windowY + window.getHeight());
                         break;
                 }
                 Rectangle2D rectangle = new Rectangle2D.Float(
-                        from.x - style.connectorRadius, from.y - style.connectorRadius,
-                        style.connectorRadius * 2, style.connectorRadius * 2);
+                        from.x, from.y,
+                        width, height);
 
                 connectionNodeMap.put(new NodeConnector(nodeId, connector.getFieldId()), rectangle);
             }
             for (GraphNodeEditorOutput connector : graphNodeEditor.getOutputs().values()) {
+                boolean invalid = window.isConnectorError(connector.getFieldId());
+                Drawable drawable = connector.getConnectorDrawable(!invalid);
+
+                float width = drawable.getMinWidth();
+                float height = drawable.getMinHeight();
+
                 switch (connector.getSide()) {
                     case Right:
-                        from.set(windowX + window.getWidth() + style.connectorLength, windowY + connector.getOffset());
+                        from.set(windowX + window.getWidth(), windowY + connector.getOffset() - height/2);
                         break;
                     case Bottom:
-                        from.set(windowX + connector.getOffset(), windowY - style.connectorLength);
+                        from.set(windowX + connector.getOffset() - width/2, windowY - height/2);
                         break;
                 }
                 Rectangle2D rectangle = new Rectangle2D.Float(
-                        from.x - style.connectorRadius, from.y - style.connectorRadius,
-                        style.connectorRadius * 2, style.connectorRadius * 2);
+                        from.x, from.y,
+                        width, height);
 
                 connectionNodeMap.put(new NodeConnector(nodeId, connector.getFieldId()), rectangle);
             }
@@ -806,6 +818,7 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
         batch.flush();
         if (clipBegin()) {
             drawGroups(batch);
+            drawConnectors(batch);
             batch.flush();
             clipEnd();
         }
@@ -815,6 +828,37 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
         drawConnections();
         batch.begin();
         super.draw(batch, parentAlpha);
+    }
+
+    private void drawConnectors(Batch batch) {
+        float x = getX();
+        float y = getY();
+
+        Vector2 from = new Vector2();
+        Vector2 to = new Vector2();
+
+        for (GraphNodeWindow window : editedGraph.getNodes()) {
+            GraphNodeEditor graphBox = window.getGraphNodeEditor();
+            for (GraphNodeEditorInput input : graphBox.getInputs().values()) {
+                String fieldId = input.getFieldId();
+                boolean invalid = window.isConnectorError(fieldId);
+                Drawable drawable = input.getConnectorDrawable(!invalid);
+                calculateConnector(from, to, window, input, drawable);
+                from.add(x, y);
+                to.add(x, y);
+                drawable.draw(batch, from.x, from.y, to.x - from.x, to.y - from.y);
+            }
+
+            for (GraphNodeEditorOutput output : graphBox.getOutputs().values()) {
+                String fieldId = output.getFieldId();
+                boolean invalid = window.isConnectorError(fieldId);
+                Drawable drawable = output.getConnectorDrawable(!invalid);
+                calculateConnector(from, to, window, output, drawable);
+                from.add(x, y);
+                to.add(x, y);
+                drawable.draw(batch, from.x, from.y, to.x - from.x, to.y - from.y);
+            }
+        }
     }
 
     private void drawGroups(Batch batch) {
@@ -848,30 +892,6 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(style.connectionColor);
 
-        for (GraphNodeWindow window : editedGraph.getNodes()) {
-            GraphNodeEditor graphBox = window.getGraphNodeEditor();
-            for (GraphNodeInput connector : graphBox.getConfiguration().getNodeInputs().values()) {
-                if (!connector.isRequired()) {
-                    String fieldId = connector.getFieldId();
-                    calculateConnector(from, to, window, graphBox.getInputs().get(fieldId));
-                    from.add(x, y);
-                    to.add(x, y);
-
-                    shapeRenderer.line(from, to);
-                    shapeRenderer.circle(from.x, from.y, style.connectorRadius);
-                }
-            }
-
-            for (GraphNodeEditorOutput connector : graphBox.getOutputs().values()) {
-                calculateConnector(from, to, window, connector);
-                from.add(x, y);
-                to.add(x, y);
-
-                shapeRenderer.line(from, to);
-                shapeRenderer.circle(from.x, from.y, style.connectorRadius);
-            }
-        }
-
         for (DrawnGraphConnection graphConnection : editedGraph.getConnections()) {
             NodeConnector fromNode = getNodeInfo(graphConnection.getNodeFrom(), graphConnection.getFieldFrom());
             GraphNodeWindow fromWindow = editedGraph.getNodeById(fromNode.getNodeId());
@@ -882,7 +902,7 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
             GraphNodeEditorInput input = getGraphNodeEditorById(toNode.getNodeId()).getInputs().get(toNode.getFieldId());
             calculateConnection(to, toWindow, input);
 
-            shapeRenderer.setColor(graphConnection.isError() ? getInvalidConnectorColor() : style.connectorColor);
+            shapeRenderer.setColor(graphConnection.isError() ? getInvalidConnectionColor() : style.connectionColor);
 
             from.add(x, y);
             to.add(x, y);
@@ -891,14 +911,13 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
             } else {
                 shapeRenderer.curve(from.x, from.y, from.x, ((from.y + to.y) / 2), to.x, ((from.y + to.y) / 2), to.x, to.y, 100);
             }
-
         }
 
         if (drawingFromConnector != null) {
             shapeRenderer.setColor(style.connectionColor);
             GraphNodeEditor drawingFromNode = getGraphNodeEditorById(drawingFromConnector.getNodeId());
             String nodeId = drawingFromConnector.getNodeId();
-            VisWindow fromWindow = editedGraph.getNodeById(nodeId);
+            GraphNodeWindow fromWindow = editedGraph.getNodeById(nodeId);
             if (drawingFromNode.getConfiguration().getNodeInputs().containsKey(drawingFromConnector.getFieldId())) {
                 GraphNodeEditorInput input = drawingFromNode.getInputs().get(drawingFromConnector.getFieldId());
                 calculateConnection(from, fromWindow, input);
@@ -924,57 +943,47 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
             }
         }
 
-        shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
-
-        for (GraphNodeWindow window : editedGraph.getNodes()) {
-            GraphNodeEditor graphBox = window.getGraphNodeEditor();
-            for (GraphNodeInput connector : graphBox.getConfiguration().getNodeInputs().values()) {
-                if (connector.isRequired()) {
-                    String fieldId = connector.getFieldId();
-                    calculateConnector(from, to, window, graphBox.getInputs().get(fieldId));
-                    from.add(x, y);
-                    to.add(x, y);
-
-                    shapeRenderer.setColor(window.isConnectorError(fieldId) ? getInvalidConnectorColor() : style.connectorColor);
-
-                    shapeRenderer.line(from, to);
-                    shapeRenderer.circle(from.x, from.y, style.connectorRadius);
-                }
-            }
-        }
         shapeRenderer.end();
     }
 
-    private Color getInvalidConnectorColor() {
-        return (style.invalidConnectorColor != null) ? style.invalidConnectorColor : style.connectorColor;
+    private Color getInvalidConnectionColor() {
+        return (style.invalidConnectionColor != null) ? style.invalidConnectionColor : style.connectionColor;
     }
 
-    private void calculateConnector(Vector2 from, Vector2 to, VisWindow window, GraphNodeEditorOutput connector) {
+    private void calculateConnector(Vector2 from, Vector2 to, VisWindow window, GraphNodeEditorOutput connector, Drawable drawable) {
         float windowX = window.getX();
         float windowY = window.getY();
+
+        float width = drawable.getMinWidth();
+        float height = drawable.getMinHeight();
+
         switch (connector.getSide()) {
             case Right:
-                from.set(windowX + window.getWidth() + style.connectorLength, windowY + connector.getOffset());
-                to.set(windowX + window.getWidth(), windowY + connector.getOffset());
+                from.set(windowX + window.getWidth(), windowY + connector.getOffset() - height / 2);
+                to.set(windowX + window.getWidth() + width, windowY + connector.getOffset() + height / 2);
                 break;
             case Bottom:
-                from.set(windowX + connector.getOffset(), windowY - style.connectorLength);
-                to.set(windowX + connector.getOffset(), windowY);
+                from.set(windowX + connector.getOffset() - width / 2, windowY - height);
+                to.set(windowX + connector.getOffset() + width / 2, windowY);
                 break;
         }
     }
 
-    private void calculateConnector(Vector2 from, Vector2 to, VisWindow window, GraphNodeEditorInput connector) {
+    private void calculateConnector(Vector2 from, Vector2 to, VisWindow window, GraphNodeEditorInput connector, Drawable drawable) {
         float windowX = window.getX();
         float windowY = window.getY();
+
+        float width = drawable.getMinWidth();
+        float height = drawable.getMinHeight();
+
         switch (connector.getSide()) {
             case Left:
-                from.set(windowX - style.connectorLength, windowY + connector.getOffset());
-                to.set(windowX, windowY + connector.getOffset());
+                from.set(windowX - width, windowY + connector.getOffset() - height / 2);
+                to.set(windowX, windowY + connector.getOffset() + height / 2);
                 break;
             case Top:
-                from.set(windowX + connector.getOffset(), windowY + window.getHeight() + style.connectorLength);
-                to.set(windowX + connector.getOffset(), windowY + window.getHeight());
+                from.set(windowX + connector.getOffset() - width / 2, windowY + window.getHeight());
+                to.set(windowX + connector.getOffset() + width / 2, windowY + window.getHeight() + height);
                 break;
         }
     }
@@ -983,28 +992,42 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
         return editedGraph.getNodeById(id).getGraphNodeEditor();
     }
 
-    private void calculateConnection(Vector2 position, VisWindow window, GraphNodeEditorInput connector) {
+    private void calculateConnection(Vector2 position, GraphNodeWindow window, GraphNodeEditorInput connector) {
         float windowX = window.getX();
         float windowY = window.getY();
+
+        boolean invalid = window.isConnectorError(connector.getFieldId());
+        Drawable drawable = connector.getConnectorDrawable(!invalid);
+
+        float width = drawable.getMinWidth();
+        float height = drawable.getMinHeight();
+
         switch (connector.getSide()) {
             case Left:
-                position.set(windowX - style.connectorLength, windowY + connector.getOffset());
+                position.set(windowX - width, windowY + connector.getOffset());
                 break;
             case Top:
-                position.set(windowX + connector.getOffset(), windowY + window.getHeight() + style.connectorLength);
+                position.set(windowX + connector.getOffset(), windowY + window.getHeight() + height);
                 break;
         }
     }
 
-    private void calculateConnection(Vector2 position, VisWindow window, GraphNodeEditorOutput connector) {
+    private void calculateConnection(Vector2 position, GraphNodeWindow window, GraphNodeEditorOutput connector) {
         float windowX = window.getX();
         float windowY = window.getY();
+
+        boolean invalid = window.isConnectorError(connector.getFieldId());
+        Drawable drawable = connector.getConnectorDrawable(!invalid);
+
+        float width = drawable.getMinWidth();
+        float height = drawable.getMinHeight();
+
         switch (connector.getSide()) {
             case Right:
-                position.set(windowX + window.getWidth() + style.connectorLength, windowY + connector.getOffset());
+                position.set(windowX + window.getWidth() + width, windowY + connector.getOffset());
                 break;
             case Bottom:
-                position.set(windowX + connector.getOffset(), windowY - style.connectorLength);
+                position.set(windowX + connector.getOffset(), windowY - height);
                 break;
         }
     }
@@ -1033,11 +1056,8 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
         public BitmapFont groupNameFont;
         public Color groupNameColor;
         // Connection style
-        public float connectorLength = 10;
-        public float connectorRadius = 5;
         public Color connectionColor = Color.WHITE;
-        public Color connectorColor = Color.WHITE;
-        public Color invalidConnectorColor = null; // optional - defaults to connectorColor
+        public Color invalidConnectionColor = null; // optional - defaults to connectionColor
     }
 
     private class AddGraphNodeAction extends DefaultUndoableAction {

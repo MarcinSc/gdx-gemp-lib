@@ -116,7 +116,7 @@ public class DefaultGraphNodeEditor implements GraphNodeEditor {
                                     return actor.getY() + actor.getHeight() / 2f;
                                 }
                             },
-                            inputConnector.getFieldId(), inputConnector.getDrawable(true), inputConnector.getDrawable(false)));
+                            inputConnector.getFieldId(), inputConnector.getConnectorDrawable(true), inputConnector.getConnectorDrawable(false)));
         }
         final GraphNodeEditorOutput outputConnector = graphBoxPart.getOutputConnector();
         if (outputConnector != null) {
@@ -128,7 +128,7 @@ public class DefaultGraphNodeEditor implements GraphNodeEditor {
                                     return actor.getY() + actor.getHeight() / 2f;
                                 }
                             },
-                            outputConnector.getFieldId(), outputConnector.getDrawable(true), outputConnector.getDrawable(false)));
+                            outputConnector.getFieldId(), outputConnector.getConnectorDrawable(true), outputConnector.getConnectorDrawable(false)));
         }
     }
 

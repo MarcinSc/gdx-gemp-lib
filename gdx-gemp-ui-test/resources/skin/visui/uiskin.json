@@ -943,9 +943,7 @@
       "windowTitleAlignment": 1,
       "groupBackground": "dialogDim",
       "groupNameFont": "default-font",
-      "groupNameColor": "white",
-      "connectorLength": 10,
-      "connectorRadius": 5
+      "groupNameColor": "white"
     }
   }
 }

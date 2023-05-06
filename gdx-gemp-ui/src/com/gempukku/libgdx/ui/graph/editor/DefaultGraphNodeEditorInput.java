@@ -26,7 +26,7 @@ public class DefaultGraphNodeEditorInput implements GraphNodeEditorInput {
     }
 
     @Override
-    public Drawable getDrawable(boolean valid) {
+    public Drawable getConnectorDrawable(boolean valid) {
         return valid ? validDrawable : invalidDrawable;
     }
 
