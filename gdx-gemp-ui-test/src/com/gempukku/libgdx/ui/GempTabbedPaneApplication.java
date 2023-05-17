@@ -20,7 +20,7 @@ import com.gempukku.libgdx.common.Supplier;
 import com.gempukku.libgdx.ui.collapse.CollapsibleContainer;
 import com.gempukku.libgdx.ui.graph.data.GraphNodeInputSide;
 import com.gempukku.libgdx.ui.graph.data.GraphNodeOutputSide;
-import com.gempukku.libgdx.ui.graph.editor.part.DefaultGraphNodeEditorPart;
+import com.gempukku.libgdx.ui.graph.editor.part.*;
 import com.gempukku.libgdx.undo.*;
 import com.gempukku.libgdx.ui.curve.DefaultCurveDefinition;
 import com.gempukku.libgdx.ui.curve.GCurveEditor;
@@ -34,9 +34,6 @@ import com.gempukku.libgdx.ui.graph.editor.DefaultGraphNodeEditor;
 import com.gempukku.libgdx.ui.graph.editor.DefaultGraphNodeEditorProducer;
 import com.gempukku.libgdx.ui.graph.editor.GraphNodeEditorProducer;
 import com.gempukku.libgdx.ui.graph.PopupMenuProducer;
-import com.gempukku.libgdx.ui.graph.editor.part.CurveEditorPart;
-import com.gempukku.libgdx.ui.graph.editor.part.GradientEditorPart;
-import com.gempukku.libgdx.ui.graph.editor.part.IntegerEditorPart;
 import com.gempukku.libgdx.ui.preview.PreviewWidget;
 import com.gempukku.libgdx.ui.tabbedpane.GTabbedPane;
 import com.gempukku.libgdx.undo.event.UndoableEvent;
@@ -260,9 +257,9 @@ public class GempTabbedPaneApplication extends ApplicationAdapter {
                         protected void buildNodeEditor(DefaultGraphNodeEditor graphNodeEditor, NodeConfiguration configuration) {
                             graphNodeEditor.addGraphBoxPart(
                                     new CurveEditorPart("curve", "default"));
-                            CollapsibleContainer container = new CollapsibleContainer(new VisLabel("Collapsible label"), "toggle");
                             graphNodeEditor.addGraphBoxPart(
-                                    new DefaultGraphNodeEditorPart(container, null));
+                                    new CollapsibleSectionEditorPart("expanded",
+                                            new FloatEditorPart("Test", "test", 0f), "Collapsible"));
                         }
                     };
 

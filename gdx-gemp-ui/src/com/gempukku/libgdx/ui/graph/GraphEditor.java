@@ -257,9 +257,11 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
                 if (getStage() != null) {
                     // This makes sure, that the window expands/shrinks towards lower part of screen, if preferred size changes
                     float heightBefore = getHeight();
-                    setSize(getPrefWidth(), getPrefHeight());
-                    float heightAfter = getHeight();
-                    setY(getY() + heightBefore - heightAfter);
+                    float prefHeight = getPrefHeight();
+                    if (heightBefore != prefHeight) {
+                        setSize(getPrefWidth(), getPrefHeight());
+                        setY(getY() + heightBefore - prefHeight);
+                    }
                 }
             }
 
