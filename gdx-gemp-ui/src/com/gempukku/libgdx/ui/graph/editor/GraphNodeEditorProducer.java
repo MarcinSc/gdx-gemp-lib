@@ -8,5 +8,5 @@ public interface GraphNodeEditorProducer {
 
     boolean isCloseable();
 
-    GraphNodeEditor createNodeEditor(JsonValue data);
+    GraphNodeEditor createNodeEditor(String nodeId, JsonValue data);
 }

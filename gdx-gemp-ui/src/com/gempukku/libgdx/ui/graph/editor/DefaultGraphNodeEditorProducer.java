@@ -24,7 +24,7 @@ public abstract class DefaultGraphNodeEditorProducer implements GraphNodeEditorP
     }
 
     @Override
-    public DefaultGraphNodeEditor createNodeEditor(JsonValue data) {
+    public DefaultGraphNodeEditor createNodeEditor(String nodeId, JsonValue data) {
         DefaultGraphNodeEditor nodeEditor = new DefaultGraphNodeEditor(configuration);
         addConfigurationInputsAndOutputs(nodeEditor);
         buildNodeEditor(nodeEditor, configuration);

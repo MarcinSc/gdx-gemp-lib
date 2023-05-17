@@ -243,7 +243,7 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
 
     public void addGraphNode(String nodeId, String type, JsonValue data, float x, float y) {
         GraphNodeEditorProducer graphNodeEditorProducer = graphNodeEditorProducers.evaluate(type);
-        GraphNodeEditor pipelineGraphBox = graphNodeEditorProducer.createNodeEditor(data);
+        GraphNodeEditor pipelineGraphBox = graphNodeEditorProducer.createNodeEditor(nodeId, data);
         final GraphNodeWindow graphNodeWindow = new GraphNodeWindow(nodeId, pipelineGraphBox,
                 graphNodeEditorProducer.getName(), style.windowTitleAlignment, style.windowStyle, style.windowCloseButtonStyle) {
             @Override
