@@ -252,6 +252,18 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
             }
 
             @Override
+            public void validate() {
+                super.validate();
+                if (getStage() != null) {
+                    // This makes sure, that the window expands/shrinks towards lower part of screen, if preferred size changes
+                    float heightBefore = getHeight();
+                    setSize(getPrefWidth(), getPrefHeight());
+                    float heightAfter = getHeight();
+                    setY(getY() + heightBefore - heightAfter);
+                }
+            }
+
+            @Override
             protected void close() {
                 removeGraphNodeWindow(this);
                 remove();
@@ -748,10 +760,10 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
 
                 switch (connector.getSide()) {
                     case Left:
-                        from.set(windowX - width, windowY + connector.getOffset() - height/2);
+                        from.set(windowX - width, windowY + connector.getOffset() - height / 2);
                         break;
                     case Top:
-                        from.set(windowX + connector.getOffset() - width/2, windowY + window.getHeight());
+                        from.set(windowX + connector.getOffset() - width / 2, windowY + window.getHeight());
                         break;
                 }
                 Rectangle2D rectangle = new Rectangle2D.Float(
@@ -769,10 +781,10 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
 
                 switch (connector.getSide()) {
                     case Right:
-                        from.set(windowX + window.getWidth(), windowY + connector.getOffset() - height/2);
+                        from.set(windowX + window.getWidth(), windowY + connector.getOffset() - height / 2);
                         break;
                     case Bottom:
-                        from.set(windowX + connector.getOffset() - width/2, windowY - height/2);
+                        from.set(windowX + connector.getOffset() - width / 2, windowY - height / 2);
                         break;
                 }
                 Rectangle2D rectangle = new Rectangle2D.Float(
@@ -890,7 +902,6 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
         Vector2 to = new Vector2();
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(style.connectionColor);
 
         for (DrawnGraphConnection graphConnection : editedGraph.getConnections()) {
             NodeConnector fromNode = getNodeInfo(graphConnection.getNodeFrom(), graphConnection.getFieldFrom());

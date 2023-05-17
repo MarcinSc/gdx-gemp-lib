@@ -17,8 +17,10 @@ import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.gempukku.libgdx.common.Function;
 import com.gempukku.libgdx.common.Supplier;
+import com.gempukku.libgdx.ui.collapse.CollapsibleContainer;
 import com.gempukku.libgdx.ui.graph.data.GraphNodeInputSide;
 import com.gempukku.libgdx.ui.graph.data.GraphNodeOutputSide;
+import com.gempukku.libgdx.ui.graph.editor.part.DefaultGraphNodeEditorPart;
 import com.gempukku.libgdx.undo.*;
 import com.gempukku.libgdx.ui.curve.DefaultCurveDefinition;
 import com.gempukku.libgdx.ui.curve.GCurveEditor;
@@ -258,6 +260,9 @@ public class GempTabbedPaneApplication extends ApplicationAdapter {
                         protected void buildNodeEditor(DefaultGraphNodeEditor graphNodeEditor, NodeConfiguration configuration) {
                             graphNodeEditor.addGraphBoxPart(
                                     new CurveEditorPart("curve", "default"));
+                            CollapsibleContainer container = new CollapsibleContainer(new VisLabel("Collapsible label"), "toggle");
+                            graphNodeEditor.addGraphBoxPart(
+                                    new DefaultGraphNodeEditorPart(container, null));
                         }
                     };
 
