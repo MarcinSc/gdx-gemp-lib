@@ -2,6 +2,7 @@ package com.gempukku.libgdx.ui.graph.editor.part;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.JsonValue;
 import com.gempukku.libgdx.ui.collapse.CollapsibleContainer;
 import com.gempukku.libgdx.ui.graph.editor.GraphNodeEditorInput;
@@ -38,6 +39,7 @@ public class CollapsibleSectionEditorPart extends VisTable implements GraphNodeE
         add(separator).growX().row();
 
         expandButton = new VisImageTextButton(sectionLabel, imageTextButtonStyle);
+        expandButton.align(Align.left);
         expandButton.setFocusBorderEnabled(false);
         expandButton.addListener(
                 new ChangeListener() {
