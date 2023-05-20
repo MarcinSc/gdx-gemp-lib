@@ -74,7 +74,7 @@ public class DefaultGraphNodeEditor implements GraphNodeEditor {
         table.add(outputLabel).grow();
         table.row();
 
-        DefaultGraphNodeEditorPart graphBoxPart = new DefaultGraphNodeEditorPart(table, null);
+        DefaultGraphNodeEditorPart graphBoxPart = new DefaultGraphNodeEditorPart(table);
         graphBoxPart.setInputConnector(GraphNodeInputSide.Left, graphNodeInput, inputValidDrawable, inputInvalidDrawable);
         graphBoxPart.setOutputConnector(GraphNodeOutputSide.Right, graphNodeOutput, outputValidDrawable, outputInvalidDrawable);
         addGraphBoxPart(graphBoxPart);
@@ -85,7 +85,7 @@ public class DefaultGraphNodeEditor implements GraphNodeEditor {
         VisTable table = new VisTable();
         table.add(new VisLabel(graphNodeInput.getFieldName(), labelStyle)).grow().row();
 
-        DefaultGraphNodeEditorPart graphBoxPart = new DefaultGraphNodeEditorPart(table, null);
+        DefaultGraphNodeEditorPart graphBoxPart = new DefaultGraphNodeEditorPart(table);
         graphBoxPart.setInputConnector(GraphNodeInputSide.Left, graphNodeInput, inputValidDrawable, inputInvalidDrawable);
         addGraphBoxPart(graphBoxPart);
     }
@@ -97,7 +97,7 @@ public class DefaultGraphNodeEditor implements GraphNodeEditor {
         outputLabel.setAlignment(Align.right);
         table.add(outputLabel).grow().row();
 
-        DefaultGraphNodeEditorPart graphBoxPart = new DefaultGraphNodeEditorPart(table, null);
+        DefaultGraphNodeEditorPart graphBoxPart = new DefaultGraphNodeEditorPart(table);
         graphBoxPart.setOutputConnector(GraphNodeOutputSide.Right, graphNodeOutput, outputValidDrawable, outputInvalidDrawable);
         addGraphBoxPart(graphBoxPart);
     }

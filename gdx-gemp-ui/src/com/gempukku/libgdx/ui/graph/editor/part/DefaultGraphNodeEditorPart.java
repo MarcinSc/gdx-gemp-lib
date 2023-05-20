@@ -16,6 +16,10 @@ public class DefaultGraphNodeEditorPart implements GraphNodeEditorPart {
     private GraphNodeEditorOutput outputConnector;
     private final Callback callback;
 
+    public DefaultGraphNodeEditorPart(Actor actor) {
+        this(actor, null);
+    }
+
     public DefaultGraphNodeEditorPart(Actor actor, Callback callback) {
         this.actor = actor;
         this.callback = callback;
@@ -46,7 +50,8 @@ public class DefaultGraphNodeEditorPart implements GraphNodeEditorPart {
 
     @Override
     public void initialize(JsonValue data) {
-
+        if (callback != null)
+            callback.initialize(data);
     }
 
     @Override
@@ -56,6 +61,7 @@ public class DefaultGraphNodeEditorPart implements GraphNodeEditorPart {
     }
 
     public interface Callback {
+        void initialize(JsonValue data);
         void serialize(JsonValue object);
     }
 }
