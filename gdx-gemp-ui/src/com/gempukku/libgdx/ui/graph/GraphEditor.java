@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.utils.*;
 import com.gempukku.libgdx.common.Function;
+import com.gempukku.libgdx.common.Iterables;
 import com.gempukku.libgdx.ui.DisposableTable;
 import com.gempukku.libgdx.undo.*;
 import com.gempukku.libgdx.ui.graph.data.*;
@@ -315,6 +316,15 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
         AddGraphNodeAction addNodeAction = new AddGraphNodeAction(graphNodeWindow, canvasPositionX + x, canvasPositionY + y);
         addNodeAction.doAction();
         graphChanged(true, true, addNodeAction);
+    }
+
+    public Iterable<? extends GraphNodeEditor> getGraphNodeEditors() {
+        return Iterables.mapIterable(editedGraph.getNodes(), new Function<GraphNodeWindow, GraphNodeEditor>() {
+            @Override
+            public GraphNodeEditor evaluate(GraphNodeWindow value) {
+                return value.getGraphNodeEditor();
+            }
+        });
     }
 
     public void addNodeGroup(String name, ObjectSet<String> nodeIds) {
