@@ -55,7 +55,7 @@ public class CollapsibleContainer extends VisTable {
         @Override
         public void undoAction() {
             if (!expand) {
-                add(actor).row();
+                add(actor).growX().row();
             } else {
                 actor.remove();
             }
@@ -66,7 +66,7 @@ public class CollapsibleContainer extends VisTable {
         @Override
         public void redoAction() {
             if (expand) {
-                add(actor).row();
+                add(actor).growX().row();
             } else {
                 actor.remove();
             }
