@@ -515,6 +515,7 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
     private void processLeftClick(float x, float y) {
         if (containedInWindow(x, y))
             return;
+        System.out.println("Clicked: " + x + ", " + y);
 
         for (Map.Entry<NodeConnector, Shape> nodeEntry : connectionNodeMap.entrySet()) {
             if (nodeEntry.getValue().contains(x, y)) {
@@ -796,7 +797,8 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
                         from.set(windowX + window.getWidth(), windowY + connector.getOffset() - height / 2);
                         break;
                     case Bottom:
-                        from.set(windowX + connector.getOffset() - width / 2, windowY - height / 2);
+                        from.set(windowX + connector.getOffset() - width / 2, windowY - height);
+                        System.out.println(from);
                         break;
                 }
                 Rectangle2D rectangle = new Rectangle2D.Float(

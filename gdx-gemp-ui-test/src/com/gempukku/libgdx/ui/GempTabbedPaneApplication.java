@@ -205,7 +205,10 @@ public class GempTabbedPaneApplication extends ApplicationAdapter {
         DefaultGraph<DefaultGraphNode, DefaultGraphConnection, DefaultNodeGroup> graph = new DefaultGraph<>(type);
 
         final DefaultNodeConfiguration intOut = new DefaultNodeConfiguration("intOut", "Integer Out");
-        intOut.addNodeOutput(new DefaultGraphNodeOutput("0", "Value", "Int"));
+        intOut.addNodeInput(new DefaultGraphNodeInput("0", "Value", "Int"));
+        intOut.addNodeInput(new DefaultGraphNodeInput("1", "Value", false, GraphNodeInputSide.Top, "Int"));
+        intOut.addNodeOutput(new DefaultGraphNodeOutput("2", "Value", "Int"));
+        intOut.addNodeOutput(new DefaultGraphNodeOutput("3", "Value", GraphNodeOutputSide.Bottom, "Int"));
 
         final DefaultNodeConfiguration intIn = new DefaultNodeConfiguration("intIn", "Integer In");
         intIn.addNodeInput(new DefaultGraphNodeInput("0", "Value", "Int"));
@@ -224,12 +227,12 @@ public class GempTabbedPaneApplication extends ApplicationAdapter {
                     DefaultGraphNodeEditorProducer producer = new DefaultGraphNodeEditorProducer(intOut) {
                         @Override
                         protected Drawable getInputDrawable(GraphNodeInputSide side, boolean valid) {
-                            return VisUI.getSkin().getDrawable(valid ? "white" : "darkGrey");
+                            return VisUI.getSkin().getDrawable(valid ? "border-circle" : "border-circle");
                         }
 
                         @Override
                         protected Drawable getOutputDrawable(GraphNodeOutputSide side, boolean valid) {
-                            return VisUI.getSkin().getDrawable(valid ? "white" : "darkGrey");
+                            return VisUI.getSkin().getDrawable(valid ? "border-circle" : "border-circle");
                         }
 
                         @Override
