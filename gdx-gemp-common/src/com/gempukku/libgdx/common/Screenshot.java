@@ -14,6 +14,31 @@ public class Screenshot {
         PixmapIO.writePNG(fileHandle, pixmap);
     }
 
+    public static void saveFrameBuffer(FrameBuffer frameBuffer, FileHandle fileHandle) {
+        frameBuffer.begin();
+        saveBoundFrameBuffer(fileHandle);
+        frameBuffer.end();
+    }
+
+    public static void saveFrameBuffer(FrameBuffer frameBuffer, FileHandle fileHandle, int x, int y, int width, int height) {
+        frameBuffer.begin();
+        saveBoundFrameBuffer(fileHandle, x, y, width, height);
+        frameBuffer.end();
+    }
+
+    public static void saveBoundFrameBuffer(FileHandle fileHandle) {
+        saveBoundFrameBuffer(fileHandle, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    }
+
+    public static void saveBoundFrameBuffer(FileHandle fileHandle, int x, int y, int width, int height) {
+        Pixmap pixmap = Pixmap.createFromFrameBuffer(x, y, width, height);
+        try {
+            savePixmap(pixmap, fileHandle);
+        } finally {
+            pixmap.dispose();
+        }
+    }
+
     public static void savePixmap(Pixmap pixmap, FileHandle fileHandle, int x, int y, int width, int height) {
         Pixmap regionPixmap = new Pixmap(width, height, pixmap.getFormat());
         try {
@@ -50,22 +75,5 @@ public class Screenshot {
 
     public static void saveTextureRegion(TextureRegion textureRegion, FileHandle fileHandle) {
         saveTexture(textureRegion.getTexture(), fileHandle, textureRegion.getRegionX(), textureRegion.getRegionY(), textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
-    }
-
-    public static void saveFrameBuffer(FrameBuffer frameBuffer, FileHandle fileHandle) {
-        saveTexture(frameBuffer.getColorBufferTexture(), fileHandle);
-    }
-
-    public static void saveFromScreen(FileHandle fileHandle, int x, int y, int width, int height) {
-        Pixmap pixmap = Pixmap.createFromFrameBuffer(x, y, width, height);
-        try {
-            savePixmap(pixmap, fileHandle);
-        } finally {
-            pixmap.dispose();
-        }
-    }
-
-    public static void saveFromScreen(FileHandle fileHandle) {
-        saveFromScreen(fileHandle, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 }
