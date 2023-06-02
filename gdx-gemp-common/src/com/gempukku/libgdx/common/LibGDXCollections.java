@@ -7,7 +7,7 @@ public class LibGDXCollections {
     private final static ObjectMap emptyMap = new ObjectMap();
 
     public static <Key, Value> ObjectMap<Key, Value> emptyMap() {
-        return emptyMap();
+        return emptyMap;
     }
 
     public static <Key, Value> ObjectMap<Key, Value> mapWithOne(Key key, Value value) {
