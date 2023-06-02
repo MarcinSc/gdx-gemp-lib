@@ -1,5 +1,5 @@
 package com.gempukku.libgdx.common;
 
-public interface IntMapping<T> {
-    int map(T value);
+public interface IntMapping<Value> {
+    int map(Value value);
 }

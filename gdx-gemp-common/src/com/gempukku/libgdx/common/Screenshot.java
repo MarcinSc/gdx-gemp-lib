@@ -16,7 +16,7 @@ public class Screenshot {
 
     public static void saveFrameBuffer(FrameBuffer frameBuffer, FileHandle fileHandle) {
         frameBuffer.begin();
-        saveBoundFrameBuffer(fileHandle);
+        saveBoundFrameBuffer(fileHandle, 0, 0, frameBuffer.getWidth(), frameBuffer.getHeight());
         frameBuffer.end();
     }
 
@@ -24,10 +24,6 @@ public class Screenshot {
         frameBuffer.begin();
         saveBoundFrameBuffer(fileHandle, x, y, width, height);
         frameBuffer.end();
-    }
-
-    public static void saveBoundFrameBuffer(FileHandle fileHandle) {
-        saveBoundFrameBuffer(fileHandle, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 
     public static void saveBoundFrameBuffer(FileHandle fileHandle, int x, int y, int width, int height) {

@@ -1,14 +1,14 @@
 package com.gempukku.libgdx.common;
 
-public class ValueSupplier<T> implements Supplier<T> {
-    public T value;
+public class ValueSupplier<Type> implements Supplier<Type> {
+    public Type value;
 
-    public ValueSupplier(T value) {
+    public ValueSupplier(Type value) {
         this.value = value;
     }
 
     @Override
-    public T get() {
+    public Type get() {
         return value;
     }
 }

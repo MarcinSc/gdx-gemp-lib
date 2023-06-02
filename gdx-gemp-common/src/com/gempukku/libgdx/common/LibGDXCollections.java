@@ -1,22 +1,28 @@
 package com.gempukku.libgdx.common;
 
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.ObjectSet;
 
 public class LibGDXCollections {
-    public static <T> ObjectSet<T> singleton(T o) {
-        ObjectSet<T> result = new ObjectSet<>();
-        result.add(o);
-        return result;
+    private final static ObjectMap emptyMap = new ObjectMap();
+
+    public static <Key, Value> ObjectMap<Key, Value> emptyMap() {
+        return emptyMap();
     }
 
-    public static <K, V> ObjectMap<K, V> singletonMap(K key, V value) {
-        ObjectMap<K, V> result = new ObjectMap<>();
+    public static <Key, Value> ObjectMap<Key, Value> mapWithOne(Key key, Value value) {
+        ObjectMap<Key, Value> result = new ObjectMap<>();
         result.put(key, value);
         return result;
     }
 
-    public static <K, V> ObjectMap<K, V> emptyMap() {
-        return new ObjectMap<>();
+    public static <Key, Value> ObjectMap<Key, Value> mapOf(Array<Key> keys, Array<Value> values) {
+        if (keys.size != values.size)
+            throw new IllegalArgumentException("Not matching number of keys and values");
+        ObjectMap<Key, Value> result = new ObjectMap<>();
+        for (int i = 0; i < keys.size; i++) {
+            result.put(keys.get(i), values.get(i));
+        }
+        return result;
     }
 }

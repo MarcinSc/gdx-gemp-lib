@@ -3,19 +3,19 @@ package com.gempukku.libgdx.common;
 import java.util.Iterator;
 
 public class Iterables {
-    public static <T, R> Iterable<R> mapIterable(final Iterable<? extends T> iterable, final Function<T, R> mapping) {
-        return new Iterable<R>() {
+    public static <Input, Result> Iterable<Result> mapIterable(final Iterable<? extends Input> iterable, final Function<Input, Result> mapping) {
+        return new Iterable<Result>() {
             @Override
-            public Iterator<R> iterator() {
-                final Iterator<? extends T> iterator = iterable.iterator();
-                return new Iterator<R>() {
+            public Iterator<Result> iterator() {
+                final Iterator<? extends Input> iterator = iterable.iterator();
+                return new Iterator<Result>() {
                     @Override
                     public boolean hasNext() {
                         return iterator.hasNext();
                     }
 
                     @Override
-                    public R next() {
+                    public Result next() {
                         return mapping.evaluate(iterator.next());
                     }
 

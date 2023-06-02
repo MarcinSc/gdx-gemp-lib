@@ -1,14 +1,14 @@
 package com.gempukku.libgdx.common;
 
-public class ValueProducer<T> implements Producer<T> {
-    public T value;
+public class ValueProducer<Type> implements Producer<Type> {
+    public Type value;
 
-    public ValueProducer(T value) {
+    public ValueProducer(Type value) {
         this.value = value;
     }
 
     @Override
-    public T create() {
+    public Type create() {
         return value;
     }
 }

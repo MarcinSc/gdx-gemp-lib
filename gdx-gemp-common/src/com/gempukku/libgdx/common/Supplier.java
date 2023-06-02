@@ -1,5 +1,5 @@
 package com.gempukku.libgdx.common;
 
-public interface Supplier<T> {
-    T get();
+public interface Supplier<Type> {
+    Type get();
 }
