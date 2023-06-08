@@ -27,6 +27,10 @@ public class DefaultGraphNodeOutput implements GraphNodeOutput {
         this(id, name, required, side, null, producedType);
     }
 
+    public DefaultGraphNodeOutput(String id, String name, Function<ObjectMap<String, Array<String>>, String> outputTypeFunction, String... producedType) {
+        this(id, name, false, GraphNodeOutputSide.Right, outputTypeFunction, producedType);
+    }
+
     public DefaultGraphNodeOutput(String id, String name, boolean required, Function<ObjectMap<String, Array<String>>, String> outputTypeFunction, String... producedType) {
         this(id, name, required, GraphNodeOutputSide.Right, outputTypeFunction, producedType);
     }
