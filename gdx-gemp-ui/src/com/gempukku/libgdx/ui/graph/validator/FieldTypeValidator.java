@@ -43,7 +43,7 @@ public class FieldTypeValidator implements GraphValidator {
                 GraphNodeInput input = nodeToConfiguration.getNodeInputs().get(connection.getFieldTo());
 
                 String fieldType = output.determineFieldType(nodeInputsCache.get(nodeFrom.getId()));
-                if (!input.getConnectableFieldTypes().contains(fieldType, false)) {
+                if (!input.acceptsFieldType(fieldType)) {
                     result.addErrorConnection(connection);
                 }
             }

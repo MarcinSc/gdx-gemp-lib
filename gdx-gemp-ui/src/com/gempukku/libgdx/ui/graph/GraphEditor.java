@@ -617,8 +617,8 @@ public class GraphEditor extends DisposableTable implements NavigableCanvas {
 
     private boolean connectorsMatch(GraphNodeInput input, GraphNodeOutput output) {
         Array<String> producablePropertyTypes = output.getConnectableFieldTypes();
-        for (String acceptedPropertyType : input.getConnectableFieldTypes()) {
-            if (producablePropertyTypes.contains(acceptedPropertyType, false))
+        for (String producablePropertyType : producablePropertyTypes) {
+            if (input.acceptsFieldType(producablePropertyType))
                 return true;
         }
 

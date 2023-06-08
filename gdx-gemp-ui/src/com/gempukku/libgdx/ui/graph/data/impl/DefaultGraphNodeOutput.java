@@ -9,7 +9,9 @@ import com.gempukku.libgdx.ui.graph.data.GraphNodeOutputSide;
 public class DefaultGraphNodeOutput implements GraphNodeOutput {
     private final String id;
     private final String name;
-    private GraphNodeOutputSide side;
+    private final boolean required;
+    private final GraphNodeOutputSide side;
+    private final boolean acceptingMultiple;
     private final Function<ObjectMap<String, Array<String>>, String> outputTypeFunction;
     private final Array<String> propertyTypes;
 
@@ -18,17 +20,27 @@ public class DefaultGraphNodeOutput implements GraphNodeOutput {
     }
 
     public DefaultGraphNodeOutput(String id, String name, GraphNodeOutputSide side, final String producedType) {
-        this(id, name, side, null, producedType);
+        this(id, name, false, side, null, producedType);
     }
 
-    public DefaultGraphNodeOutput(String id, String name, Function<ObjectMap<String, Array<String>>, String> outputTypeFunction, String... producedType) {
-        this(id, name, GraphNodeOutputSide.Right, outputTypeFunction, producedType);
+    public DefaultGraphNodeOutput(String id, String name, boolean required, GraphNodeOutputSide side, final String producedType) {
+        this(id, name, required, side, null, producedType);
     }
 
-    public DefaultGraphNodeOutput(String id, String name, GraphNodeOutputSide side, Function<ObjectMap<String, Array<String>>, String> outputTypeFunction, final String... producedType) {
+    public DefaultGraphNodeOutput(String id, String name, boolean required, Function<ObjectMap<String, Array<String>>, String> outputTypeFunction, String... producedType) {
+        this(id, name, required, GraphNodeOutputSide.Right, outputTypeFunction, producedType);
+    }
+
+    public DefaultGraphNodeOutput(String id, String name, boolean required, GraphNodeOutputSide side, Function<ObjectMap<String, Array<String>>, String> outputTypeFunction, String... producedType) {
+        this(id, name, required, side, side != GraphNodeOutputSide.Bottom, outputTypeFunction, producedType);
+    }
+
+    public DefaultGraphNodeOutput(String id, String name, boolean required, GraphNodeOutputSide side, boolean acceptingMultiple, Function<ObjectMap<String, Array<String>>, String> outputTypeFunction, final String... producedType) {
         this.id = id;
         this.name = name;
+        this.required = required;
         this.side = side;
+        this.acceptingMultiple = acceptingMultiple;
         if (outputTypeFunction == null) {
             outputTypeFunction = new Function<ObjectMap<String, Array<String>>, String>() {
                 @Override
@@ -58,7 +70,12 @@ public class DefaultGraphNodeOutput implements GraphNodeOutput {
 
     @Override
     public boolean acceptsMultipleConnections() {
-        return getSide() != GraphNodeOutputSide.Bottom;
+        return acceptingMultiple;
+    }
+
+    @Override
+    public boolean isRequired() {
+        return required;
     }
 
     @Override

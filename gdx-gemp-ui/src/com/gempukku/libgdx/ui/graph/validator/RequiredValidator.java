@@ -8,12 +8,10 @@ import com.gempukku.libgdx.common.BiFunction;
 import com.gempukku.libgdx.ui.graph.NodeConnector;
 import com.gempukku.libgdx.ui.graph.data.*;
 
-import java.util.HashSet;
-
-public class RequiredInputsValidator implements GraphValidator {
+public class RequiredValidator implements GraphValidator {
     private BiFunction<String, JsonValue, NodeConfiguration> nodeConfigurationResolver;
 
-    public RequiredInputsValidator(BiFunction<String, JsonValue, NodeConfiguration> nodeConfigurationResolver) {
+    public RequiredValidator(BiFunction<String, JsonValue, NodeConfiguration> nodeConfigurationResolver) {
         this.nodeConfigurationResolver = nodeConfigurationResolver;
     }
 
@@ -35,6 +33,11 @@ public class RequiredInputsValidator implements GraphValidator {
                 if (entry.value.isRequired() && !hasConnectionToInput(graph, node.getId(), entry.key))
                     result.addErrorConnector(new NodeConnector(node.getId(), entry.key));
             }
+            for (ObjectMap.Entry<String, GraphNodeOutput> entry : nodeConfiguration.getNodeOutputs().entries()) {
+                if (entry.value.isRequired() && !hasConnectionToOutput(graph, node.getId(), entry.key))
+                    result.addErrorConnector(new NodeConnector(node.getId(), entry.key));
+            }
+
             validatedNodes.add(nodeId);
             for (GraphConnection graphConnection : getConnectionsTo(graph, nodeId)) {
                 String nodeFrom = graphConnection.getNodeFrom();
@@ -55,6 +58,14 @@ public class RequiredInputsValidator implements GraphValidator {
     private boolean hasConnectionToInput(Graph graph, String nodeId, String fieldId) {
         for (GraphConnection connection : graph.getConnections()) {
             if (connection.getNodeTo().equals(nodeId) && connection.getFieldTo().equals(fieldId))
+                return true;
+        }
+        return false;
+    }
+
+    private boolean hasConnectionToOutput(Graph graph, String nodeId, String fieldId) {
+        for (GraphConnection connection : graph.getConnections()) {
+            if (connection.getNodeFrom().equals(nodeId) && connection.getFieldFrom().equals(fieldId))
                 return true;
         }
         return false;

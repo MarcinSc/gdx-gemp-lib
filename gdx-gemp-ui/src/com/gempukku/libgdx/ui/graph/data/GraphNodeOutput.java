@@ -7,5 +7,7 @@ public interface GraphNodeOutput extends GraphNodeIO {
     GraphNodeOutputSide getSide();
 
     String determineFieldType(ObjectMap<String, Array<String>> inputs);
+
+    Array<String> getConnectableFieldTypes();
 }
 
