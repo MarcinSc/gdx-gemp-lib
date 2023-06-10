@@ -17,7 +17,7 @@ public class MultipleConnectionsValidator implements GraphValidator {
 
     @Override
     public GraphValidationResult validateGraph(Graph graph, String startNode) {
-        GraphValidationResult result = new GraphValidationResult();
+        DefaultGraphValidationResult result = new DefaultGraphValidationResult();
         ObjectSet<String> validatedNodes = new ObjectSet<>();
 
         validateConnectorsForNode(graph, startNode, result, validatedNodes);
@@ -25,7 +25,7 @@ public class MultipleConnectionsValidator implements GraphValidator {
         return result;
     }
 
-    private void validateConnectorsForNode(Graph graph, String nodeId, GraphValidationResult result, ObjectSet<String> validatedNodes) {
+    private void validateConnectorsForNode(Graph graph, String nodeId, DefaultGraphValidationResult result, ObjectSet<String> validatedNodes) {
         if (!validatedNodes.contains(nodeId)) {
             GraphNode node = graph.getNodeById(nodeId);
             NodeConfiguration nodeConfiguration = nodeConfigurationResolver.evaluate(node.getType(), node.getData());

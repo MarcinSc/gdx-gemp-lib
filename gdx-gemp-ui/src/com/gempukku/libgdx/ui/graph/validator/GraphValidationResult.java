@@ -4,67 +4,20 @@ import com.badlogic.gdx.utils.ObjectSet;
 import com.gempukku.libgdx.ui.graph.data.GraphConnection;
 import com.gempukku.libgdx.ui.graph.NodeConnector;
 
-public class GraphValidationResult {
-    private final ObjectSet<String> errorNodes = new ObjectSet<>();
-    private final ObjectSet<String> warningNodes = new ObjectSet<>();
-    private final ObjectSet<GraphConnection> errorConnections = new ObjectSet<>();
-    private final ObjectSet<GraphConnection> warningConnections = new ObjectSet<>();
-    private final ObjectSet<NodeConnector> errorConnectors = new ObjectSet<>();
-    private final ObjectSet<NodeConnector> warningConnectors = new ObjectSet<>();
+public interface GraphValidationResult {
+    ObjectSet<String> getErrorNodes();
 
-    public void addErrorNode(String nodeId) {
-        errorNodes.add(nodeId);
-    }
+    ObjectSet<String> getWarningNodes();
 
-    public void addWarningNode(String nodeId) {
-        warningNodes.add(nodeId);
-    }
+    ObjectSet<GraphConnection> getErrorConnections();
 
-    public void addErrorConnection(GraphConnection connection) {
-        errorConnections.add(connection);
-    }
+    ObjectSet<GraphConnection> getWarningConnections();
 
-    public void addWarningConnection(GraphConnection connection) {
-        warningConnections.add(connection);
-    }
+    ObjectSet<NodeConnector> getErrorConnectors();
 
-    public void addErrorConnector(NodeConnector nodeConnector) {
-        errorConnectors.add(nodeConnector);
-    }
+    ObjectSet<NodeConnector> getWarningConnectors();
 
-    public void addWarningConnector(NodeConnector nodeConnector) {
-        warningConnectors.add(nodeConnector);
-    }
+    boolean hasErrors();
 
-    public ObjectSet<String> getErrorNodes() {
-        return errorNodes;
-    }
-
-    public ObjectSet<String> getWarningNodes() {
-        return warningNodes;
-    }
-
-    public ObjectSet<GraphConnection> getErrorConnections() {
-        return errorConnections;
-    }
-
-    public ObjectSet<GraphConnection> getWarningConnections() {
-        return warningConnections;
-    }
-
-    public ObjectSet<NodeConnector> getErrorConnectors() {
-        return errorConnectors;
-    }
-
-    public ObjectSet<NodeConnector> getWarningConnectors() {
-        return warningConnectors;
-    }
-
-    public boolean hasErrors() {
-        return !errorNodes.isEmpty() || !errorConnections.isEmpty() || !errorConnectors.isEmpty();
-    }
-
-    public boolean hasWarnings() {
-        return !warningNodes.isEmpty() || !warningConnections.isEmpty() || !warningConnectors.isEmpty();
-    }
+    boolean hasWarnings();
 }

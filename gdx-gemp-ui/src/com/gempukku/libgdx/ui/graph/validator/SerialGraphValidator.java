@@ -17,13 +17,13 @@ public class SerialGraphValidator implements GraphValidator {
 
     @Override
     public GraphValidationResult validateGraph(Graph graph, String startNode) {
-        GraphValidationResult result = new GraphValidationResult();
+        DefaultGraphValidationResult result = new DefaultGraphValidationResult();
         for (GraphValidator graphValidator : graphValidators) {
             GraphValidationResult validationResult = graphValidator.validateGraph(graph, startNode);
             if (validationResult.hasErrors()) {
-                // If it has error, stop validating, and just move existing warnings to this one to return
-                moveWarnings(result, validationResult);
-                return validationResult;
+                moveWarnings(validationResult, result);
+                moveErrors(validationResult, result);
+                return result;
             } else {
                 moveWarnings(validationResult, result);
             }
@@ -31,7 +31,7 @@ public class SerialGraphValidator implements GraphValidator {
         return result;
     }
 
-    private static void moveWarnings(GraphValidationResult from, GraphValidationResult to) {
+    private static void moveWarnings(GraphValidationResult from, DefaultGraphValidationResult to) {
         for (String warningNode : from.getWarningNodes()) {
             to.addWarningNode(warningNode);
         }
@@ -40,6 +40,18 @@ public class SerialGraphValidator implements GraphValidator {
         }
         for (NodeConnector warningConnector : from.getWarningConnectors()) {
             to.addWarningConnector(warningConnector);
+        }
+    }
+
+    private static void moveErrors(GraphValidationResult from, DefaultGraphValidationResult to) {
+        for (String errorNode : from.getErrorNodes()) {
+            to.addErrorNode(errorNode);
+        }
+        for (GraphConnection errorConnections : from.getErrorConnections()) {
+            to.addErrorConnection(errorConnections);
+        }
+        for (NodeConnector errorConnector : from.getErrorConnectors()) {
+            to.addErrorConnector(errorConnector);
         }
     }
 }

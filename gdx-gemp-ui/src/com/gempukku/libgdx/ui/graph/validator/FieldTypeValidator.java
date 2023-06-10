@@ -19,7 +19,7 @@ public class FieldTypeValidator implements GraphValidator {
 
     @Override
     public GraphValidationResult validateGraph(Graph graph, String startNode) {
-        GraphValidationResult result = new GraphValidationResult();
+        DefaultGraphValidationResult result = new DefaultGraphValidationResult();
 
         ObjectSet<String> validatedConnectionsForNode = new ObjectSet<>();
         ObjectMap<String, ObjectMap<String, Array<String>>> nodeInputsCache = new ObjectMap<>();
@@ -31,7 +31,7 @@ public class FieldTypeValidator implements GraphValidator {
         return result;
     }
 
-    private void validateConnectionsToNode(Graph graph, GraphValidationResult result, ObjectSet<String> validatedConnectionsForNode, ObjectMap<String, ObjectMap<String, Array<String>>> nodeInputsCache, String nodeId) {
+    private void validateConnectionsToNode(Graph graph, DefaultGraphValidationResult result, ObjectSet<String> validatedConnectionsForNode, ObjectMap<String, ObjectMap<String, Array<String>>> nodeInputsCache, String nodeId) {
         if (!validatedConnectionsForNode.contains(nodeId)) {
             Array<GraphConnection> connectionsToNode = getConnectionsTo(graph, nodeId);
             for (GraphConnection connection : connectionsToNode) {

@@ -18,7 +18,7 @@ public class SumGraphValidator implements GraphValidator {
 
     @Override
     public GraphValidationResult validateGraph(Graph graph, String startNode) {
-        GraphValidationResult result = new GraphValidationResult();
+        DefaultGraphValidationResult result = new DefaultGraphValidationResult();
         for (GraphValidator graphValidator : graphValidators) {
             GraphValidationResult validationResult = graphValidator.validateGraph(graph, startNode);
             for (String errorNode : validationResult.getErrorNodes()) {
@@ -27,12 +27,17 @@ public class SumGraphValidator implements GraphValidator {
             for (String warningNode : validationResult.getWarningNodes()) {
                 result.addWarningNode(warningNode);
             }
-            ObjectSet<GraphConnection> errorConnections = validationResult.getErrorConnections();
-            for (GraphConnection errorConnection : errorConnections) {
+            for (GraphConnection errorConnection : validationResult.getErrorConnections()) {
                 result.addErrorConnection(errorConnection);
+            }
+            for (GraphConnection warningConnection : validationResult.getWarningConnections()) {
+                result.addWarningConnection(warningConnection);
             }
             for (NodeConnector errorConnector : validationResult.getErrorConnectors()) {
                 result.addErrorConnector(errorConnector);
+            }
+            for (NodeConnector warningConnector : validationResult.getWarningConnectors()) {
+                result.addWarningConnector(warningConnector);
             }
         }
         return result;

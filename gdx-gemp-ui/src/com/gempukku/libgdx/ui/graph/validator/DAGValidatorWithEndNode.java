@@ -13,14 +13,14 @@ import com.gempukku.libgdx.ui.graph.data.NodeConfiguration;
 public class DAGValidatorWithEndNode implements GraphValidator {
     @Override
     public GraphValidationResult validateGraph(Graph graph, String startNode) {
-        GraphValidationResult result = new GraphValidationResult();
+        DefaultGraphValidationResult result = new DefaultGraphValidationResult();
         checkCyclic(result, graph, startNode);
         return result;
     }
 
     // This function is a variation of DFSUtil() in
     // https://www.geeksforgeeks.org/archives/18212
-    private boolean isCyclicUtil(GraphValidationResult validationResult, Graph graph, String nodeId, ObjectSet<String> visited,
+    private boolean isCyclicUtil(DefaultGraphValidationResult validationResult, Graph graph, String nodeId, ObjectSet<String> visited,
                                  ObjectSet<String> recStack) {
         // Mark the current node as visited and
         // part of recursion stack
@@ -50,7 +50,7 @@ public class DAGValidatorWithEndNode implements GraphValidator {
         return false;
     }
 
-    private void checkCyclic(GraphValidationResult validationResult, Graph graph, String start) {
+    private void checkCyclic(DefaultGraphValidationResult validationResult, Graph graph, String start) {
         ObjectSet<String> visited = new ObjectSet<>();
         ObjectSet<String> recStack = new ObjectSet<>();
 
