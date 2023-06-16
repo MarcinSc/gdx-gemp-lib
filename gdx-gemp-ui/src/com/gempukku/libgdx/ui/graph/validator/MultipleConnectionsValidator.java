@@ -16,7 +16,19 @@ public class MultipleConnectionsValidator implements GraphValidator {
     }
 
     @Override
-    public GraphValidationResult validateGraph(Graph graph, String startNode) {
+    public GraphValidationResult validateGraph(Graph graph) {
+        DefaultGraphValidationResult result = new DefaultGraphValidationResult();
+        ObjectSet<String> validatedNodes = new ObjectSet<>();
+
+        for (GraphNode node : graph.getNodes()) {
+            validateConnectorsForNode(graph, node.getId(), result, validatedNodes);
+        }
+
+        return result;
+    }
+
+    @Override
+    public GraphValidationResult validateSubGraph(Graph graph, String startNode) {
         DefaultGraphValidationResult result = new DefaultGraphValidationResult();
         ObjectSet<String> validatedNodes = new ObjectSet<>();
 
@@ -30,7 +42,11 @@ public class MultipleConnectionsValidator implements GraphValidator {
             GraphNode node = graph.getNodeById(nodeId);
             NodeConfiguration nodeConfiguration = nodeConfigurationResolver.evaluate(node.getType(), node.getData());
             for (ObjectMap.Entry<String, GraphNodeInput> entry : nodeConfiguration.getNodeInputs().entries()) {
-                if (!entry.value.acceptsMultipleConnections() && hasModeThanOneConnectionToInput(graph, node.getId(), entry.key))
+                if (!entry.value.acceptsMultipleConnections() && hasMoreThanOneConnectionToInput(graph, node.getId(), entry.key))
+                    result.addErrorConnector(new NodeConnector(node.getId(), entry.key));
+            }
+            for (ObjectMap.Entry<String, GraphNodeOutput> entry : nodeConfiguration.getNodeOutputs().entries()) {
+                if (!entry.value.acceptsMultipleConnections() && hasMoreThanOneConnectionFromOutput(graph, node.getId(), entry.key))
                     result.addErrorConnector(new NodeConnector(node.getId(), entry.key));
             }
             validatedNodes.add(nodeId);
@@ -50,7 +66,20 @@ public class MultipleConnectionsValidator implements GraphValidator {
         return result;
     }
 
-    private boolean hasModeThanOneConnectionToInput(Graph graph, String nodeId, String fieldId) {
+    private boolean hasMoreThanOneConnectionFromOutput(Graph graph, String nodeId, String fieldId) {
+        boolean found = false;
+        for (GraphConnection connection : graph.getConnections()) {
+            if (connection.getNodeFrom().equals(nodeId) && connection.getFieldFrom().equals(fieldId)) {
+                if (found)
+                    return true;
+                else
+                    found = true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasMoreThanOneConnectionToInput(Graph graph, String nodeId, String fieldId) {
         boolean found = false;
         for (GraphConnection connection : graph.getConnections()) {
             if (connection.getNodeTo().equals(nodeId) && connection.getFieldTo().equals(fieldId)) {

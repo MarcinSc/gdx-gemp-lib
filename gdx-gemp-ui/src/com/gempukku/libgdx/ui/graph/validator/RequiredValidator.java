@@ -16,7 +16,19 @@ public class RequiredValidator implements GraphValidator {
     }
 
     @Override
-    public GraphValidationResult validateGraph(Graph graph, String startNode) {
+    public GraphValidationResult validateGraph(Graph graph) {
+        DefaultGraphValidationResult result = new DefaultGraphValidationResult();
+        ObjectSet<String> validatedNodes = new ObjectSet<>();
+
+        for (GraphNode node : graph.getNodes()) {
+            validateConnectorsForNode(graph, node.getId(), result, validatedNodes);
+        }
+
+        return result;
+    }
+
+    @Override
+    public GraphValidationResult validateSubGraph(Graph graph, String startNode) {
         DefaultGraphValidationResult result = new DefaultGraphValidationResult();
         ObjectSet<String> validatedNodes = new ObjectSet<>();
 

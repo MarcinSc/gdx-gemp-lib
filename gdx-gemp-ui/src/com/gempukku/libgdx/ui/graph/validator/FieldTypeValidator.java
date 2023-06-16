@@ -18,14 +18,29 @@ public class FieldTypeValidator implements GraphValidator {
     }
 
     @Override
-    public GraphValidationResult validateGraph(Graph graph, String startNode) {
+    public GraphValidationResult validateGraph(Graph graph) {
+        DefaultGraphValidationResult result = new DefaultGraphValidationResult();
+
+        ObjectSet<String> validatedConnectionsForNode = new ObjectSet<>();
+        ObjectMap<String, ObjectMap<String, Array<String>>> nodeInputsCache = new ObjectMap<>();
+
+        for (GraphNode node : graph.getNodes()) {
+            String startNode = node.getId();
+            cacheNodeInputs(graph, nodeConfigurationResolver, nodeInputsCache, graph.getNodeById(startNode));
+            validateConnectionsToNode(graph, result, validatedConnectionsForNode, nodeInputsCache, startNode);
+        }
+
+        return result;
+    }
+
+    @Override
+    public GraphValidationResult validateSubGraph(Graph graph, String startNode) {
         DefaultGraphValidationResult result = new DefaultGraphValidationResult();
 
         ObjectSet<String> validatedConnectionsForNode = new ObjectSet<>();
         ObjectMap<String, ObjectMap<String, Array<String>>> nodeInputsCache = new ObjectMap<>();
 
         cacheNodeInputs(graph, nodeConfigurationResolver, nodeInputsCache, graph.getNodeById(startNode));
-
         validateConnectionsToNode(graph, result, validatedConnectionsForNode, nodeInputsCache, startNode);
 
         return result;

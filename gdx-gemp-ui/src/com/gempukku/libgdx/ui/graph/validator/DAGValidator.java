@@ -1,18 +1,22 @@
 package com.gempukku.libgdx.ui.graph.validator;
 
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectSet;
-import com.gempukku.libgdx.common.BiFunction;
 import com.gempukku.libgdx.ui.graph.data.Graph;
 import com.gempukku.libgdx.ui.graph.data.GraphConnection;
 import com.gempukku.libgdx.ui.graph.data.GraphNode;
-import com.gempukku.libgdx.ui.graph.data.NodeConfiguration;
 
-// Checks that the graph is acyclic, starting from the specified end node id
-public class DAGValidatorWithEndNode implements GraphValidator {
+// Checks that the graph is acyclic
+public class DAGValidator implements GraphValidator {
     @Override
-    public GraphValidationResult validateGraph(Graph graph, String startNode) {
+    public GraphValidationResult validateGraph(Graph graph) {
+        DefaultGraphValidationResult result = new DefaultGraphValidationResult();
+        checkCyclic(result, graph);
+        return result;
+    }
+
+    @Override
+    public GraphValidationResult validateSubGraph(Graph graph, String startNode) {
         DefaultGraphValidationResult result = new DefaultGraphValidationResult();
         checkCyclic(result, graph, startNode);
         return result;
@@ -48,6 +52,26 @@ public class DAGValidatorWithEndNode implements GraphValidator {
         recStack.remove(nodeId);
 
         return false;
+    }
+
+    private void checkCyclic(DefaultGraphValidationResult validationResult, Graph graph) {
+        ObjectSet<String> visited = new ObjectSet<>();
+        ObjectSet<String> recStack = new ObjectSet<>();
+
+        for (GraphNode node : graph.getNodes()) {
+            // Call the recursive helper function to
+            // detect cycle in different DFS trees
+            if (isCyclicUtil(validationResult, graph, node.getId(), visited, recStack)) {
+                return;
+            }
+        }
+
+        for (GraphNode node : graph.getNodes()) {
+            String nodeId = node.getId();
+            if (!visited.contains(nodeId)) {
+                validationResult.addWarningNode(node.getId());
+            }
+        }
     }
 
     private void checkCyclic(DefaultGraphValidationResult validationResult, Graph graph, String start) {
