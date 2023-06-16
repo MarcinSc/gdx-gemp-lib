@@ -6,22 +6,22 @@ import com.gempukku.libgdx.ui.graph.data.GraphNodeInput;
 import com.gempukku.libgdx.ui.graph.data.GraphNodeOutput;
 import com.gempukku.libgdx.ui.graph.data.NodeConfiguration;
 
-public class DefaultNodeConfiguration implements NodeConfiguration {
+public class DefaultNodeConfiguration implements NamedNodeConfiguration {
     private final String type;
     private final String name;
-    private final ObjectMap<String, GraphNodeInput> nodeInputs = new OrderedMap<>();
-    private final ObjectMap<String, GraphNodeOutput> nodeOutputs = new OrderedMap<>();
+    private final ObjectMap<String, NamedGraphNodeInput> nodeInputs = new OrderedMap<>();
+    private final ObjectMap<String, NamedGraphNodeOutput> nodeOutputs = new OrderedMap<>();
 
     public DefaultNodeConfiguration(String type, String name) {
         this.type = type;
         this.name = name;
     }
 
-    public void addNodeInput(GraphNodeInput input) {
+    public void addNodeInput(NamedGraphNodeInput input) {
         nodeInputs.put(input.getFieldId(), input);
     }
 
-    public void addNodeOutput(GraphNodeOutput output) {
+    public void addNodeOutput(NamedGraphNodeOutput output) {
         nodeOutputs.put(output.getFieldId(), output);
     }
 
@@ -36,12 +36,12 @@ public class DefaultNodeConfiguration implements NodeConfiguration {
     }
 
     @Override
-    public ObjectMap<String, GraphNodeInput> getNodeInputs() {
+    public ObjectMap<String, NamedGraphNodeInput> getNodeInputs() {
         return nodeInputs;
     }
 
     @Override
-    public ObjectMap<String, GraphNodeOutput> getNodeOutputs() {
+    public ObjectMap<String, NamedGraphNodeOutput> getNodeOutputs() {
         return nodeOutputs;
     }
 }

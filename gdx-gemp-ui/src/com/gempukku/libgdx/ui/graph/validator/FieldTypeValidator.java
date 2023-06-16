@@ -80,7 +80,7 @@ public class FieldTypeValidator implements GraphValidator {
             NodeConfiguration nodeConfiguration = nodeConfigurationResolver.evaluate(node.getType(), node.getData());
 
             // Doing weird stuff, to avoid errors in Gdx with iterators being called nested
-            for (ObjectMap.Entry<String, GraphNodeInput> nodeInput : new ObjectMap.Entries<>(nodeConfiguration.getNodeInputs())) {
+            for (ObjectMap.Entry<String, ? extends GraphNodeInput> nodeInput : new ObjectMap.Entries<>(nodeConfiguration.getNodeInputs())) {
                 Array<GraphConnection> incomingConnections = getConnectionsTo(graph, node.getId(), nodeInput.value.getFieldId());
 
                 Array<String> types = new Array<>();

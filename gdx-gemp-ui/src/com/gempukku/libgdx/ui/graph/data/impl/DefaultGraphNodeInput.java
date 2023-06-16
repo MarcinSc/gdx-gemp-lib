@@ -7,7 +7,7 @@ import com.gempukku.libgdx.ui.graph.data.GraphNodeInputSide;
 
 import java.util.Collection;
 
-public class DefaultGraphNodeInput implements GraphNodeInput {
+public class DefaultGraphNodeInput implements NamedGraphNodeInput {
     private final String id;
     private final String name;
     private final boolean acceptingMultiple;

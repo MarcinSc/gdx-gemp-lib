@@ -7,6 +7,9 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.JsonValue;
 import com.gempukku.libgdx.common.Supplier;
 import com.gempukku.libgdx.ui.graph.data.*;
+import com.gempukku.libgdx.ui.graph.data.impl.NamedGraphNodeInput;
+import com.gempukku.libgdx.ui.graph.data.impl.NamedGraphNodeOutput;
+import com.gempukku.libgdx.ui.graph.data.impl.NamedNodeConfiguration;
 import com.gempukku.libgdx.ui.graph.editor.part.DefaultGraphNodeEditorPart;
 import com.gempukku.libgdx.ui.graph.editor.part.GraphNodeEditorPart;
 import com.kotcrab.vis.ui.VisUI;
@@ -26,15 +29,15 @@ public class DefaultGraphNodeEditor implements GraphNodeEditor {
     private Map<String, GraphNodeEditorInput> inputConnectors = new HashMap<>();
     private Map<String, GraphNodeEditorOutput> outputConnectors = new HashMap<>();
 
-    public DefaultGraphNodeEditor(NodeConfiguration configuration) {
+    public DefaultGraphNodeEditor(NamedNodeConfiguration configuration) {
         this(configuration, "default");
     }
 
-    public DefaultGraphNodeEditor(NodeConfiguration configuration, String labelStyleName) {
+    public DefaultGraphNodeEditor(NamedNodeConfiguration configuration, String labelStyleName) {
         this(configuration, VisUI.getSkin().get(labelStyleName, Label.LabelStyle.class));
     }
 
-    public DefaultGraphNodeEditor(NodeConfiguration configuration, Label.LabelStyle labelStyle) {
+    public DefaultGraphNodeEditor(NamedNodeConfiguration configuration, Label.LabelStyle labelStyle) {
         this.configuration = configuration;
         this.labelStyle = labelStyle;
         table = new VisTable();
@@ -65,8 +68,8 @@ public class DefaultGraphNodeEditor implements GraphNodeEditor {
     }
 
     public void addTwoSideGraphPart(
-            GraphNodeInput graphNodeInput, Drawable inputValidDrawable, Drawable inputInvalidDrawable,
-            GraphNodeOutput graphNodeOutput, Drawable outputValidDrawable, Drawable outputInvalidDrawable) {
+            NamedGraphNodeInput graphNodeInput, Drawable inputValidDrawable, Drawable inputInvalidDrawable,
+            NamedGraphNodeOutput graphNodeOutput, Drawable outputValidDrawable, Drawable outputInvalidDrawable) {
         VisTable table = new VisTable();
         table.add(new VisLabel(graphNodeInput.getFieldName(), labelStyle)).grow();
         VisLabel outputLabel = new VisLabel(graphNodeOutput.getFieldName(), labelStyle);
@@ -81,7 +84,7 @@ public class DefaultGraphNodeEditor implements GraphNodeEditor {
     }
 
     public void addInputGraphPart(
-            GraphNodeInput graphNodeInput, Drawable inputValidDrawable, Drawable inputInvalidDrawable) {
+            NamedGraphNodeInput graphNodeInput, Drawable inputValidDrawable, Drawable inputInvalidDrawable) {
         VisTable table = new VisTable();
         table.add(new VisLabel(graphNodeInput.getFieldName(), labelStyle)).grow().row();
 
@@ -91,7 +94,7 @@ public class DefaultGraphNodeEditor implements GraphNodeEditor {
     }
 
     public void addOutputGraphPart(
-            GraphNodeOutput graphNodeOutput, Drawable outputValidDrawable, Drawable outputInvalidDrawable) {
+            NamedGraphNodeOutput graphNodeOutput, Drawable outputValidDrawable, Drawable outputInvalidDrawable) {
         VisTable table = new VisTable();
         VisLabel outputLabel = new VisLabel(graphNodeOutput.getFieldName(), labelStyle);
         outputLabel.setAlignment(Align.right);

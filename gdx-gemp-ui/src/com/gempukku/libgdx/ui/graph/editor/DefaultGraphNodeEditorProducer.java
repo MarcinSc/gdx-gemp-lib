@@ -3,13 +3,16 @@ package com.gempukku.libgdx.ui.graph.editor;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.JsonValue;
 import com.gempukku.libgdx.ui.graph.data.*;
+import com.gempukku.libgdx.ui.graph.data.impl.NamedGraphNodeInput;
+import com.gempukku.libgdx.ui.graph.data.impl.NamedGraphNodeOutput;
+import com.gempukku.libgdx.ui.graph.data.impl.NamedNodeConfiguration;
 
 import java.util.Iterator;
 
 public abstract class DefaultGraphNodeEditorProducer implements GraphNodeEditorProducer {
-    private final NodeConfiguration configuration;
+    private final NamedNodeConfiguration configuration;
 
-    public DefaultGraphNodeEditorProducer(NodeConfiguration configuration) {
+    public DefaultGraphNodeEditorProducer(NamedNodeConfiguration configuration) {
         this.configuration = configuration;
     }
 
@@ -41,11 +44,11 @@ public abstract class DefaultGraphNodeEditorProducer implements GraphNodeEditorP
     protected abstract void buildNodeEditor(DefaultGraphNodeEditor graphNodeEditor, NodeConfiguration configuration);
 
     protected void addConfigurationInputsAndOutputs(DefaultGraphNodeEditor nodeEditor) {
-        Iterator<GraphNodeInput> inputIterator = configuration.getNodeInputs().values().iterator();
-        Iterator<GraphNodeOutput> outputIterator = configuration.getNodeOutputs().values().iterator();
+        Iterator<? extends NamedGraphNodeInput> inputIterator = configuration.getNodeInputs().values().iterator();
+        Iterator<? extends NamedGraphNodeOutput> outputIterator = configuration.getNodeOutputs().values().iterator();
         while (inputIterator.hasNext() || outputIterator.hasNext()) {
-            GraphNodeInput input = null;
-            GraphNodeOutput output = null;
+            NamedGraphNodeInput input = null;
+            NamedGraphNodeOutput output = null;
             while (inputIterator.hasNext()) {
                 input = inputIterator.next();
                 if (input.getSide() == GraphNodeInputSide.Top) {

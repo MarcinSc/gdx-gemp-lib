@@ -6,7 +6,7 @@ import com.gempukku.libgdx.common.Function;
 import com.gempukku.libgdx.ui.graph.data.GraphNodeOutput;
 import com.gempukku.libgdx.ui.graph.data.GraphNodeOutputSide;
 
-public class DefaultGraphNodeOutput implements GraphNodeOutput {
+public class DefaultGraphNodeOutput implements NamedGraphNodeOutput {
     private final String id;
     private final String name;
     private final boolean required;

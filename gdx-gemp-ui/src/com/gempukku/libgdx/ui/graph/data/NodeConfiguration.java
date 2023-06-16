@@ -7,7 +7,7 @@ public interface NodeConfiguration {
 
     String getName();
 
-    ObjectMap<String, GraphNodeInput> getNodeInputs();
+    ObjectMap<String, ? extends GraphNodeInput> getNodeInputs();
 
-    ObjectMap<String, GraphNodeOutput> getNodeOutputs();
+    ObjectMap<String, ? extends GraphNodeOutput> getNodeOutputs();
 }
