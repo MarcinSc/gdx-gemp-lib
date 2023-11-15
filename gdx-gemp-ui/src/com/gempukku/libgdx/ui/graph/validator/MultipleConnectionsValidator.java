@@ -41,13 +41,15 @@ public class MultipleConnectionsValidator implements GraphValidator {
         if (!validatedNodes.contains(nodeId)) {
             GraphNode node = graph.getNodeById(nodeId);
             NodeConfiguration nodeConfiguration = nodeConfigurationResolver.evaluate(node.getType(), node.getData());
-            for (ObjectMap.Entry<String, ? extends GraphNodeInput> entry : nodeConfiguration.getNodeInputs().entries()) {
-                if (!entry.value.acceptsMultipleConnections() && hasMoreThanOneConnectionToInput(graph, node.getId(), entry.key))
-                    result.addErrorConnector(new NodeConnector(node.getId(), entry.key));
-            }
-            for (ObjectMap.Entry<String, ? extends GraphNodeOutput> entry : nodeConfiguration.getNodeOutputs().entries()) {
-                if (!entry.value.acceptsMultipleConnections() && hasMoreThanOneConnectionFromOutput(graph, node.getId(), entry.key))
-                    result.addErrorConnector(new NodeConnector(node.getId(), entry.key));
+            if (nodeConfiguration != null) {
+                for (ObjectMap.Entry<String, ? extends GraphNodeInput> entry : nodeConfiguration.getNodeInputs().entries()) {
+                    if (!entry.value.acceptsMultipleConnections() && hasMoreThanOneConnectionToInput(graph, node.getId(), entry.key))
+                        result.addErrorConnector(new NodeConnector(node.getId(), entry.key));
+                }
+                for (ObjectMap.Entry<String, ? extends GraphNodeOutput> entry : nodeConfiguration.getNodeOutputs().entries()) {
+                    if (!entry.value.acceptsMultipleConnections() && hasMoreThanOneConnectionFromOutput(graph, node.getId(), entry.key))
+                        result.addErrorConnector(new NodeConnector(node.getId(), entry.key));
+                }
             }
             validatedNodes.add(nodeId);
             for (GraphConnection graphConnection : getConnectionsTo(graph, nodeId)) {

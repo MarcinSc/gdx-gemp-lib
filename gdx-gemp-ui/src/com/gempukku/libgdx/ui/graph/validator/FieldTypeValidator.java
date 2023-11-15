@@ -51,15 +51,17 @@ public class FieldTypeValidator implements GraphValidator {
             Array<GraphConnection> connectionsToNode = getConnectionsTo(graph, nodeId);
             for (GraphConnection connection : connectionsToNode) {
                 GraphNode nodeFrom = graph.getNodeById(connection.getNodeFrom());
-                NodeConfiguration nodeFromConfiguration = nodeConfigurationResolver.evaluate(nodeFrom.getType(), nodeFrom.getData());
-                GraphNodeOutput output = nodeFromConfiguration.getNodeOutputs().get(connection.getFieldFrom());
                 GraphNode nodeTo = graph.getNodeById(connection.getNodeTo());
+                NodeConfiguration nodeFromConfiguration = nodeConfigurationResolver.evaluate(nodeFrom.getType(), nodeFrom.getData());
                 NodeConfiguration nodeToConfiguration = nodeConfigurationResolver.evaluate(nodeTo.getType(), nodeTo.getData());
-                GraphNodeInput input = nodeToConfiguration.getNodeInputs().get(connection.getFieldTo());
+                if (nodeFromConfiguration != null && nodeToConfiguration != null) {
+                    GraphNodeOutput output = nodeFromConfiguration.getNodeOutputs().get(connection.getFieldFrom());
+                    GraphNodeInput input = nodeToConfiguration.getNodeInputs().get(connection.getFieldTo());
 
-                String fieldType = output.determineFieldType(nodeInputsCache.get(nodeFrom.getId()));
-                if (!input.acceptsFieldType(fieldType)) {
-                    result.addErrorConnection(connection);
+                    String fieldType = output.determineFieldType(nodeInputsCache.get(nodeFrom.getId()));
+                    if (!input.acceptsFieldType(fieldType)) {
+                        result.addErrorConnection(connection);
+                    }
                 }
             }
             validatedConnectionsForNode.add(nodeId);
@@ -78,23 +80,26 @@ public class FieldTypeValidator implements GraphValidator {
             inputsCache.put(node.getId(), nodeInputs);
 
             NodeConfiguration nodeConfiguration = nodeConfigurationResolver.evaluate(node.getType(), node.getData());
-
-            // Doing weird stuff, to avoid errors in Gdx with iterators being called nested
-            for (ObjectMap.Entry<String, ? extends GraphNodeInput> nodeInput : new ObjectMap.Entries<>(nodeConfiguration.getNodeInputs())) {
-                Array<GraphConnection> incomingConnections = getConnectionsTo(graph, node.getId(), nodeInput.value.getFieldId());
-
-                Array<String> types = new Array<>();
+            if (nodeConfiguration != null) {
                 // Doing weird stuff, to avoid errors in Gdx with iterators being called nested
-                for (int i = 0; i < incomingConnections.size; i++) {
-                    GraphConnection incomingConnection = incomingConnections.get(i);
-                    GraphNode nodeFrom = graph.getNodeById(incomingConnection.getNodeFrom());
-                    NodeConfiguration nodeFromConfiguration = nodeConfigurationResolver.evaluate(nodeFrom.getType(), nodeFrom.getData());
-                    GraphNodeOutput output = nodeFromConfiguration.getNodeOutputs().get(incomingConnection.getFieldFrom());
-                    cacheNodeInputs(graph, nodeConfigurationResolver, inputsCache, nodeFrom);
-                    String fieldType = output.determineFieldType(inputsCache.get(nodeFrom.getId()));
-                    types.add(fieldType);
+                for (ObjectMap.Entry<String, ? extends GraphNodeInput> nodeInput : new ObjectMap.Entries<>(nodeConfiguration.getNodeInputs())) {
+                    Array<GraphConnection> incomingConnections = getConnectionsTo(graph, node.getId(), nodeInput.value.getFieldId());
+
+                    Array<String> types = new Array<>();
+                    // Doing weird stuff, to avoid errors in Gdx with iterators being called nested
+                    for (int i = 0; i < incomingConnections.size; i++) {
+                        GraphConnection incomingConnection = incomingConnections.get(i);
+                        GraphNode nodeFrom = graph.getNodeById(incomingConnection.getNodeFrom());
+                        NodeConfiguration nodeFromConfiguration = nodeConfigurationResolver.evaluate(nodeFrom.getType(), nodeFrom.getData());
+                        if (nodeFromConfiguration != null) {
+                            GraphNodeOutput output = nodeFromConfiguration.getNodeOutputs().get(incomingConnection.getFieldFrom());
+                            cacheNodeInputs(graph, nodeConfigurationResolver, inputsCache, nodeFrom);
+                            String fieldType = output.determineFieldType(inputsCache.get(nodeFrom.getId()));
+                            types.add(fieldType);
+                        }
+                    }
+                    nodeInputs.put(nodeInput.key, types);
                 }
-                nodeInputs.put(nodeInput.key, types);
             }
         }
     }
