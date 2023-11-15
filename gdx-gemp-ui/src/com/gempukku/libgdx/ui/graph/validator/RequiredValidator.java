@@ -10,9 +10,14 @@ import com.gempukku.libgdx.ui.graph.data.*;
 
 public class RequiredValidator implements GraphValidator {
     private BiFunction<String, JsonValue, NodeConfiguration> nodeConfigurationResolver;
+    private boolean ignoreMissingProducers;
 
     public RequiredValidator(BiFunction<String, JsonValue, NodeConfiguration> nodeConfigurationResolver) {
         this.nodeConfigurationResolver = nodeConfigurationResolver;
+    }
+
+    public void setIgnoreMissingProducers(boolean ignoreMissingProducers) {
+        this.ignoreMissingProducers = ignoreMissingProducers;
     }
 
     @Override
@@ -41,13 +46,17 @@ public class RequiredValidator implements GraphValidator {
         if (!validatedNodes.contains(nodeId)) {
             GraphNode node = graph.getNodeById(nodeId);
             NodeConfiguration nodeConfiguration = nodeConfigurationResolver.evaluate(node.getType(), node.getData());
-            for (ObjectMap.Entry<String, ? extends GraphNodeInput> entry : nodeConfiguration.getNodeInputs().entries()) {
-                if (entry.value.isRequired() && !hasConnectionToInput(graph, node.getId(), entry.key))
-                    result.addErrorConnector(new NodeConnector(node.getId(), entry.key));
-            }
-            for (ObjectMap.Entry<String, ? extends GraphNodeOutput> entry : nodeConfiguration.getNodeOutputs().entries()) {
-                if (entry.value.isRequired() && !hasConnectionToOutput(graph, node.getId(), entry.key))
-                    result.addErrorConnector(new NodeConnector(node.getId(), entry.key));
+            if (nodeConfiguration != null) {
+                for (ObjectMap.Entry<String, ? extends GraphNodeInput> entry : nodeConfiguration.getNodeInputs().entries()) {
+                    if (entry.value.isRequired() && !hasConnectionToInput(graph, node.getId(), entry.key))
+                        result.addErrorConnector(new NodeConnector(node.getId(), entry.key));
+                }
+                for (ObjectMap.Entry<String, ? extends GraphNodeOutput> entry : nodeConfiguration.getNodeOutputs().entries()) {
+                    if (entry.value.isRequired() && !hasConnectionToOutput(graph, node.getId(), entry.key))
+                        result.addErrorConnector(new NodeConnector(node.getId(), entry.key));
+                }
+            } else if (!ignoreMissingProducers) {
+                result.addErrorNode(nodeId);
             }
 
             validatedNodes.add(nodeId);
