@@ -17,8 +17,6 @@ public class CheckboxEditorPart extends VisTable implements GraphNodeEditorPart 
     private final String property;
     private final VisCheckBox input;
 
-    private boolean oldValue;
-
     public CheckboxEditorPart(String label, String property) {
         this(label, property, false);
     }
@@ -33,7 +31,6 @@ public class CheckboxEditorPart extends VisTable implements GraphNodeEditorPart 
 
     public CheckboxEditorPart(String label, String property, boolean defaultValue, VisCheckBox.VisCheckBoxStyle style) {
         this.property = property;
-        this.oldValue = defaultValue;
 
         input = new UndoableCheckBox(label, style);
         input.setChecked(defaultValue);

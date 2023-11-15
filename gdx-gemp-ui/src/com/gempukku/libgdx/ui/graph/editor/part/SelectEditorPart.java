@@ -20,8 +20,6 @@ public class SelectEditorPart extends VisTable implements GraphNodeEditorPart {
     private final String property;
     private final VisSelectBox<String> selectBox;
 
-    private String oldValue;
-
     public SelectEditorPart(String label, String property, String... values) {
         this(label, property, "default", "default", values);
     }
@@ -35,7 +33,6 @@ public class SelectEditorPart extends VisTable implements GraphNodeEditorPart {
 
     public SelectEditorPart(String label, String property, Label.LabelStyle labelStyle, SelectBox.SelectBoxStyle selectBoxStyle, String... values) {
         this.property = property;
-        this.oldValue = values[0];
 
         selectBox = new UndoableSelectBox<>(selectBoxStyle);
         selectBox.setItems(values);
