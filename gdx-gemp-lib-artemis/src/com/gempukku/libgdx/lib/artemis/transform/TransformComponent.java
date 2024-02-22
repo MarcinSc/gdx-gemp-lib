@@ -4,8 +4,8 @@ import com.artemis.PooledComponent;
 import com.badlogic.gdx.math.Matrix4;
 
 public class TransformComponent extends PooledComponent {
-    private Matrix4 globalTransform = new Matrix4();
-    private Matrix4 localTransform = new Matrix4();
+    private final Matrix4 globalTransform = new Matrix4();
+    private final Matrix4 localTransform = new Matrix4();
 
     public Matrix4 getLocalTransform() {
         return localTransform;
