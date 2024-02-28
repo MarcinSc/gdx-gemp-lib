@@ -1,7 +1,7 @@
 package com.gempukku.libgdx.ui.graph;
 
-import com.gempukku.libgdx.ui.graph.data.GraphConnection;
-import com.gempukku.libgdx.ui.graph.data.impl.DefaultGraphConnection;
+import com.gempukku.libgdx.graph.data.GraphConnection;
+import com.gempukku.libgdx.graph.data.impl.DefaultGraphConnection;
 
 public class DrawnGraphConnection extends DefaultGraphConnection {
     private boolean error;

@@ -1,5 +1,6 @@
 package com.gempukku.libgdx.lib.artemis.transform;
 
+import com.artemis.Aspect;
 import com.artemis.BaseEntitySystem;
 import com.artemis.ComponentMapper;
 import com.artemis.Entity;
@@ -13,6 +14,10 @@ public class SimpleTransformSystem extends BaseEntitySystem {
     private ComponentMapper<SimpleTransformComponent> simpleTransformMapper;
 
     private final Pool<Matrix4> matrix4Pool = Pools.get(Matrix4.class);
+
+    public SimpleTransformSystem() {
+        super(Aspect.all(SimpleTransformComponent.class));
+    }
 
     @Override
     protected void inserted(int entityId) {

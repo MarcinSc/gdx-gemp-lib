@@ -2,4 +2,4 @@ include 'gdx-gemp-common', 'gdx-gemp-lib-artemis', 'gdx-gemp-box2d-artemis',
         'gdx-gemp-network-artemis', 'gdx-gemp-undo',
         'gdx-gemp-ai', 'gdx-gemp-camera2d', 'gdx-gemp-camera2d-test',
         'gdx-gemp-template', 'gdx-gemp-template-ashley', 'gdx-gemp-template-artemis',
-        'gdx-gemp-ui', 'gdx-gemp-ui-test', 'gdx-gemp-fbx'
+        'gdx-gemp-ui', 'gdx-gemp-ui-test', 'gdx-gemp-fbx', 'gdx-gemp-graph'

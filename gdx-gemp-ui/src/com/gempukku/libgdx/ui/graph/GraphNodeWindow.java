@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectSet;
-import com.gempukku.libgdx.ui.graph.data.GraphNode;
+import com.gempukku.libgdx.graph.data.GraphNode;
 import com.gempukku.libgdx.ui.graph.editor.GraphNodeEditor;
 import com.kotcrab.vis.ui.widget.VisImageButton;
 import com.kotcrab.vis.ui.widget.VisWindow;

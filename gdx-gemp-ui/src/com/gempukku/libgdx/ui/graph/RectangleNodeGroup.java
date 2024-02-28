@@ -1,8 +1,8 @@
 package com.gempukku.libgdx.ui.graph;
 
 import com.badlogic.gdx.math.Rectangle;
-import com.gempukku.libgdx.ui.graph.data.NodeGroup;
-import com.gempukku.libgdx.ui.graph.data.impl.DefaultNodeGroup;
+import com.gempukku.libgdx.graph.data.NodeGroup;
+import com.gempukku.libgdx.graph.data.impl.DefaultNodeGroup;
 
 public class RectangleNodeGroup extends DefaultNodeGroup {
     private Rectangle rectangle = new Rectangle();

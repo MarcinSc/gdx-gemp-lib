@@ -2,10 +2,12 @@ package com.gempukku.libgdx.ui.graph.editor;
 
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.JsonValue;
-import com.gempukku.libgdx.ui.graph.data.*;
-import com.gempukku.libgdx.ui.graph.data.impl.NamedGraphNodeInput;
-import com.gempukku.libgdx.ui.graph.data.impl.NamedGraphNodeOutput;
-import com.gempukku.libgdx.ui.graph.data.impl.NamedNodeConfiguration;
+import com.gempukku.libgdx.graph.data.GraphNodeInputSide;
+import com.gempukku.libgdx.graph.data.GraphNodeOutputSide;
+import com.gempukku.libgdx.graph.data.NodeConfiguration;
+import com.gempukku.libgdx.graph.data.impl.NamedGraphNodeInput;
+import com.gempukku.libgdx.graph.data.impl.NamedGraphNodeOutput;
+import com.gempukku.libgdx.graph.data.impl.NamedNodeConfiguration;
 
 import java.util.Iterator;
 

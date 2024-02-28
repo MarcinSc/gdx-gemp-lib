@@ -2,7 +2,7 @@ package com.gempukku.libgdx.ui.graph.editor;
 
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.gempukku.libgdx.common.Supplier;
-import com.gempukku.libgdx.ui.graph.data.GraphNodeOutputSide;
+import com.gempukku.libgdx.graph.data.GraphNodeOutputSide;
 
 public class DefaultGraphNodeEditorOutput implements GraphNodeEditorOutput {
     private GraphNodeOutputSide side;
