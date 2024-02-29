@@ -10,13 +10,15 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.*;
 
 public class SlotLoadingTextureHandler implements TextureHandler {
-    private int pageWidth;
-    private int pageHeight;
-    private int cellWidth;
-    private int cellHeight;
-    private TextureRegion defaultTextureRegion;
-    private Array<SlotLoadingPage> pages = new Array<>();
-    private AssetManager assetManager;
+    private final int pageWidth;
+    private final int pageHeight;
+    private final int cellWidth;
+    private final int cellHeight;
+    private final TextureRegion defaultTextureRegion;
+    private final Array<SlotLoadingPage> pages = new Array<>();
+    private final AssetManager assetManager;
+
+    private static final LoadedImageCopier defaultLoadedImageCopier = new DefaultLoadedImageCopier();
 
     public SlotLoadingTextureHandler(int pageWidth, int pageHeight, int cellWidth, int cellHeight,
                                      TextureRegion defaultTextureRegion) {
@@ -34,8 +36,12 @@ public class SlotLoadingTextureHandler implements TextureHandler {
     }
 
     public void addImage(String path, ImageLoadNotifier imageLoadNotifier) {
+        addImage(path, imageLoadNotifier, defaultLoadedImageCopier);
+    }
+
+    public void addImage(String path, ImageLoadNotifier imageLoadNotifier, LoadedImageCopier loadedImageCopier) {
         SlotLoadingPage page = findPageWithSpace();
-        page.addImage(path, imageLoadNotifier);
+        page.addImage(path, imageLoadNotifier, loadedImageCopier);
     }
 
     private SlotLoadingPage findPageWithSpace() {
@@ -84,14 +90,13 @@ public class SlotLoadingTextureHandler implements TextureHandler {
     }
 
     private class SlotLoadingPage implements Disposable {
-        private Pixmap pixmap;
-        private Texture texture;
-        private ObjectMap<String, ImageLoadNotifier> notifiers = new ObjectMap<>();
-        private int cellWidth;
-        private int cellHeight;
-        private LoadingImage[][] loadingImages;
-        private ObjectMap<String, LoadingImage> loadingImageMap = new ObjectMap<>();
-        private ObjectSet<LoadingImage> loading = new ObjectSet<>();
+        private final Pixmap pixmap;
+        private final Texture texture;
+        private final int cellWidth;
+        private final int cellHeight;
+        private final LoadingImage[][] loadingImages;
+        private final ObjectMap<String, LoadingImage> loadingImageMap = new ObjectMap<>();
+        private final ObjectSet<LoadingImage> loading = new ObjectSet<>();
         private int remainingSpace;
 
         public SlotLoadingPage(int width, int height, int cellWidth, int cellHeight) {
@@ -111,20 +116,20 @@ public class SlotLoadingTextureHandler implements TextureHandler {
             return remainingSpace > 0;
         }
 
-        public void addImage(String path, ImageLoadNotifier imageLoadNotifier) {
+        public void addImage(String path, ImageLoadNotifier imageLoadNotifier, LoadedImageCopier loadedImageCopier) {
             assetManager.load(path, Pixmap.class);
-            LoadingImage loadingImage = insertIntoCells(path, imageLoadNotifier);
+            LoadingImage loadingImage = insertIntoCells(path, imageLoadNotifier, loadedImageCopier);
             loading.add(loadingImage);
             loadingImageMap.put(path, loadingImage);
             remainingSpace--;
         }
 
-        private LoadingImage insertIntoCells(String path, ImageLoadNotifier imageLoadNotifier) {
+        private LoadingImage insertIntoCells(String path, ImageLoadNotifier imageLoadNotifier, LoadedImageCopier loadedImageCopier) {
             LoadingImage loadingImage = null;
             for (int i = 0; i < loadingImages.length; i++) {
                 for (int j = 0; j < loadingImages[i].length; j++) {
                     if (loadingImages[i][j] == null) {
-                        loadingImage = new LoadingImage(path, i, j, imageLoadNotifier);
+                        loadingImage = new LoadingImage(path, i, j, imageLoadNotifier, loadedImageCopier);
                         loadingImages[i][j] = loadingImage;
                         return loadingImage;
                     }
@@ -176,36 +181,31 @@ public class SlotLoadingTextureHandler implements TextureHandler {
         }
 
         private class LoadingImage {
-            private String path;
-            private int cellX;
-            private int cellY;
-            private ImageLoadNotifier notifier;
+            private final String path;
+            private final int cellX;
+            private final int cellY;
+            private final ImageLoadNotifier notifier;
 
             private TextureRegion textureRegion;
+            private final LoadedImageCopier loadedImageCopier;
 
-            public LoadingImage(String path, int cellX, int cellY, ImageLoadNotifier notifier) {
+            public LoadingImage(String path, int cellX, int cellY, ImageLoadNotifier notifier, LoadedImageCopier loadedImageCopier) {
                 this.path = path;
                 this.cellX = cellX;
                 this.cellY = cellY;
                 this.notifier = notifier;
+                this.loadedImageCopier = loadedImageCopier;
             }
 
             public boolean update() {
                 if (assetManager.isLoaded(path)) {
                     Pixmap loadedPixmap = assetManager.get(path, Pixmap.class);
 
-                    int loadedWidth = loadedPixmap.getWidth();
-                    int loadedHeight = loadedPixmap.getHeight();
-                    if (loadedWidth > cellWidth || loadedHeight > cellHeight) {
-                        notifier.textureError();
-                        return true;
-                    }
+                    int x = cellX * cellWidth;
+                    int y = cellY & cellHeight;
 
-                    int x = cellX * cellWidth + (cellWidth - loadedWidth) / 2;
-                    int y = cellY * cellHeight + (cellHeight - loadedHeight) / 2;
+                    textureRegion = loadedImageCopier.copyPixmapToTexture(loadedPixmap, texture, x, y, cellWidth, cellHeight);
 
-                    texture.draw(loadedPixmap, x, y);
-                    textureRegion = new TextureRegion(texture, x, y, loadedWidth, loadedHeight);
                     notifier.textureLoaded(textureRegion);
                     assetManager.unload(path);
 
@@ -217,6 +217,23 @@ public class SlotLoadingTextureHandler implements TextureHandler {
             public TextureRegion getTextureRegion() {
                 return textureRegion;
             }
+        }
+    }
+
+    private static class DefaultLoadedImageCopier implements LoadedImageCopier {
+        @Override
+        public TextureRegion copyPixmapToTexture(Pixmap pixmap, Texture texture, int x, int y, int cellWidth, int cellHeight) {
+            int loadedWidth = pixmap.getWidth();
+            int loadedHeight = pixmap.getHeight();
+            if (loadedWidth > cellWidth || loadedHeight > cellHeight) {
+                throw new IllegalArgumentException("Loaded pixmap is too large");
+            }
+
+            int startX = x + (cellWidth - loadedWidth) / 2;
+            int startY = y + (cellHeight - loadedHeight) / 2;
+
+            texture.draw(pixmap, startX, startY);
+            return new TextureRegion(texture, startX, startY, loadedWidth, loadedHeight);
         }
     }
 }
